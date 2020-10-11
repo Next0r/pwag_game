@@ -1,0 +1,16 @@
+#version 300 es
+
+uniform mat4 u_model_view_matrix;
+uniform mat4 u_projection_matrix;
+
+in vec4 a_position;
+in vec4 a_color;
+out vec4 vertex_color;
+
+
+
+void main() {
+
+  vertex_color = a_color;
+  gl_Position = u_projection_matrix * u_model_view_matrix * a_position;
+}
