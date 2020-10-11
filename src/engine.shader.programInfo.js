@@ -65,6 +65,9 @@ class UniformsInfo {
     this.programInfoHandle = programInfoHandle;
     this.modelViewMatrix = new ProgramUniform(programInfoHandle);
     this.projectionMatrix = new ProgramUniform(programInfoHandle);
+    this.directLightDirection = new ProgramUniform(programInfoHandle);
+    this.directLightColor = new ProgramUniform(programInfoHandle);
+    this.directLightValue = new ProgramUniform(programInfoHandle);
   }
 }
 

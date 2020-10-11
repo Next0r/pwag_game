@@ -18,7 +18,6 @@ const findSourceElement = (sourceElements, name) => {
 };
 
 /**
- *
  * @param {HTMLElement} sourceElement
  */
 const parseSourceElement = (sourceElement) => {
@@ -111,8 +110,9 @@ const readGeometry = (xml, geometry) => {
   const mesh = new Mesh(geometryName);
   mesh.positions = parseSourceElement(positionsElement);
   mesh.normals = parseSourceElement(normalsElement);
-  mesh.map = parseSourceElement(mapElement);
-  mesh.colors = parseSourceElement(colorsElement);
+  mesh.map = mapElement === undefined ? [] : parseSourceElement(mapElement);
+  mesh.colors =
+    colorsElement === undefined ? [] : parseSourceElement(colorsElement);
 
   const meshTraingleInfo = parseTrianglesElement(trianglesElement);
   mesh.vertices = meshTraingleInfo.vertices;

@@ -12,8 +12,18 @@ class Mesh {
     this.vertices = [];
   }
 
+  getNormalsArray() {
+    const indices = this.getNormalIndexArray();
+    const outputArray = [];
+    for (let index of indices) {
+      outputArray.push(...this.normals[index]);
+    }
+
+    return outputArray;
+  }
+
   getPositionsArray() {
-    const indices = this.getIndicesArray();
+    const indices = this.getPositionIndexArray();
     const outputArray = [];
     for (let index of indices) {
       outputArray.push(...this.positions[index]);
@@ -30,10 +40,18 @@ class Mesh {
     return outputArray;
   }
 
-  getIndicesArray() {
+  getPositionIndexArray() {
     const outputArray = [];
     for (let vertex of this.vertices) {
       outputArray.push(vertex[this.indexOffset]);
+    }
+    return outputArray;
+  }
+
+  getNormalIndexArray() {
+    const outputArray = [];
+    for (let vertex of this.vertices) {
+      outputArray.push(vertex[this.normalOffset]);
     }
     return outputArray;
   }
