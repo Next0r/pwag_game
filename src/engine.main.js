@@ -2,15 +2,13 @@ const draw = require("./engine.draw");
 const utilities = require("./engine.utilities");
 const { createShaderProgram } = require("./engine.shader");
 const utilitiesCollada = require("./engine.utilities.collada");
-const { ProgramInfo } = require("./engine.shader.programInfo");
-const { GLBuffer } = require("./engine.glBuffer");
 const { Vector3 } = require("./engine.math.vector3");
 const { GameObject } = require("./engine.gameObject");
 const { Camera } = require("./engine.camera");
 const { DirectLight } = require("./engine.light.direct");
 const { AmbientLight } = require("./engine.light.ambient");
-const { VertexInfo } = require("./engine.vertexInfo");
 const { Matrix4 } = require("./engine.math.matrix4");
+const { Material } = require("./engine.material");
 const gl = utilities.getGLContext();
 
 const main = () => {
@@ -52,60 +50,37 @@ const main = () => {
   const normalMatrix = modelViewMatrix.clone().inverse().transpose();
 
   const shaderProgram = createShaderProgram(vsSource, fsSource);
-  const programInfo = new ProgramInfo(shaderProgram);
-  const vertexInfo = new VertexInfo(gameObject.mesh, programInfo);
 
-  // create and bind used vao at the beginning
-  gameObject.programInfo = programInfo;
-  gameObject.vertexInfo = vertexInfo;
-  gameObject.vertexInfo.bind();
+  const material = new Material(shaderProgram);
+  material.uniforms.modelViewMatrix.value = modelViewMatrix.toArray();
+  material.uniforms.projectionMatrix.value = projectionMatrix.toArray();
+  material.uniforms.normalMatrix.value = normalMatrix.toArray();
+  material.uniforms.directLightDirection.value = directLight.direction.toArray();
+  material.uniforms.directLightColor.value = directLight.color.toArray();
+  material.uniforms.directLightValue.value = [directLight.value];
+  material.uniforms.ambientLightColor.value = ambientLight.color.toArray();
+  material.uniforms.ambientLightValue.value = [ambientLight.value];
+  material.attributes.position.value = new Float32Array(
+    gameObject.mesh.getPositionsArray()
+  );
+  material.attributes.normal.value = new Float32Array(
+    gameObject.mesh.getNormalsArray()
+  );
+  material.attributes.color.value = new Float32Array(
+    gameObject.mesh.getColorsArray()
+  );
+  material.createVertexArray();
+  material.bindVertexArray();
+  material.uploadUniforms();
 
-  //draw
+  gameObject.material = material;
+
+  // draw
 
   gl.clearColor(0.2, 0.2, 0.2, 1);
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LEQUAL);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-  gl.useProgram(programInfo.program);
-
-  gl.uniformMatrix4fv(
-    programInfo.uniforms.modelViewMatrix.location,
-    false,
-    modelViewMatrix.toArray()
-  );
-
-  gl.uniformMatrix4fv(
-    programInfo.uniforms.projectionMatrix.location,
-    false,
-    projectionMatrix.toArray()
-  );
-  gl.uniformMatrix4fv(
-    programInfo.uniforms.normalMatrix.location,
-    false,
-    normalMatrix.toArray()
-  );
-
-  gl.uniform3fv(
-    programInfo.uniforms.directLightDirection.location,
-    directLight.direction.toArray()
-  );
-  gl.uniform3fv(
-    programInfo.uniforms.directLightColor.location,
-    directLight.color.toArray()
-  );
-  gl.uniform1f(
-    programInfo.uniforms.directLightValue.location,
-    directLight.value
-  );
-  gl.uniform3fv(
-    programInfo.uniforms.ambientLightColor.location,
-    ambientLight.color.toArray()
-  );
-  gl.uniform1f(
-    programInfo.uniforms.ambientLightValue.location,
-    ambientLight.value
-  );
 
   gl.drawArrays(gl.TRIANGLES, 0, gameObject.mesh.vertices.length);
 };

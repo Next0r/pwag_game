@@ -1,14 +1,12 @@
 const { Transform } = require("./engine.gameObject.transform");
-const { ProgramInfo } = require("./engine.shader.programInfo");
+const { Material } = require("./engine.material");
 const { Mesh } = require("./engine.utilities.mesh");
-const { VertexInfo } = require("./engine.vertexInfo");
 
 class GameObject {
   constructor() {
     this.transform = new Transform();
     this.mesh = new Mesh();
-    this.vertexInfo = new VertexInfo();
-    this.programInfo = new ProgramInfo();
+    this.material = new Material();
   }
 }
 
