@@ -46,7 +46,7 @@ class ProgramUniform {
   }
 
   setLocation(uniformName) {
-    if (!gl || !this.programInfoHandle.program) {
+    if (!gl || !this.programInfoHandle || !this.programInfoHandle.program) {
       return;
     }
     this.location = gl.getUniformLocation(
@@ -65,6 +65,7 @@ class UniformsInfo {
     this.programInfoHandle = programInfoHandle;
     this.modelViewMatrix = new ProgramUniform(programInfoHandle);
     this.projectionMatrix = new ProgramUniform(programInfoHandle);
+    this.normalMatrix = new ProgramUniform(programInfoHandle);
     this.directLightDirection = new ProgramUniform(programInfoHandle);
     this.directLightColor = new ProgramUniform(programInfoHandle);
     this.directLightValue = new ProgramUniform(programInfoHandle);
@@ -73,6 +74,11 @@ class UniformsInfo {
   }
 }
 
+/**
+ * Holds program locations for it's attributes and uniforms.
+ * While creating object of this class ALWAYS supply proper
+ * shader program or use setProgram method afterwards.
+ */
 class ProgramInfo {
   /**
    *
@@ -82,17 +88,46 @@ class ProgramInfo {
     this.program = program;
     this.attributes = new AttributesInfo(this);
     this.uniforms = new UniformsInfo(this);
+    initAttributesLocations(this);
+    initUniformsLocations(this);
   }
 
   /**
-   *
    * @param {WebGLProgram} program
    */
   setProgram(program) {
-    this.program = program;
-    this.attributes = new AttributesInfo(this);
-    this.uniforms = new UniformsInfo(this);
+    this.program = programInfo;
+    initUniformsLocations(this);
+    initUniformsLocations(this);
   }
 }
+
+/**
+ * @param {ProgramInfo} programInfo
+ */
+const initAttributesLocations = (programInfo) => {
+  programInfo.attributes.position.setLocation("a_position");
+  programInfo.attributes.color.setLocation("a_color");
+  programInfo.attributes.normal.setLocation("a_normal");
+  programInfo.attributes.map.setLocation("a_map");
+  return this;
+};
+
+/**
+ * @param {ProgramInfo} programInfo
+ */
+const initUniformsLocations = (programInfo) => {
+  programInfo.uniforms.modelViewMatrix.setLocation("u_model_view_matrix");
+  programInfo.uniforms.projectionMatrix.setLocation("u_projection_matrix");
+  programInfo.uniforms.directLightDirection.setLocation(
+    "u_direct_light_direction"
+  );
+  programInfo.uniforms.normalMatrix.setLocation("u_normal_matrix");
+  programInfo.uniforms.directLightColor.setLocation("u_direct_light_color");
+  programInfo.uniforms.directLightValue.setLocation("u_direct_light_value");
+  programInfo.uniforms.ambientLightColor.setLocation("u_ambient_light_color");
+  programInfo.uniforms.ambientLightValue.setLocation("u_ambient_light_value");
+  return this;
+};
 
 exports.ProgramInfo = ProgramInfo;

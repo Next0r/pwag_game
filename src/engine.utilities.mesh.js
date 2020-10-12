@@ -16,7 +16,7 @@ class Mesh {
     const indices = this.getNormalIndexArray();
     const outputArray = [];
     for (let index of indices) {
-      outputArray.push(...this.normals[index]);
+      outputArray.push(...this.normals[index], 0);
     }
 
     return outputArray;
@@ -26,7 +26,7 @@ class Mesh {
     const indices = this.getPositionIndexArray();
     const outputArray = [];
     for (let index of indices) {
-      outputArray.push(...this.positions[index]);
+      outputArray.push(...this.positions[index], 1);
     }
 
     return outputArray;

@@ -7,7 +7,7 @@ class GameObject {
   constructor() {
     this.transform = new Transform();
     this.mesh = new Mesh();
-    this.vertexInfo = new VertexInfo(this);
+    this.vertexInfo = new VertexInfo();
     this.programInfo = new ProgramInfo();
   }
 }
