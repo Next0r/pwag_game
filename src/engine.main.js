@@ -8,6 +8,7 @@ const { Vector3 } = require("./engine.math.vector3");
 const { GameObject } = require("./engine.gameObject");
 const { Camera } = require("./engine.camera");
 const { DirectLight } = require("./engine.light.direct");
+const { AmbientLight } = require("./engine.light.ambient");
 const gl = utilities.getGLContext();
 
 const main = () => {
@@ -34,8 +35,7 @@ const main = () => {
   camera.projection.rebuildMatrix();
 
   const directLight = new DirectLight();
-  directLight.color = new Vector3(1, 1, 1);
-  directLight.direction = new Vector3(1, -1, -1).normalize();
+  const ambientLight = new AmbientLight();
 
   const projectionMatrix = camera.projection.matrix;
   const viewMatrix = camera.transform.matrix;
@@ -56,6 +56,8 @@ const main = () => {
   );
   programInfo.uniforms.directLightColor.setLocation("u_direct_light_color");
   programInfo.uniforms.directLightValue.setLocation("u_direct_light_value");
+  programInfo.uniforms.ambientLightColor.setLocation("u_ambient_light_color");
+  programInfo.uniforms.ambientLightValue.setLocation("u_ambient_light_value");
 
   // create and bind used vao at the beginning
   let vao = gl.createVertexArray();
@@ -122,6 +124,14 @@ const main = () => {
   gl.uniform1f(
     programInfo.uniforms.directLightValue.location,
     directLight.value
+  );
+  gl.uniform3fv(
+    programInfo.uniforms.ambientLightColor.location,
+    ambientLight.color.toArray()
+  );
+  gl.uniform1f(
+    programInfo.uniforms.ambientLightValue.location,
+    ambientLight.value
   );
 
   gl.drawArrays(gl.TRIANGLES, 0, gameObject.mesh.vertices.length);

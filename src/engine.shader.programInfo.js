@@ -68,6 +68,8 @@ class UniformsInfo {
     this.directLightDirection = new ProgramUniform(programInfoHandle);
     this.directLightColor = new ProgramUniform(programInfoHandle);
     this.directLightValue = new ProgramUniform(programInfoHandle);
+    this.ambientLightColor = new ProgramUniform(programInfoHandle);
+    this.ambientLightValue = new ProgramUniform(programInfoHandle);
   }
 }
 
