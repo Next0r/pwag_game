@@ -2,9 +2,11 @@
 
 uniform mat4 u_model_view_matrix;
 uniform mat4 u_projection_matrix;
+
 uniform vec3 u_direct_light_direction;
 uniform vec3 u_direct_light_color;
 uniform float u_direct_light_value;
+
 uniform vec3 u_ambient_light_color;
 uniform float u_ambient_light_value;
 

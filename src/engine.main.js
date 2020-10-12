@@ -3,12 +3,13 @@ const utilities = require("./engine.utilities");
 const shader = require("./engine.shader");
 const utilitiesCollada = require("./engine.utilities.collada");
 const { ProgramInfo } = require("./engine.shader.programInfo");
-const { Buffer } = require("./engine.buffer");
+const { GLBuffer } = require("./engine.glBuffer");
 const { Vector3 } = require("./engine.math.vector3");
 const { GameObject } = require("./engine.gameObject");
 const { Camera } = require("./engine.camera");
 const { DirectLight } = require("./engine.light.direct");
 const { AmbientLight } = require("./engine.light.ambient");
+const { VertexInfo } = require("./engine.vertexInfo");
 const gl = utilities.getGLContext();
 
 const main = () => {
@@ -60,35 +61,12 @@ const main = () => {
   programInfo.uniforms.ambientLightValue.setLocation("u_ambient_light_value");
 
   // create and bind used vao at the beginning
-  let vao = gl.createVertexArray();
-  gl.bindVertexArray(vao);
-
-  const positionBuffer = new Buffer();
-  const colorBuffer = new Buffer();
-  const normalBuffer = new Buffer();
-
-  positionBuffer.setArray(
-    new Float32Array(gameObject.mesh.getPositionsArray())
-  );
-  positionBuffer.setArrayInfo({
-    attributeLocation: programInfo.attributes.position.location,
-    size: 3,
-  });
-  positionBuffer.enable();
-
-  colorBuffer.setArray(new Float32Array(gameObject.mesh.getColorsArray()));
-  colorBuffer.setArrayInfo({
-    attributeLocation: programInfo.attributes.color.location,
-    size: 4,
-  });
-  colorBuffer.enable();
-
-  normalBuffer.setArray(new Float32Array(gameObject.mesh.getNormalsArray()));
-  normalBuffer.setArrayInfo({
-    attributeLocation: programInfo.attributes.normal.location,
-    size: 3,
-  });
-  normalBuffer.enable();
+  gameObject.vertexInfo.bind();
+  gameObject.programInfo = programInfo;
+  gameObject.vertexInfo
+    .initPositionBuffer()
+    .initNormalsBuffer()
+    .initColorBuffer();
 
   //draw
 
@@ -98,8 +76,6 @@ const main = () => {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   gl.useProgram(programInfo.program);
-
-  gl.bindVertexArray(vao);
 
   gl.uniformMatrix4fv(
     programInfo.uniforms.modelViewMatrix.location,

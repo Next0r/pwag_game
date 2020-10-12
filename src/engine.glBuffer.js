@@ -1,7 +1,7 @@
 const utilities = require("./engine.utilities");
 const gl = utilities.getGLContext();
 
-class Buffer {
+class GLBuffer {
   constructor(bufferType = "arrayBuffer") {
     this.vbo = undefined;
     this.bufferType = bufferType;
@@ -106,6 +106,13 @@ class Buffer {
     }
     gl.disableVertexAttribArray(this.arrayInfo.attributeLocation);
   }
+
+  delete() {
+    if (!gl) {
+      return;
+    }
+    gl.deleteBuffer(this.vbo);
+  }
 }
 
-exports.Buffer = Buffer;
+exports.GLBuffer = GLBuffer;
