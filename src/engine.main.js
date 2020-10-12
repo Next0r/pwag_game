@@ -26,8 +26,7 @@ const main = () => {
   const box = utilitiesCollada.readColladaFile("./models/box.dae")[0];
   const sphere = utilitiesCollada.readColladaFile("./models/sphere.dae")[0];
 
-  // console.log(sphere);
-
+  // create scene objects
   const gameObject = new GameObject();
   gameObject.mesh = sphere;
   gameObject.transform.location = new Vector3(0, 0, -5);
@@ -51,7 +50,7 @@ const main = () => {
 
   const shaderProgram = createShaderProgram(vsSource, fsSource);
 
-  const material = new Material(shaderProgram);
+  const material = new Material(shaderProgram, gameObject.mesh);
   material.uniforms.modelViewMatrix.value = modelViewMatrix.toArray();
   material.uniforms.projectionMatrix.value = projectionMatrix.toArray();
   material.uniforms.normalMatrix.value = normalMatrix.toArray();
@@ -60,15 +59,7 @@ const main = () => {
   material.uniforms.directLightValue.value = [directLight.value];
   material.uniforms.ambientLightColor.value = ambientLight.color.toArray();
   material.uniforms.ambientLightValue.value = [ambientLight.value];
-  material.attributes.position.value = new Float32Array(
-    gameObject.mesh.getPositionsArray()
-  );
-  material.attributes.normal.value = new Float32Array(
-    gameObject.mesh.getNormalsArray()
-  );
-  material.attributes.color.value = new Float32Array(
-    gameObject.mesh.getColorsArray()
-  );
+
   material.createVertexArray();
   material.bindVertexArray();
   material.uploadUniforms();

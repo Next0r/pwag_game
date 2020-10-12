@@ -4,13 +4,17 @@ const {
 } = require("./engine.material.attributes");
 const { MaterialUniforms, Uniform } = require("./engine.material.uniforms");
 const { getGLContext } = require("./engine.utilities");
+const { Mesh } = require("./engine.utilities.mesh");
+
 const gl = getGLContext();
 
 class Material {
   /**
    * @param {WebGLProgram} shaderProgram
+   * @param {Mesh} mesh
    */
-  constructor(shaderProgram) {
+  constructor(shaderProgram, mesh) {
+    this.mesh = mesh;
     this.shaderProgram = shaderProgram;
     this.attributes = new MaterialAttributes();
     this.uniforms = new MaterialUniforms();
@@ -18,7 +22,7 @@ class Material {
   }
 
   createVertexArray() {
-    if (!gl || !this.shaderProgram) {
+    if (!gl || !this.shaderProgram || !this.mesh) {
       return;
     }
     this.vertexArrayObject = gl.createVertexArray();
@@ -29,6 +33,7 @@ class Material {
     const colorBuffer = gl.createBuffer();
 
     this.attributes.setLocations(this.shaderProgram);
+    this.attributes.setValues(this.mesh);
 
     bufferData(positionBuffer, this.attributes.position);
     bufferData(normalsBuffer, this.attributes.normal);

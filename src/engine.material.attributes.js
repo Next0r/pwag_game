@@ -1,3 +1,4 @@
+const { Mesh } = require("./engine.utilities.mesh");
 const { getGLContext } = require("./engine.utilities");
 const gl = getGLContext();
 
@@ -38,6 +39,19 @@ class MaterialAttributes {
     this.normal.setLocation(shaderProgram);
     this.map.setLocation(shaderProgram);
     this.color.setLocation(shaderProgram);
+  }
+
+  /**
+   * @param {Mesh} mesh
+   */
+  setValues(mesh) {
+    if (!mesh) {
+      return;
+    }
+    this.position.value = new Float32Array(mesh.getPositionsArray());
+    this.normal.value = new Float32Array(mesh.getNormalsArray());
+    // this.map.value = new Float32Array();
+    this.color.value = new Float32Array(mesh.getColorsArray());
   }
 }
 
