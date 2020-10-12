@@ -41,6 +41,18 @@ class Material {
     bufferData(colorBuffer, this.attributes.color);
   }
 
+  /**
+   * Call this method if material should be used
+   * for this draw call and none of material uniforms has
+   * changed.
+   */
+  useProgram() {
+    if (!gl || !this.shaderProgram) {
+      return;
+    }
+    gl.useProgram(this.shaderProgram);
+  }
+
   uploadUniforms() {
     if (!gl || !this.shaderProgram) {
       return;

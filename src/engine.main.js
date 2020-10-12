@@ -39,10 +39,9 @@ const main = () => {
   camera.projection.rebuildMatrix();
 
   const directLight = new DirectLight();
-  directLight.direction = new Vector3(1, -1, -1).normalize();
   const ambientLight = new AmbientLight();
-  ambientLight.value = 0.1;
 
+  // setup material parameters
   const projectionMatrix = camera.projection.matrix;
   const viewMatrix = camera.transform.matrix.clone().inverse();
   const modelViewMatrix = viewMatrix.multiply(gameObject.transform.matrix);
@@ -60,9 +59,15 @@ const main = () => {
   material.uniforms.ambientLightColor.value = ambientLight.color.toArray();
   material.uniforms.ambientLightValue.value = [ambientLight.value];
 
+
+  // pass uniforms and attributes values to gpu memory
   material.createVertexArray();
-  material.bindVertexArray();
   material.uploadUniforms();
+
+  // has to be called if uploadUniforms() is not used before.
+  material.useProgram(); 
+  // use vertex array object (mesh data linked to material)
+  material.bindVertexArray();
 
   gameObject.material = material;
 
