@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { PNG } = require("pngjs");
 
 let GL = undefined;
 const defaultCanvasID = "game_window";
@@ -34,3 +35,23 @@ const readTextFile = (path) => {
 };
 
 exports.readTextFile = readTextFile;
+
+const readImage = (path) => {
+  try {
+    const imageBuffer = fs.readFileSync(path);
+    const png = PNG.sync.read(imageBuffer);
+    return png;
+  } catch (err) {
+    return undefined;
+  }
+};
+
+exports.readImage = readImage;
+
+const isPowerOf2 = (value) => {
+  return (value & (value - 1)) === 0;
+};
+
+exports.isPowerOf2 = isPowerOf2;
+
+

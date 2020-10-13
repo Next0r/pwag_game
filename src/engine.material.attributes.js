@@ -7,6 +7,7 @@ class Attribute {
     this.name = name;
     this.location = undefined;
     this.value = new Float32Array();
+    this.vbo = undefined;
   }
 
   /**
@@ -50,7 +51,7 @@ class MaterialAttributes {
     }
     this.position.value = new Float32Array(mesh.getPositionsArray());
     this.normal.value = new Float32Array(mesh.getNormalsArray());
-    // this.map.value = new Float32Array();
+    this.map.value = new Float32Array(mesh.getMapArray());
     this.color.value = new Float32Array(mesh.getColorsArray());
   }
 }

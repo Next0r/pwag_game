@@ -11,6 +11,9 @@ const { Matrix4 } = require("./engine.math.matrix4");
 const { Material } = require("./engine.material");
 const { Game } = require("./engine.game");
 const { Time } = require("./engine.time");
+const { readFile } = require("fs");
+const { TextureResources } = require("./engine.textureResources");
+const { Texture } = require("./engine.material.textures");
 const gl = utilities.getGLContext();
 
 const main = () => {
@@ -18,25 +21,26 @@ const main = () => {
     return;
   }
 
-  const m = new Matrix4();
-  m.fromArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7]);
-  const n = new Matrix4();
-  n.fromArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7]);
-  console.log(m.multiply(n));
-
   // read resources
   const vsSource = utilities.readTextFile("./shaders/testVS.txt");
   const fsSource = utilities.readTextFile("./shaders/testFS.txt");
-  const box = utilitiesCollada.readColladaFile("./models/box.dae")[0];
+  const box = utilitiesCollada.readColladaFile("./models/box2.dae")[0];
   const sphere = utilitiesCollada.readColladaFile("./models/sphere.dae")[0];
   const plane = utilitiesCollada.readColladaFile("./models/plane.dae")[0];
 
+  // read and store textures
+  const textureResources = new TextureResources();
+  const testTextureImage = utilities.readImage("./textures/test_color.png");
+  const testTexture = new Texture();
+  testTexture.fromPNGImage(testTextureImage);
+  textureResources.add("testTexture", testTexture);
+
   // create scene objects
   const gameObject = new GameObject();
-  gameObject.mesh = box;
+  gameObject.mesh = sphere;
   gameObject.transform.location = new Vector3(0, 0, -5);
   gameObject.transform.rotation = new Vector3(0, 0, 0);
-  gameObject.transform.scale = new Vector3(1, 1, 1);
+  gameObject.transform.scale = new Vector3(2, 2, 2);
   gameObject.transform.rebuildMatrix();
 
   const camera = new Camera();
@@ -64,10 +68,16 @@ const main = () => {
   material.uniforms.directLightValue.value = [directLight.value];
   material.uniforms.ambientLightColor.value = ambientLight.color.toArray();
   material.uniforms.ambientLightValue.value = [ambientLight.value];
+  material.uniforms.color0Sampler.value = [0];
+
+  material.textures.color0 = textureResources.get("testTexture");
 
   // pass uniforms and attributes values to gpu memory
   material.createVertexArray();
   material.uploadUniforms();
+
+  // enable texture units and bind textures
+  material.uploadTextures();
 
   // has to be called if uploadUniforms() is not used before.
   material.useProgram();
@@ -76,24 +86,15 @@ const main = () => {
 
   gameObject.material = material;
 
-  // draw
 
+  // draw
   gl.clearColor(0.2, 0.2, 0.2, 1);
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LEQUAL);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.drawArrays(gl.TRIANGLES, 0, gameObject.mesh.vertices.length);
 
-  // const gameLoop = (now)=>{
-
-  //   // console.log(now);
-  //   requestAnimationFrame(gameLoop);
-  // }
-
-  // requestAnimationFrame(gameLoop);
-
   Game.mainFunction = () => {
-    // gameObject.transform.rotation.x += Time.delta * 60;
     gameObject.transform.rotation.y += Time.delta * 60;
     gameObject.transform.rotation.z += Time.delta * 60;
     gameObject.transform.rebuildMatrix();
@@ -117,6 +118,7 @@ const main = () => {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, gameObject.mesh.vertices.length);
   };
+
   Game.startLoop();
 };
 

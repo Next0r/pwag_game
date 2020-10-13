@@ -2,6 +2,8 @@
 
 precision highp float;
 
+uniform sampler2D u_color0_sampler;
+
 out vec4 out_color;
 in vec4 vertex_color;
 in vec4 normal;
@@ -10,11 +12,13 @@ in vec3 direct_light_color;
 in float direct_light_value;
 in vec3 ambient_light_color;
 in float ambient_light_value;
+in vec3 map;
 
 void main() {
-
+  
   float lambert_factor = max(dot(vec3(normal), -direct_light_direction), 0.0);
-  out_color = vertex_color
+  vec4 color0 = texture(u_color0_sampler, vec2(map));
+  out_color = vertex_color * color0
     * vec4(direct_light_color * direct_light_value * lambert_factor, 1)
     + vec4(ambient_light_color * ambient_light_value, 1);
 }

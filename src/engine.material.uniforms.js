@@ -38,6 +38,8 @@ class MaterialUniforms {
 
     this.ambientLightColor = new Uniform("u_ambient_light_color");
     this.ambientLightValue = new Uniform("u_ambient_light_value");
+
+    this.color0Sampler = new Uniform("u_color0_sampler");
   }
 
   /**
@@ -52,6 +54,7 @@ class MaterialUniforms {
     this.directLightValue.setLocation(shaderProgram);
     this.ambientLightColor.setLocation(shaderProgram);
     this.ambientLightValue.setLocation(shaderProgram);
+    this.color0Sampler.setLocation(shaderProgram);
   }
 }
 

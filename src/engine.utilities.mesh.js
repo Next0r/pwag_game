@@ -12,6 +12,24 @@ class Mesh {
     this.vertices = [];
   }
 
+  getMapArray() {
+    // get order of mapping coordinates
+    const indices = [];
+    for (let element of this.vertices) {
+      if (element[this.mapOffset] !== undefined) {
+        indices.push(element[this.mapOffset]);
+      }
+    }
+
+    // create array of coordinates with acquired order
+    const outArray = [];
+    for (let index of indices) {
+      outArray.push(...this.map[index], 0);
+    }
+
+    return outArray;
+  }
+
   getNormalsArray() {
     const indices = this.getNormalIndexArray();
     const outputArray = [];
