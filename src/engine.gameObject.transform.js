@@ -12,9 +12,10 @@ class Transform {
   rebuildMatrix() {
     this.matrix.identity();
     this.matrix.translate(this.location);
-    this.matrix.rotate(Vector3.right, this.rotation.x);
-    this.matrix.rotate(Vector3.up, this.rotation.y);
-    this.matrix.rotate(Vector3.forward, this.rotation.z);
+    // this.matrix.rotate(Vector3.forward, this.rotation.z);
+    // this.matrix.rotate(Vector3.up, this.rotation.y);
+    // this.matrix.rotate(Vector3.right, this.rotation.x);
+    this.matrix.rotateEuler(this.rotation);
     this.matrix.scale(this.scale);
   }
 }

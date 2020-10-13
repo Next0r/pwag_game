@@ -19,21 +19,24 @@ const main = () => {
   }
 
   const m = new Matrix4();
-  m.fromArray([1, 3, 2, 3, 3, 1, 0, 0, 0, 2, 1, 0, 0, 0, 1, 1]);
-  console.log(m.inverse());
+  m.fromArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7]);
+  const n = new Matrix4();
+  n.fromArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7]);
+  console.log(m.multiply(n));
 
   // read resources
   const vsSource = utilities.readTextFile("./shaders/testVS.txt");
   const fsSource = utilities.readTextFile("./shaders/testFS.txt");
   const box = utilitiesCollada.readColladaFile("./models/box.dae")[0];
   const sphere = utilitiesCollada.readColladaFile("./models/sphere.dae")[0];
+  const plane = utilitiesCollada.readColladaFile("./models/plane.dae")[0];
 
   // create scene objects
   const gameObject = new GameObject();
   gameObject.mesh = box;
   gameObject.transform.location = new Vector3(0, 0, -5);
   gameObject.transform.rotation = new Vector3(0, 0, 0);
-  gameObject.transform.scale = new Vector3(2, 1, 1);
+  gameObject.transform.scale = new Vector3(1, 1, 1);
   gameObject.transform.rebuildMatrix();
 
   const camera = new Camera();
@@ -90,6 +93,7 @@ const main = () => {
   // requestAnimationFrame(gameLoop);
 
   Game.mainFunction = () => {
+    // gameObject.transform.rotation.x += Time.delta * 60;
     gameObject.transform.rotation.y += Time.delta * 60;
     gameObject.transform.rotation.z += Time.delta * 60;
     gameObject.transform.rebuildMatrix();
