@@ -9,6 +9,8 @@ const { DirectLight } = require("./engine.light.direct");
 const { AmbientLight } = require("./engine.light.ambient");
 const { Matrix4 } = require("./engine.math.matrix4");
 const { Material } = require("./engine.material");
+const { Game } = require("./engine.game");
+const { Time } = require("./engine.time");
 const gl = utilities.getGLContext();
 
 const main = () => {
@@ -28,13 +30,14 @@ const main = () => {
 
   // create scene objects
   const gameObject = new GameObject();
-  gameObject.mesh = sphere;
+  gameObject.mesh = box;
   gameObject.transform.location = new Vector3(0, 0, -5);
   gameObject.transform.rotation = new Vector3(0, 0, 0);
   gameObject.transform.scale = new Vector3(1, 1, 1);
   gameObject.transform.rebuildMatrix();
 
   const camera = new Camera();
+  // camera.transform.location.y = 2;
   camera.transform.rebuildMatrix();
   camera.projection.rebuildMatrix();
 
@@ -59,13 +62,12 @@ const main = () => {
   material.uniforms.ambientLightColor.value = ambientLight.color.toArray();
   material.uniforms.ambientLightValue.value = [ambientLight.value];
 
-
   // pass uniforms and attributes values to gpu memory
   material.createVertexArray();
   material.uploadUniforms();
 
   // has to be called if uploadUniforms() is not used before.
-  material.useProgram(); 
+  material.useProgram();
   // use vertex array object (mesh data linked to material)
   material.bindVertexArray();
 
@@ -77,8 +79,41 @@ const main = () => {
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LEQUAL);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
   gl.drawArrays(gl.TRIANGLES, 0, gameObject.mesh.vertices.length);
+
+  // const gameLoop = (now)=>{
+
+  //   // console.log(now);
+  //   requestAnimationFrame(gameLoop);
+  // }
+
+  // requestAnimationFrame(gameLoop);
+
+  Game.mainFunction = () => {
+    gameObject.transform.rotation.y += Time.delta * 60;
+    gameObject.transform.rotation.z += Time.delta * 60;
+    gameObject.transform.rebuildMatrix();
+    const mvMatrix = camera.transform.matrix
+      .clone()
+      .inverse()
+      .multiply(gameObject.transform.matrix);
+    material.uniforms.modelViewMatrix.value = mvMatrix.toArray();
+    material.uniforms.normalMatrix.value = mvMatrix
+      .clone()
+      .inverse()
+      .transpose()
+      .toArray();
+    gameObject.material.uploadUniforms();
+    gameObject.material.useProgram();
+    gameObject.material.bindVertexArray();
+
+    gl.clearColor(0.2, 0.2, 0.2, 1);
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, gameObject.mesh.vertices.length);
+  };
+  Game.startLoop();
 };
 
 window.onload = main;

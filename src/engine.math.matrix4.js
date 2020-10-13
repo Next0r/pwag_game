@@ -209,44 +209,74 @@ class Matrix4 {
     return this;
   }
 
-  rotateAxisAngle(axis = new Vector3(1, 0, 0), angle = 0) {
+  rotate(axis = new Vector3(1, 0, 0), angle = 0) {
     const u = axis.normalize();
+
+    const x = u.x;
+    const y = u.y;
+    const z = u.z;
+
     const r = (angle * Math.PI) / 180;
     const sinR = Math.sin(r);
     const cosR = Math.cos(r);
-    this.m00 = cosR + u.x * u.x * (1 - cosR);
-    this.m10 = u.x * u.y * (1 - cosR) - u.z * sinR;
-    this.m20 = u.x * u.z * (1 - cosR) + u.y * sinR;
-    this.m01 = u.y * u.z * (1 - cosR) + u.z * sinR;
-    this.m11 = cosR + u.y * u.y * (1 - cosR);
-    this.m21 = u.y * u.z * (1 - cosR) - u.x * sinR;
-    this.m02 = u.z * u.x * (1 - cosR) - u.y * sinR;
-    this.m12 = u.z * u.y * (1 - cosR) + u.x * sinR;
-    this.m22 = cosR + u.z * u.z * (1 - cosR);
+
+    const m00 = cosR + x * x * (1 - cosR);
+    const m10 = x * y * (1 - cosR) - z * sinR;
+    const m20 = x * z * (1 - cosR) + y * sinR;
+    const m01 = y * z * (1 - cosR) + z * sinR;
+    const m11 = cosR + y * y * (1 - cosR);
+    const m21 = y * z * (1 - cosR) - x * sinR;
+    const m02 = z * x * (1 - cosR) - y * sinR;
+    const m12 = z * y * (1 - cosR) + x * sinR;
+    const m22 = cosR + z * z * (1 - cosR);
+
+    const o00 = this.m00 * m00 + this.m10 * m01 + this.m20 * m02;
+    const o10 = this.m00 * m10 + this.m10 * m11 + this.m20 * m12;
+    const o20 = this.m00 * m20 + this.m20 * m21 + this.m20 * m22;
+
+    const o01 = this.m01 * m00 + this.m11 * m01 + this.m21 * m02;
+    const o11 = this.m01 * m10 + this.m11 * m11 + this.m21 * m12;
+    const o21 = this.m01 * m20 + this.m21 * m21 + this.m21 * m22;
+
+    const o02 = this.m02 * m00 + this.m12 * m01 + this.m22 * m02;
+    const o12 = this.m02 * m10 + this.m12 * m11 + this.m22 * m12;
+    const o22 = this.m02 * m20 + this.m22 * m21 + this.m22 * m22;
+
+    this.m00 = o00;
+    this.m01 = o01;
+    this.m02 = o02;
+
+    this.m10 = o10;
+    this.m11 = o11;
+    this.m12 = o12;
+
+    this.m20 = o20;
+    this.m21 = o21;
+    this.m22 = o22;
     return this;
   }
 
-  rotate(rotationVector = new Vector3()) {
-    const x = (rotationVector.x * Math.PI) / 180;
-    const y = (rotationVector.y * Math.PI) / 180;
-    const z = (rotationVector.z * Math.PI) / 180;
-    const cosX = Math.cos(x);
-    const cosY = Math.cos(y);
-    const cosZ = Math.cos(z);
-    const sinX = Math.sin(x);
-    const sinY = Math.sin(y);
-    const sinZ = Math.sin(z);
-    this.m00 = cosZ * cosY;
-    this.m10 = cosZ * sinY * sinX - sinZ * cosX;
-    this.m20 = cosZ * sinY * cosX + sinZ * sinX;
-    this.m01 = sinZ * cosY;
-    this.m11 = sinZ * sinY * sinX + cosZ * cosX;
-    this.m21 = sinZ * sinY * cosX - cosZ * sinX;
-    this.m02 = -sinY;
-    this.m12 = cosY * sinX;
-    this.m22 = cosY * cosX;
-    return this;
-  }
+  // rotate(rotationVector = new Vector3()) {
+  //   const x = (rotationVector.x * Math.PI) / 180;
+  //   const y = (rotationVector.y * Math.PI) / 180;
+  //   const z = (rotationVector.z * Math.PI) / 180;
+  //   const cosX = Math.cos(x);
+  //   const cosY = Math.cos(y);
+  //   const cosZ = Math.cos(z);
+  //   const sinX = Math.sin(x);
+  //   const sinY = Math.sin(y);
+  //   const sinZ = Math.sin(z);
+  //   this.m00 = cosZ * cosY;
+  //   this.m10 = cosZ * sinY * sinX - sinZ * cosX;
+  //   this.m20 = cosZ * sinY * cosX + sinZ * sinX;
+  //   this.m01 = sinZ * cosY;
+  //   this.m11 = sinZ * sinY * sinX + cosZ * cosX;
+  //   this.m21 = sinZ * sinY * cosX - cosZ * sinX;
+  //   this.m02 = -sinY;
+  //   this.m12 = cosY * sinX;
+  //   this.m22 = cosY * cosX;
+  //   return this;
+  // }
 
   scale(scaleVector = new Vector3()) {
     this.m00 *= scaleVector.x;

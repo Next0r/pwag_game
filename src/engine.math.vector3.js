@@ -16,6 +16,10 @@ class Vector3 {
   toArray() {
     return [this.x, this.y, this.z];
   }
+
+  static up = new Vector3(0, 1, 0);
+  static right = new Vector3(1, 0, 0);
+  static forward = new Vector3(0, 0, 1);
 }
 
 exports.Vector3 = Vector3;
