@@ -15,7 +15,6 @@ class Transform {
     this.matrix.rotate(Vector3.right, this.rotation.x);
     this.matrix.rotate(Vector3.up, this.rotation.y);
     this.matrix.rotate(Vector3.forward, this.rotation.z);
-    // this.matrix.rotate(this.rotation);
     this.matrix.scale(this.scale);
   }
 }

@@ -33,7 +33,7 @@ const main = () => {
   gameObject.mesh = box;
   gameObject.transform.location = new Vector3(0, 0, -5);
   gameObject.transform.rotation = new Vector3(0, 0, 0);
-  gameObject.transform.scale = new Vector3(1, 1, 1);
+  gameObject.transform.scale = new Vector3(2, 1, 1);
   gameObject.transform.rebuildMatrix();
 
   const camera = new Camera();

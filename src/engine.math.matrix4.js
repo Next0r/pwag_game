@@ -186,26 +186,6 @@ class Matrix4 {
     this.m13 = n.m03 * m.m10 + n.m13 * m.m11 + n.m23 * m.m12 + n.m33 * m.m13;
     this.m23 = n.m03 * m.m20 + n.m23 * m.m21 + n.m23 * m.m22 + n.m33 * m.m23;
     this.m33 = n.m03 * m.m30 + n.m33 * m.m31 + n.m23 * m.m32 + n.m33 * m.m33;
-
-    // this.m00 = n.m00 * m.m00 + n.m01 * m.m10 + n.m02 * m.m20 + n.m03 * m.m30;
-    // this.m01 = n.m00 * m.m01 + n.m01 * m.m11 + n.m02 * m.m21 + n.m03 * m.m31;
-    // this.m02 = n.m00 * m.m02 + n.m01 * m.m12 + n.m02 * m.m22 + n.m03 * m.m32;
-    // this.m03 = n.m00 * m.m03 + n.m01 * m.m13 + n.m02 * m.m23 + n.m03 * m.m33;
-
-    // this.m10 = n.m10 * m.m00 + n.m11 * m.m10 + n.m12 * m.m20 + n.m13 * m.m30;
-    // this.m11 = n.m10 * m.m01 + n.m11 * m.m11 + n.m12 * m.m21 + n.m13 * m.m31;
-    // this.m12 = n.m10 * m.m02 + n.m11 * m.m12 + n.m12 * m.m22 + n.m13 * m.m32;
-    // this.m13 = n.m10 * m.m03 + n.m11 * m.m13 + n.m12 * m.m23 + n.m13 * m.m33;
-
-    // this.m20 = n.m20 * m.m00 + n.m21 * m.m10 + n.m22 * m.m20 + n.m23 * m.m30;
-    // this.m21 = n.m20 * m.m01 + n.m21 * m.m11 + n.m22 * m.m21 + n.m23 * m.m31;
-    // this.m22 = n.m20 * m.m02 + n.m21 * m.m12 + n.m22 * m.m22 + n.m23 * m.m32;
-    // this.m23 = n.m20 * m.m03 + n.m21 * m.m13 + n.m22 * m.m23 + n.m23 * m.m33;
-
-    // this.m30 = n.m30 * m.m00 + n.m31 * m.m10 + n.m32 * m.m20 + n.m33 * m.m30;
-    // this.m31 = n.m30 * m.m01 + n.m31 * m.m11 + n.m32 * m.m21 + n.m33 * m.m31;
-    // this.m32 = n.m30 * m.m02 + n.m31 * m.m12 + n.m32 * m.m22 + n.m33 * m.m32;
-    // this.m33 = n.m30 * m.m03 + n.m31 * m.m13 + n.m32 * m.m23 + n.m33 * m.m33;
     return this;
   }
 
@@ -220,27 +200,30 @@ class Matrix4 {
     const sinR = Math.sin(r);
     const cosR = Math.cos(r);
 
-    const m00 = cosR + x * x * (1 - cosR);
-    const m10 = x * y * (1 - cosR) - z * sinR;
-    const m20 = x * z * (1 - cosR) + y * sinR;
-    const m01 = y * z * (1 - cosR) + z * sinR;
-    const m11 = cosR + y * y * (1 - cosR);
-    const m21 = y * z * (1 - cosR) - x * sinR;
-    const m02 = z * x * (1 - cosR) - y * sinR;
-    const m12 = z * y * (1 - cosR) + x * sinR;
-    const m22 = cosR + z * z * (1 - cosR);
+    // 1st row
+    const r00 = cosR + x * x * (1 - cosR);
+    const r10 = x * y * (1 - cosR) - z * sinR;
+    const r20 = x * z * (1 - cosR) + y * sinR;
+    // 2nd row
+    const r01 = y * z * (1 - cosR) + z * sinR;
+    const r11 = cosR + y * y * (1 - cosR);
+    const r21 = y * z * (1 - cosR) - x * sinR;
+    // 3rd row
+    const r02 = z * x * (1 - cosR) - y * sinR;
+    const r12 = z * y * (1 - cosR) + x * sinR;
+    const r22 = cosR + z * z * (1 - cosR);
 
-    const o00 = this.m00 * m00 + this.m10 * m01 + this.m20 * m02;
-    const o10 = this.m00 * m10 + this.m10 * m11 + this.m20 * m12;
-    const o20 = this.m00 * m20 + this.m20 * m21 + this.m20 * m22;
+    const o00 = this.m00 * r00 + this.m10 * r01 + this.m20 * r02;
+    const o10 = this.m00 * r10 + this.m10 * r11 + this.m20 * r12;
+    const o20 = this.m00 * r20 + this.m20 * r21 + this.m20 * r22;
 
-    const o01 = this.m01 * m00 + this.m11 * m01 + this.m21 * m02;
-    const o11 = this.m01 * m10 + this.m11 * m11 + this.m21 * m12;
-    const o21 = this.m01 * m20 + this.m21 * m21 + this.m21 * m22;
+    const o01 = this.m01 * r00 + this.m11 * r01 + this.m21 * r02;
+    const o11 = this.m01 * r10 + this.m11 * r11 + this.m21 * r12;
+    const o21 = this.m01 * r20 + this.m21 * r21 + this.m21 * r22;
 
-    const o02 = this.m02 * m00 + this.m12 * m01 + this.m22 * m02;
-    const o12 = this.m02 * m10 + this.m12 * m11 + this.m22 * m12;
-    const o22 = this.m02 * m20 + this.m22 * m21 + this.m22 * m22;
+    const o02 = this.m02 * r00 + this.m12 * r01 + this.m22 * r02;
+    const o12 = this.m02 * r10 + this.m12 * r11 + this.m22 * r12;
+    const o22 = this.m02 * r20 + this.m22 * r21 + this.m22 * r22;
 
     this.m00 = o00;
     this.m01 = o01;
@@ -256,38 +239,47 @@ class Matrix4 {
     return this;
   }
 
-  // rotate(rotationVector = new Vector3()) {
-  //   const x = (rotationVector.x * Math.PI) / 180;
-  //   const y = (rotationVector.y * Math.PI) / 180;
-  //   const z = (rotationVector.z * Math.PI) / 180;
-  //   const cosX = Math.cos(x);
-  //   const cosY = Math.cos(y);
-  //   const cosZ = Math.cos(z);
-  //   const sinX = Math.sin(x);
-  //   const sinY = Math.sin(y);
-  //   const sinZ = Math.sin(z);
-  //   this.m00 = cosZ * cosY;
-  //   this.m10 = cosZ * sinY * sinX - sinZ * cosX;
-  //   this.m20 = cosZ * sinY * cosX + sinZ * sinX;
-  //   this.m01 = sinZ * cosY;
-  //   this.m11 = sinZ * sinY * sinX + cosZ * cosX;
-  //   this.m21 = sinZ * sinY * cosX - cosZ * sinX;
-  //   this.m02 = -sinY;
-  //   this.m12 = cosY * sinX;
-  //   this.m22 = cosY * cosX;
-  //   return this;
-  // }
-
   scale(scaleVector = new Vector3()) {
-    this.m00 *= scaleVector.x;
-    this.m11 *= scaleVector.y;
-    this.m22 *= scaleVector.z;
+    const n = new Matrix4();
+    n.m00 *= scaleVector.x;
+    n.m11 *= scaleVector.y;
+    n.m22 *= scaleVector.z;
+
+    const sx = scaleVector.x;
+    const sy = scaleVector.y;
+    const sz = scaleVector.z;
+
+    const o00 = this.m00 * sx;
+    const o10 = this.m10 * sy;
+    const o20 = this.m20 * sz;
+
+    const o01 = this.m01 * sx;
+    const o11 = this.m11 * sy;
+    const o21 = this.m21 * sz;
+
+    const o02 = this.m02 * sx;
+    const o12 = this.m12 * sy;
+    const o22 = this.m22 * sz;
+
+    this.m00 = o00;
+    this.m10 = o10;
+    this.m20 = o20;
+
+    this.m01 = o01;
+    this.m11 = o11;
+    this.m21 = o21;
+
+    this.m02 = o02;
+    this.m12 = o12;
+    this.m22 = o22;
+    return this;
   }
 
   translate(translationVector = new Vector3()) {
     this.m30 += translationVector.x;
     this.m31 += translationVector.y;
     this.m32 += translationVector.z;
+    return this;
   }
 
   determinant() {
