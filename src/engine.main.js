@@ -1,5 +1,4 @@
 const draw = require("./engine.draw");
-const utilities = require("./engine.utils");
 const { createShaderProgram } = require("./engine.shader");
 const utilitiesCollada = require("./engine.utilities.collada");
 const { Vector3 } = require("./engine.math.vector3");
@@ -16,11 +15,17 @@ const { TextureResources } = require("./engine.textureResources");
 const { Texture } = require("./engine.material.textures");
 const { removeDoubles, toArrayWithUniqueValues, createRepetitionArray } = require("./engine.utilities.mesh");
 const { EngineToolbox } = require("./engine.toolbox");
+const { Input } = require("./engine.input");
 
 const main = () => {
   // create game info
   EngineToolbox.createEngineInfo();
   const gl = EngineToolbox.getGLContext();
+
+  const canvas = EngineToolbox.getCanvas();
+  canvas.addEventListener("mousedown", () => {
+    Input.lockPointer();
+  });
 
   if (!gl) {
     return;

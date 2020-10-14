@@ -3,8 +3,6 @@ const { PNG } = require("pngjs");
 const { EngineInfo } = require("./engine.info");
 
 class EngineToolbox {
-  constructor() {}
-
   static createEngineInfo() {
     return new EngineInfo();
   }
@@ -66,7 +64,7 @@ class EngineToolbox {
 
     return true;
   }
-  
+
 }
 
 exports.EngineToolbox = EngineToolbox;
