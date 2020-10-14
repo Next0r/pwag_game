@@ -2,12 +2,21 @@ const { Mesh } = require("./engine.utilities.mesh");
 const { getGLContext } = require("./engine.utilities");
 const gl = getGLContext();
 
-class Attribute {
+class VBOContainer {
+  constructor(){
+    this.vbo = undefined;
+    this.value = new Uint32Array();
+  }
+}
+
+exports.VBOContainer = VBOContainer;
+
+class Attribute extends VBOContainer {
   constructor(name) {
+    super();
     this.name = name;
     this.location = undefined;
     this.value = new Float32Array();
-    this.vbo = undefined;
   }
 
   /**

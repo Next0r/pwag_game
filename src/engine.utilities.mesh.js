@@ -14,71 +14,51 @@ class Mesh {
     this.mapOffset = 2;
     this.colorOffset = 3;
 
+    /**
+     * Contains raw vertex data suitable for simple array drawing
+     */
     this.vertices = [];
+    /**
+     * Contains reduced vertex data prepared to draw with element array buffer.
+     */
     this.reducedVertices = [];
     this.elementArray = [];
   }
 
-  getMapArray() {
-    // get order of mapping coordinates
-    const indices = [];
-    for (let element of this.vertices) {
-      if (element[this.mapOffset] !== undefined) {
-        indices.push(element[this.mapOffset]);
-      }
+  getPositionsArray() {
+    const out = [];
+    for (let vertex of this.reducedVertices) {
+      const positionIndex = vertex[this.positionOffset];
+      out.push(...this.positions[positionIndex], 1);
     }
-
-    // create array of coordinates with acquired order
-    const outArray = [];
-    for (let index of indices) {
-      outArray.push(...this.map[index], 0);
-    }
-
-    return outArray;
+    return out;
   }
 
   getNormalsArray() {
-    const indices = this.getNormalIndexArray();
-    const outputArray = [];
-    for (let index of indices) {
-      outputArray.push(...this.normals[index], 0);
+    const out = [];
+    for (let vertex of this.reducedVertices) {
+      const normalIndex = vertex[this.normalOffset];
+      out.push(...this.normals[normalIndex], 0);
     }
-
-    return outputArray;
-  }
-
-  getPositionsArray() {
-    const indices = this.getPositionIndexArray();
-    const outputArray = [];
-    for (let index of indices) {
-      outputArray.push(...this.positions[index], 1);
-    }
-
-    return outputArray;
+    return out;
   }
 
   getColorsArray() {
-    const outputArray = [];
-    for (let color of this.colors) {
-      outputArray.push(...color);
+    const out = [];
+    for (let vertex of this.reducedVertices) {
+      const colorIndex = vertex[this.colorOffset];
+      out.push(...this.colors[colorIndex]);
     }
-    return outputArray;
+    return out;
   }
 
-  getPositionIndexArray() {
-    const outputArray = [];
-    for (let vertex of this.vertices) {
-      outputArray.push(vertex[this.positionOffset]);
+  getMapArray() {
+    const out = [];
+    for (let vertex of this.reducedVertices) {
+      const mapIndex = vertex[this.mapOffset];
+      out.push(...this.map[mapIndex], 0);
     }
-    return outputArray;
-  }
-
-  getNormalIndexArray() {
-    const outputArray = [];
-    for (let vertex of this.vertices) {
-      outputArray.push(vertex[this.normalOffset]);
-    }
-    return outputArray;
+    return out;
   }
 
   createElementArray() {
@@ -139,7 +119,9 @@ class Mesh {
       }
     }
 
-    return { newVertexArray, elementArray };
+    this.reducedVertices = newVertexArray;
+    this.elementArray = elementArray;
+    return this;
   }
 }
 

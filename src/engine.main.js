@@ -27,8 +27,10 @@ const main = () => {
   const fsSource = utilities.readTextFile("./shaders/testFS.txt");
   const box = utilitiesCollada.readColladaFile("./models/box2.dae")[0];
   const sphere = utilitiesCollada.readColladaFile("./models/sphere.dae")[0];
+  sphere.createElementArray();
   const plane = utilitiesCollada.readColladaFile("./models/plane.dae")[0];
   const plane2 = utilitiesCollada.readColladaFile("./models/plane2.dae")[0]; // with vertex colors
+  plane2.createElementArray();
 
   console.log(plane2);
   console.log(plane2.createElementArray());
@@ -98,7 +100,14 @@ const main = () => {
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LEQUAL);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  gl.drawArrays(gl.TRIANGLES, 0, gameObject.mesh.vertices.length);
+
+  // const elementArrayBuffer = gl.createBuffer();
+  // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elementArrayBuffer);
+  // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(gameObject.mesh.elementArray), gl.STATIC_DRAW);
+  gl.drawElements(gl.TRIANGLES, gameObject.mesh.elementArray.length, gl.UNSIGNED_INT, 0);
+
+
+  // gl.drawArrays(gl.TRIANGLES, 0, gameObject.mesh.vertices.length);
 
   Game.mainFunction = () => {
     gameObject.transform.rotation.y += Time.delta * 60;
@@ -115,7 +124,9 @@ const main = () => {
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.drawArrays(gl.TRIANGLES, 0, gameObject.mesh.vertices.length);
+
+    gl.drawElements(gl.TRIANGLES, gameObject.mesh.elementArray.length, gl.UNSIGNED_INT, 0);
+    // gl.drawArrays(gl.TRIANGLES, 0, gameObject.mesh.vertices.length);
   };
 
   Game.startLoop();

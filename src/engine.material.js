@@ -1,7 +1,4 @@
-const {
-  MaterialAttributes,
-  Attribute,
-} = require("./engine.material.attributes");
+const { MaterialAttributes, Attribute, VBOContainer } = require("./engine.material.attributes");
 const { MaterialTextures } = require("./engine.material.textures");
 const { MaterialUniforms, Uniform } = require("./engine.material.uniforms");
 const { getGLContext } = require("./engine.utilities");
@@ -19,10 +16,15 @@ class Material {
     this.shaderProgram = shaderProgram;
     this.attributes = new MaterialAttributes();
     this.uniforms = new MaterialUniforms();
+    this.elementArray = new VBOContainer();
     this.textures = new MaterialTextures();
     this.vertexArrayObject = undefined;
   }
 
+  /**
+   * Activates texture units and binds textures to them. Call this method
+   * after changing material textures to apply any changes.
+   */
   uploadTextures() {
     if (!gl) {
       return;
@@ -32,11 +34,16 @@ class Material {
       gl.bindTexture(gl.TEXTURE_2D, this.textures.color0.textureObject);
     }
     if (this.textures.color1.textureObject) {
-      gl.activeTexture(gl.TEXTURE0);
+      gl.activeTexture(gl.TEXTURE1);
       gl.bindTexture(gl.TEXTURE_2D, this.textures.color1.textureObject);
     }
   }
 
+  /**
+   * Creates element array buffer, vertex array object and related
+   * shader program attribute buffers. Data for all buffers is
+   * acquired directly from corresponding mesh field.
+   */
   createVertexArray() {
     if (!gl || !this.shaderProgram || !this.mesh) {
       return;
@@ -47,19 +54,23 @@ class Material {
     const normalsBuffer = gl.createBuffer();
     const mapBuffer = gl.createBuffer();
     const colorBuffer = gl.createBuffer();
+    const elementArrayBuffer = gl.createBuffer();
 
     this.attributes.position.vbo = positionBuffer;
     this.attributes.normal.vbo = positionBuffer;
     this.attributes.map.vbo = mapBuffer;
     this.attributes.color.vbo = colorBuffer;
+    this.elementArray.vbo = elementArrayBuffer;
 
     this.attributes.setLocations(this.shaderProgram);
     this.attributes.setValues(this.mesh);
+    this.elementArray.value = new Uint32Array(this.mesh.elementArray);
 
     bufferData(positionBuffer, this.attributes.position);
     bufferData(normalsBuffer, this.attributes.normal);
     bufferData(mapBuffer, this.attributes.map, 3);
     bufferData(colorBuffer, this.attributes.color);
+    bufferElementArray(elementArrayBuffer, this.elementArray);
   }
 
   /**
@@ -74,6 +85,9 @@ class Material {
     gl.useProgram(this.shaderProgram);
   }
 
+  /**
+   * Passes all uniform values to shader program.
+   */
   uploadUniforms() {
     if (!gl || !this.shaderProgram) {
       return;
@@ -93,13 +107,20 @@ class Material {
     uniform1iv(this.uniforms.color0Sampler);
   }
 
+  /**
+   * Binds element array buffer and vertex array object that contains
+   * shader program attribute buffers.
+   */
   bindVertexArray() {
     if (!gl || !this.vertexArrayObject) {
       return;
     }
     gl.bindVertexArray(this.vertexArrayObject);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementArray.vbo);
   }
 }
+
+exports.Material = Material;
 
 /**
  * @param {Uniform} uniform
@@ -140,4 +161,13 @@ const bufferData = (buffer, attribute, size = 4) => {
   gl.enableVertexAttribArray(attribute.location);
 };
 
-exports.Material = Material;
+/**
+ * @param {WebGLBuffer} buffer
+ * @param {VBOContainer} elementArray
+ */
+const bufferElementArray = (buffer, elementArray) => {
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, elementArray.value, gl.STATIC_DRAW);
+};
+
+
