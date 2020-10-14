@@ -1,5 +1,5 @@
 const draw = require("./engine.draw");
-const utilities = require("./engine.utilities");
+const utilities = require("./engine.utils");
 const { createShaderProgram } = require("./engine.shader");
 const utilitiesCollada = require("./engine.utilities.collada");
 const { Vector3 } = require("./engine.math.vector3");
@@ -15,16 +15,20 @@ const { readFile } = require("fs");
 const { TextureResources } = require("./engine.textureResources");
 const { Texture } = require("./engine.material.textures");
 const { removeDoubles, toArrayWithUniqueValues, createRepetitionArray } = require("./engine.utilities.mesh");
-const gl = utilities.getGLContext();
+const { EngineToolbox } = require("./engine.toolbox");
 
 const main = () => {
+  // create game info
+  EngineToolbox.createEngineInfo();
+  const gl = EngineToolbox.getGLContext();
+
   if (!gl) {
     return;
   }
 
   // read resources
-  const vsSource = utilities.readTextFile("./shaders/testVS.txt");
-  const fsSource = utilities.readTextFile("./shaders/testFS.txt");
+  const vsSource = EngineToolbox.readTextFile("./shaders/testVS.txt");
+  const fsSource = EngineToolbox.readTextFile("./shaders/testFS.txt");
   const box = utilitiesCollada.readColladaFile("./models/box2.dae")[0];
   box.createElementArray();
   const sphere = utilitiesCollada.readColladaFile("./models/sphere.dae")[0];
@@ -36,7 +40,7 @@ const main = () => {
 
   // read and store textures
   const textureResources = new TextureResources();
-  const testTextureImage = utilities.readImage("./textures/test_color.png");
+  const testTextureImage = EngineToolbox.readImage("./textures/test_color.png");
   const testTexture = new Texture();
   testTexture.fromPNGImage(testTextureImage);
   textureResources.add("testTexture", testTexture);

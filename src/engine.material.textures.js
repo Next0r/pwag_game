@@ -1,7 +1,6 @@
 const { PNG } = require("pngjs");
-const { isPowerOf2 } = require("./engine.utilities");
-const { getGLContext } = require("./engine.utilities");
-const gl = getGLContext();
+const { EngineToolbox } = require("./engine.toolbox");
+const gl = EngineToolbox.getGLContext();
 
 class Texture {
   constructor() {
@@ -23,21 +22,11 @@ class Texture {
     this.width = pngImage.width;
     this.height = pngImage.height;
     this.buffer = pngImage.data;
-    this.isPowerOf2 = isPowerOf2(this.width) && isPowerOf2(this.height);
+    this.isPowerOf2 = EngineToolbox.isPowerOf2(this.width) && EngineToolbox.isPowerOf2(this.height);
     this.textureObject = gl.createTexture();
 
     gl.bindTexture(gl.TEXTURE_2D, this.textureObject);
-    gl.texImage2D(
-      gl.TEXTURE_2D,
-      0,
-      gl.RGBA,
-      this.width,
-      this.height,
-      0,
-      gl.RGBA,
-      gl.UNSIGNED_BYTE,
-      this.buffer
-    );
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.buffer);
     if (this.isPowerOf2) {
       gl.generateMipmap(gl.TEXTURE_2D);
     } else {

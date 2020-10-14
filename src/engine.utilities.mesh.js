@@ -1,4 +1,4 @@
-const { compareArrays } = require("./engine.utilities");
+const { EngineToolbox } = require("./engine.toolbox");
 
 class Mesh {
   constructor(name = "") {
@@ -95,7 +95,7 @@ class Mesh {
       const currentVertex = newVertexArray[i];
       for (let j = i + 1; j < newVertexArray.length; j++) {
         const nextVertex = newVertexArray[j];
-        if (compareArrays(currentVertex, nextVertex)) {
+        if (EngineToolbox.compareArrays(currentVertex, nextVertex)) {
           newVertexArray.splice(j, 1);
           j -= 1;
           i -= 1;
@@ -111,7 +111,7 @@ class Mesh {
 
     for (let i = 0; i < newVertexArrayCopy.length; i++) {
       for (let j = 0; j < newVertexArray.length; j++) {
-        if (compareArrays(newVertexArrayCopy[i], newVertexArray[j])) {
+        if (EngineToolbox.compareArrays(newVertexArrayCopy[i], newVertexArray[j])) {
           elementArray[i] = j;
         }
       }
@@ -137,7 +137,7 @@ const createRepetitionArray = (array) => {
   for (let i = 0; i < array.length; i++) {
     const currentArrayValue = array[i];
     for (let j = i + 1; j < array.length; j++) {
-      if (compareArrays(currentArrayValue, array[j])) {
+      if (EngineToolbox.compareArrays(currentArrayValue, array[j])) {
         repetitionArray[j] = i;
       }
     }

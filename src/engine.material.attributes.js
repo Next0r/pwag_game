@@ -1,9 +1,9 @@
+const { EngineToolbox } = require("./engine.toolbox");
 const { Mesh } = require("./engine.utilities.mesh");
-const { getGLContext } = require("./engine.utilities");
-const gl = getGLContext();
+const gl = EngineToolbox.getGLContext();
 
 class VBOContainer {
-  constructor(){
+  constructor() {
     this.vbo = undefined;
     this.value = new Uint32Array();
   }

@@ -1,10 +1,10 @@
 const { MaterialAttributes, Attribute, VBOContainer } = require("./engine.material.attributes");
 const { MaterialTextures } = require("./engine.material.textures");
 const { MaterialUniforms, Uniform } = require("./engine.material.uniforms");
-const { getGLContext } = require("./engine.utilities");
+const { EngineToolbox } = require("./engine.toolbox");
 const { Mesh } = require("./engine.utilities.mesh");
 
-const gl = getGLContext();
+const gl = EngineToolbox.getGLContext();
 
 class Material {
   /**
@@ -170,5 +170,3 @@ const bufferElementArray = (buffer, elementArray) => {
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, elementArray.value, gl.STATIC_DRAW);
 };
-
-

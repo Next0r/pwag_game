@@ -1,6 +1,5 @@
-const { create } = require("domain");
-const { getGLContext } = require("./engine.utilities");
-const gl = getGLContext();
+const { EngineToolbox } = require("./engine.toolbox");
+const gl = EngineToolbox.getGLContext();
 
 const createShader = (type, source) => {
   if (!gl) {
@@ -12,9 +11,7 @@ const createShader = (type, source) => {
   gl.compileShader(shader);
 
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    console.warn(
-      `An error occurred compiling the shaders: ${gl.getShaderInfoLog(shader)}.`
-    );
+    console.warn(`An error occurred compiling the shaders: ${gl.getShaderInfoLog(shader)}.`);
     gl.deleteShader(shader);
     return;
   }
@@ -40,11 +37,7 @@ const createShaderProgram = (vsSource, fsSource) => {
   gl.linkProgram(program);
 
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    console.warn(
-      `An error occurred linkin shader program: ${gl.getProgramInfoLog(
-        program
-      )}.`
-    );
+    console.warn(`An error occurred linkin shader program: ${gl.getProgramInfoLog(program)}.`);
     gl.deleteProgram();
     return;
   }

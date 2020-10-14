@@ -1,5 +1,5 @@
-const { getGLContext } = require("./engine.utilities");
-const gl = getGLContext();
+const { EngineToolbox } = require("./engine.toolbox");
+const gl = EngineToolbox.getGLContext();
 
 class Uniform {
   constructor(name) {

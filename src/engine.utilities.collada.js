@@ -1,5 +1,5 @@
-const { readTextFile } = require("./engine.utilities");
 const { Mesh } = require("./engine.utilities.mesh");
+const { EngineToolbox } = require("./engine.toolbox");
 
 /**
  *
@@ -21,12 +21,9 @@ const findSourceElement = (sourceElements, name) => {
  * @param {HTMLElement} sourceElement
  */
 const parseSourceElement = (sourceElement) => {
-  const accessorStride = parseInt(
-    sourceElement.getElementsByTagName("accessor")[0].getAttribute("stride")
-  );
+  const accessorStride = parseInt(sourceElement.getElementsByTagName("accessor")[0].getAttribute("stride"));
 
-  const floatArrayText = sourceElement.getElementsByTagName("float_array")[0]
-    .textContent;
+  const floatArrayText = sourceElement.getElementsByTagName("float_array")[0].textContent;
 
   const floatArrayTextElements = floatArrayText.trim().split(/\s+/);
 
@@ -62,8 +59,7 @@ const findInputOffset = (inputElements, inputSemantic) => {
  * @param {HTMLElement} trianglesElement
  */
 const parseTrianglesElement = (trianglesElement) => {
-  const pElementText = trianglesElement.getElementsByTagName("p")[0]
-    .textContent;
+  const pElementText = trianglesElement.getElementsByTagName("p")[0].textContent;
 
   const pElementTextElements = pElementText.trim().split(/\s+/);
 
@@ -92,7 +88,6 @@ const parseTrianglesElement = (trianglesElement) => {
  * @param {HTMLElement} geometry
  */
 const readGeometry = (xml, geometry) => {
-  const geometryID = geometry.getAttribute("id");
   const geometryName = geometry.getAttribute("name");
   const meshElement = geometry.getElementsByTagName("mesh")[0];
   const sourceElements = meshElement.getElementsByTagName("source");
@@ -111,8 +106,7 @@ const readGeometry = (xml, geometry) => {
   mesh.positions = parseSourceElement(positionsElement);
   mesh.normals = parseSourceElement(normalsElement);
   mesh.map = mapElement === undefined ? [] : parseSourceElement(mapElement);
-  mesh.colors =
-    colorsElement === undefined ? [] : parseSourceElement(colorsElement);
+  mesh.colors = colorsElement === undefined ? [] : parseSourceElement(colorsElement);
 
   const meshTraingleInfo = parseTrianglesElement(trianglesElement);
   mesh.vertices = meshTraingleInfo.vertices;
@@ -125,7 +119,7 @@ const readGeometry = (xml, geometry) => {
 };
 
 const readColladaFile = (path) => {
-  const file = readTextFile(path);
+  const file = EngineToolbox.readTextFile(path);
   if (!file) {
     return;
   }
