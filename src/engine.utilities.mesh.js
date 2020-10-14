@@ -109,8 +109,6 @@ class Mesh {
       elementArray.push(i);
     }
 
-    console.log(newVertexArrayCopy);
-
     for (let i = 0; i < newVertexArrayCopy.length; i++) {
       for (let j = 0; j < newVertexArray.length; j++) {
         if (compareArrays(newVertexArrayCopy[i], newVertexArray[j])) {

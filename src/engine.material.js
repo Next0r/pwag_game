@@ -104,6 +104,7 @@ class Material {
     uniform1fv(this.uniforms.directLightValue);
     uniform3fv(this.uniforms.ambientLightColor);
     uniform1fv(this.uniforms.ambientLightValue);
+    uniform1iv(this.uniforms.useVertexColor);
     uniform1iv(this.uniforms.color0Sampler);
   }
 

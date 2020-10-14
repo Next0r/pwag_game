@@ -11,6 +11,8 @@ uniform float u_direct_light_value;
 uniform vec3 u_ambient_light_color;
 uniform float u_ambient_light_value;
 
+uniform int u_use_vertex_color;
+
 in vec4 a_position;
 in vec4 a_color;
 in vec4 a_normal;
@@ -24,10 +26,12 @@ out float direct_light_value;
 out vec3 ambient_light_color;
 out float ambient_light_value;
 out vec3 map;
+flat out int use_vertex_color;
 
 
 void main() {
 
+  use_vertex_color = u_use_vertex_color;
   vertex_color = a_color;
   normal = u_normal_matrix * a_normal;
   direct_light_direction = u_direct_light_direction;

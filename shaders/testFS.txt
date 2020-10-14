@@ -13,12 +13,14 @@ in float direct_light_value;
 in vec3 ambient_light_color;
 in float ambient_light_value;
 in vec3 map;
+flat in int use_vertex_color;
 
 void main() {
   
+  vec4 base_color = (vertex_color * float(use_vertex_color)) + (vec4(1,1,1,1) * float((1 - use_vertex_color)));
   float lambert_factor = max(dot(vec3(normal), -direct_light_direction), 0.0);
   vec4 color0 = texture(u_color0_sampler, vec2(map));
-  out_color = vertex_color * color0
+  out_color = base_color * color0
     * vec4(direct_light_color * direct_light_value * lambert_factor, 1)
     + vec4(ambient_light_color * ambient_light_value, 1);
 }

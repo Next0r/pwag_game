@@ -26,17 +26,13 @@ const main = () => {
   const vsSource = utilities.readTextFile("./shaders/testVS.txt");
   const fsSource = utilities.readTextFile("./shaders/testFS.txt");
   const box = utilitiesCollada.readColladaFile("./models/box2.dae")[0];
+  box.createElementArray();
   const sphere = utilitiesCollada.readColladaFile("./models/sphere.dae")[0];
   sphere.createElementArray();
   const plane = utilitiesCollada.readColladaFile("./models/plane.dae")[0];
+  plane.createElementArray();
   const plane2 = utilitiesCollada.readColladaFile("./models/plane2.dae")[0]; // with vertex colors
   plane2.createElementArray();
-
-  console.log(plane2);
-  console.log(plane2.createElementArray());
-
-  // console.log(removeDoubles(plane2));
-  // console.log(toArrayWithUniqueValues(plane2.colors));
 
   // read and store textures
   const textureResources = new TextureResources();
@@ -47,10 +43,10 @@ const main = () => {
 
   // create scene objects
   const gameObject = new GameObject();
-  gameObject.mesh = sphere;
+  gameObject.mesh = box;
   gameObject.transform.location = new Vector3(0, 0, -5);
   gameObject.transform.rotation = new Vector3(0, 0, 0);
-  gameObject.transform.scale = new Vector3(2, 2, 2);
+  gameObject.transform.scale = new Vector3(1, 1, 1);
   gameObject.transform.rebuildMatrix();
 
   const camera = new Camera();
@@ -78,6 +74,7 @@ const main = () => {
   material.uniforms.ambientLightColor.value = ambientLight.color.toArray();
   material.uniforms.ambientLightValue.value = [ambientLight.value];
   material.uniforms.color0Sampler.value = [0];
+  material.uniforms.useVertexColor.value = [0];
 
   material.textures.color0 = textureResources.get("testTexture");
 
@@ -106,12 +103,12 @@ const main = () => {
   // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(gameObject.mesh.elementArray), gl.STATIC_DRAW);
   gl.drawElements(gl.TRIANGLES, gameObject.mesh.elementArray.length, gl.UNSIGNED_INT, 0);
 
-
   // gl.drawArrays(gl.TRIANGLES, 0, gameObject.mesh.vertices.length);
 
   Game.mainFunction = () => {
     gameObject.transform.rotation.y += Time.delta * 60;
     gameObject.transform.rotation.z += Time.delta * 60;
+    gameObject.transform.location = new Vector3(Math.sin(Time.now), Math.cos(Time.now), -5);
     gameObject.transform.rebuildMatrix();
     const mvMatrix = camera.transform.matrix.clone().inverse().multiply(gameObject.transform.matrix);
     material.uniforms.modelViewMatrix.value = mvMatrix.toArray();
