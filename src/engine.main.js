@@ -14,6 +14,7 @@ const { Time } = require("./engine.time");
 const { readFile } = require("fs");
 const { TextureResources } = require("./engine.textureResources");
 const { Texture } = require("./engine.material.textures");
+const { removeDoubles, toArrayWithUniqueValues, createRepetitionArray } = require("./engine.utilities.mesh");
 const gl = utilities.getGLContext();
 
 const main = () => {
@@ -27,6 +28,13 @@ const main = () => {
   const box = utilitiesCollada.readColladaFile("./models/box2.dae")[0];
   const sphere = utilitiesCollada.readColladaFile("./models/sphere.dae")[0];
   const plane = utilitiesCollada.readColladaFile("./models/plane.dae")[0];
+  const plane2 = utilitiesCollada.readColladaFile("./models/plane2.dae")[0]; // with vertex colors
+
+  console.log(plane2);
+  console.log(plane2.createElementArray());
+
+  // console.log(removeDoubles(plane2));
+  // console.log(toArrayWithUniqueValues(plane2.colors));
 
   // read and store textures
   const textureResources = new TextureResources();
@@ -44,7 +52,6 @@ const main = () => {
   gameObject.transform.rebuildMatrix();
 
   const camera = new Camera();
-  // camera.transform.location.y = 2;
   camera.transform.rebuildMatrix();
   camera.projection.rebuildMatrix();
 
@@ -86,7 +93,6 @@ const main = () => {
 
   gameObject.material = material;
 
-
   // draw
   gl.clearColor(0.2, 0.2, 0.2, 1);
   gl.enable(gl.DEPTH_TEST);
@@ -98,16 +104,9 @@ const main = () => {
     gameObject.transform.rotation.y += Time.delta * 60;
     gameObject.transform.rotation.z += Time.delta * 60;
     gameObject.transform.rebuildMatrix();
-    const mvMatrix = camera.transform.matrix
-      .clone()
-      .inverse()
-      .multiply(gameObject.transform.matrix);
+    const mvMatrix = camera.transform.matrix.clone().inverse().multiply(gameObject.transform.matrix);
     material.uniforms.modelViewMatrix.value = mvMatrix.toArray();
-    material.uniforms.normalMatrix.value = mvMatrix
-      .clone()
-      .inverse()
-      .transpose()
-      .toArray();
+    material.uniforms.normalMatrix.value = mvMatrix.clone().inverse().transpose().toArray();
     gameObject.material.uploadUniforms();
     gameObject.material.useProgram();
     gameObject.material.bindVertexArray();

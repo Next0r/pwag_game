@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.90.1 commit date:2020-09-23, commit time:06:43, hash:3e85bb34d0d7</authoring_tool>
     </contributor>
-    <created>2020-10-14T11:25:43</created>
-    <modified>2020-10-14T11:25:43</modified>
+    <created>2020-10-14T11:28:22</created>
+    <modified>2020-10-14T11:28:22</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -43,6 +43,17 @@
             </accessor>
           </technique_common>
         </source>
+        <source id="Plane-mesh-colors-Col" name="Col">
+          <float_array id="Plane-mesh-colors-Col-array" count="24">1 0 0 1 0 0 1 1 0 1 1 1 1 0 0 1 0.007843136 1 0.007843136 1 0 0 1 1</float_array>
+          <technique_common>
+            <accessor source="#Plane-mesh-colors-Col-array" count="6" stride="4">
+              <param name="R" type="float"/>
+              <param name="G" type="float"/>
+              <param name="B" type="float"/>
+              <param name="A" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
         <vertices id="Plane-mesh-vertices">
           <input semantic="POSITION" source="#Plane-mesh-positions"/>
         </vertices>
@@ -50,7 +61,8 @@
           <input semantic="VERTEX" source="#Plane-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Plane-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Plane-mesh-map-0" offset="2" set="0"/>
-          <p>1 0 0 2 0 1 0 0 2 1 0 3 3 0 4 2 0 5</p>
+          <input semantic="COLOR" source="#Plane-mesh-colors-Col" offset="3" set="0"/>
+          <p>1 0 0 0 2 0 1 1 0 0 2 2 1 0 3 3 3 0 4 4 2 0 5 5</p>
         </triangles>
       </mesh>
     </geometry>

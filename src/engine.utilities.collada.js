@@ -116,7 +116,7 @@ const readGeometry = (xml, geometry) => {
 
   const meshTraingleInfo = parseTrianglesElement(trianglesElement);
   mesh.vertices = meshTraingleInfo.vertices;
-  mesh.indexOffset = meshTraingleInfo.indexOffset;
+  mesh.positionOffset = meshTraingleInfo.indexOffset;
   mesh.normalOffset = meshTraingleInfo.normalOffset;
   mesh.mapOffset = meshTraingleInfo.mapOffset;
   mesh.colorOffset = meshTraingleInfo.colorOffset;
