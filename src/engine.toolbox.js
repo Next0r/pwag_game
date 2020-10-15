@@ -17,6 +17,9 @@ class EngineToolbox {
     return document.getElementById(canvasID);
   }
 
+  /**
+   * @returns {WebGL2RenderingContext}
+   */
   static getGLContext() {
     const canvas = EngineToolbox.getCanvas();
     if (canvas) {
@@ -64,7 +67,6 @@ class EngineToolbox {
 
     return true;
   }
-
 }
 
 exports.EngineToolbox = EngineToolbox;

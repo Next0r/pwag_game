@@ -1,4 +1,3 @@
-const draw = require("./engine.draw");
 const { createShaderProgram } = require("./engine.shader");
 const utilitiesCollada = require("./engine.utilities.collada");
 const { Vector3 } = require("./engine.math.vector3");
@@ -16,6 +15,8 @@ const { Texture } = require("./engine.material.textures");
 const { removeDoubles, toArrayWithUniqueValues, createRepetitionArray } = require("./engine.utilities.mesh");
 const { EngineToolbox } = require("./engine.toolbox");
 const { Input } = require("./engine.input");
+const { Renderer } = require("./engine.renderer");
+const { Vector4 } = require("./engine.math.vector4");
 
 const main = () => {
   // create game info
@@ -52,11 +53,16 @@ const main = () => {
 
   // create scene objects
   const gameObject = new GameObject();
-  gameObject.mesh = box;
+  gameObject.mesh = sphere;
   gameObject.transform.location = new Vector3(0, 0, -5);
   gameObject.transform.rotation = new Vector3(0, 0, 0);
   gameObject.transform.scale = new Vector3(1, 1, 1);
-  gameObject.transform.rebuildMatrix();
+
+  const gameObject2 = new GameObject();
+  gameObject2.mesh = box;
+  gameObject2.transform.location = new Vector3(0, 0, -4);
+  gameObject2.transform.rotation = new Vector3(0, 0, 0);
+  gameObject2.transform.scale = new Vector3(1, 1, 1);
 
   const camera = new Camera();
   camera.transform.rebuildMatrix();
@@ -66,73 +72,44 @@ const main = () => {
   const ambientLight = new AmbientLight();
 
   // setup material parameters
-  const projectionMatrix = camera.projection.matrix;
-  const viewMatrix = camera.transform.matrix.clone().inverse();
-  const modelViewMatrix = viewMatrix.multiply(gameObject.transform.matrix);
-  const normalMatrix = modelViewMatrix.clone().inverse().transpose();
-
   const shaderProgram = createShaderProgram(vsSource, fsSource);
-
-  const material = new Material(shaderProgram, gameObject.mesh);
-  material.uniforms.modelViewMatrix.value = modelViewMatrix.toArray();
-  material.uniforms.projectionMatrix.value = projectionMatrix.toArray();
-  material.uniforms.normalMatrix.value = normalMatrix.toArray();
+  const material = new Material(shaderProgram);
   material.uniforms.directLightDirection.value = directLight.direction.toArray();
   material.uniforms.directLightColor.value = directLight.color.toArray();
   material.uniforms.directLightValue.value = [directLight.value];
   material.uniforms.ambientLightColor.value = ambientLight.color.toArray();
   material.uniforms.ambientLightValue.value = [ambientLight.value];
   material.uniforms.color0Sampler.value = [0];
-  material.uniforms.useVertexColor.value = [0];
+  material.uniforms.useVertexColor.value = [1];
+  material.uniforms.useEmission.value = [0];
 
   material.textures.color0 = textureResources.get("testTexture");
-
-  // pass uniforms and attributes values to gpu memory
-  material.createVertexArray();
-  material.uploadUniforms();
-
-  // enable texture units and bind textures
-  material.uploadTextures();
-
-  // has to be called if uploadUniforms() is not used before.
-  material.useProgram();
-  // use vertex array object (mesh data linked to material)
-  material.bindVertexArray();
-
   gameObject.material = material;
+  gameObject2.material = material;
+  
 
   // draw
-  gl.clearColor(0.2, 0.2, 0.2, 1);
-  gl.enable(gl.DEPTH_TEST);
-  gl.depthFunc(gl.LEQUAL);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-  // const elementArrayBuffer = gl.createBuffer();
-  // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elementArrayBuffer);
-  // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(gameObject.mesh.elementArray), gl.STATIC_DRAW);
-  gl.drawElements(gl.TRIANGLES, gameObject.mesh.elementArray.length, gl.UNSIGNED_INT, 0);
-
-  // gl.drawArrays(gl.TRIANGLES, 0, gameObject.mesh.vertices.length);
+  Renderer.setClearColor(new Vector4(0, 0, 0, 1));
+  Renderer.enableDepthTest();
 
   Game.mainFunction = () => {
     gameObject.transform.rotation.y += Time.delta * 60;
     gameObject.transform.rotation.z += Time.delta * 60;
     gameObject.transform.location = new Vector3(Math.sin(Time.now), Math.cos(Time.now), -5);
-    gameObject.transform.rebuildMatrix();
-    const mvMatrix = camera.transform.matrix.clone().inverse().multiply(gameObject.transform.matrix);
-    material.uniforms.modelViewMatrix.value = mvMatrix.toArray();
-    material.uniforms.normalMatrix.value = mvMatrix.clone().inverse().transpose().toArray();
-    gameObject.material.uploadUniforms();
-    gameObject.material.useProgram();
-    gameObject.material.bindVertexArray();
 
-    gl.clearColor(0.2, 0.2, 0.2, 1);
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gameObject2.transform.location = new Vector3();    
+    // gameObject2.transform.rotation.y += Time.delta * 60;
+    // gameObject2.transform.rotation.z += Time.delta * 60;
 
-    gl.drawElements(gl.TRIANGLES, gameObject.mesh.elementArray.length, gl.UNSIGNED_INT, 0);
-    // gl.drawArrays(gl.TRIANGLES, 0, gameObject.mesh.vertices.length);
+    Renderer.clear();
+    material.uniforms.useEmission.value = [1];
+    Renderer.disableDepthTest();
+    Renderer.drawGameObject(gameObject2, camera);
+    Renderer.enableDepthTest();
+    material.uniforms.useEmission.value = [0];
+
+    Renderer.drawGameObject(gameObject, camera);
+    
   };
 
   Game.startLoop();

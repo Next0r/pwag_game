@@ -11,8 +11,7 @@ class Material {
    * @param {WebGLProgram} shaderProgram
    * @param {Mesh} mesh
    */
-  constructor(shaderProgram, mesh) {
-    this.mesh = mesh;
+  constructor(shaderProgram) {
     this.shaderProgram = shaderProgram;
     this.attributes = new MaterialAttributes();
     this.uniforms = new MaterialUniforms();
@@ -43,11 +42,19 @@ class Material {
    * Creates element array buffer, vertex array object and related
    * shader program attribute buffers. Data for all buffers is
    * acquired directly from corresponding mesh field.
+   * @param {Mesh} mesh
    */
-  createVertexArray() {
-    if (!gl || !this.shaderProgram || !this.mesh) {
+  createVertexArray(mesh) {
+    if (!gl || !this.shaderProgram || !mesh) {
       return;
     }
+
+    deleteVertexArray(this.vertexArrayObject);
+    deleteBuffer(this.attributes.position.vbo);
+    deleteBuffer(this.attributes.normal.vbo);
+    deleteBuffer(this.attributes.map.vbo);
+    deleteBuffer(this.attributes.color.vbo);
+
     this.vertexArrayObject = gl.createVertexArray();
     gl.bindVertexArray(this.vertexArrayObject);
     const positionBuffer = gl.createBuffer();
@@ -63,8 +70,8 @@ class Material {
     this.elementArray.vbo = elementArrayBuffer;
 
     this.attributes.setLocations(this.shaderProgram);
-    this.attributes.setValues(this.mesh);
-    this.elementArray.value = new Uint32Array(this.mesh.elementArray);
+    this.attributes.setValues(mesh);
+    this.elementArray.value = new Uint32Array(mesh.elementArray);
 
     bufferData(positionBuffer, this.attributes.position);
     bufferData(normalsBuffer, this.attributes.normal);
@@ -106,6 +113,7 @@ class Material {
     uniform1fv(this.uniforms.ambientLightValue);
     uniform1iv(this.uniforms.useVertexColor);
     uniform1iv(this.uniforms.color0Sampler);
+    uniform1iv(this.uniforms.useEmission);
   }
 
   /**
@@ -169,4 +177,22 @@ const bufferData = (buffer, attribute, size = 4) => {
 const bufferElementArray = (buffer, elementArray) => {
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, elementArray.value, gl.STATIC_DRAW);
+};
+
+/**
+ * @param {WebGLBuffer} buffer
+ */
+const deleteBuffer = (buffer) => {
+  if (buffer) {
+    gl.deleteBuffer(buffer);
+  }
+};
+
+/**
+ * @param {WebGLVertexArrayObject} vertexArrayObject
+ */
+const deleteVertexArray = (vertexArrayObject) => {
+  if (vertexArrayObject) {
+    gl.deleteVertexArray(vertexArrayObject);
+  }
 };

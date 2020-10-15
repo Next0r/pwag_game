@@ -42,6 +42,8 @@ class MaterialUniforms {
     this.color0Sampler = new Uniform("u_color0_sampler");
 
     this.useVertexColor = new Uniform("u_use_vertex_color");
+
+    this.useEmission = new Uniform("u_use_emission");
   }
 
   /**
@@ -58,6 +60,7 @@ class MaterialUniforms {
     this.ambientLightValue.setLocation(shaderProgram);
     this.color0Sampler.setLocation(shaderProgram);
     this.useVertexColor.setLocation(shaderProgram);
+    this.useEmission.setLocation(shaderProgram);
   }
 }
 

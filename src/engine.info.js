@@ -1,3 +1,5 @@
+const { Vector4 } = require("./engine.math.vector4");
+
 class EngineInfo {
   constructor() {
     if (EngineInfo.instance) {
@@ -11,7 +13,7 @@ class EngineInfo {
 
   static instance = undefined;
 
-  add(id, property) {
+  set(id, property) {
     this._data[id] = property;
   }
 
@@ -27,6 +29,7 @@ class EngineInfo {
 const init = () => {
   return {
     canvasID: "game_window",
+    clearColor: new Vector4(0, 0, 0, 1),
   };
 };
 
