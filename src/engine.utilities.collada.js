@@ -20,7 +20,7 @@ const findSourceElement = (sourceElements, name) => {
 /**
  * @param {HTMLElement} sourceElement
  */
-const parseSourceElement = (sourceElement) => {
+const parseSourceElement = (sourceElement, glMap = false) => {
   const accessorStride = parseInt(sourceElement.getElementsByTagName("accessor")[0].getAttribute("stride"));
 
   const floatArrayText = sourceElement.getElementsByTagName("float_array")[0].textContent;
@@ -132,7 +132,10 @@ const readColladaFile = (path) => {
   const meshes = [];
 
   for (let geometry of geometries) {
-    meshes.push(readGeometry(xml, geometry));
+    const mesh = readGeometry(xml, geometry);
+    mesh.flipUV();
+    meshes.push(mesh);
+  
   }
 
   return meshes;

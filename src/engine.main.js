@@ -43,6 +43,8 @@ const main = () => {
   plane.createElementArray();
   const plane2 = utilitiesCollada.readColladaFile("./models/plane2.dae")[0]; // with vertex colors
   plane2.createElementArray();
+  const skyboxMesh = utilitiesCollada.readColladaFile("./models/skybox.dae")[0];
+  skyboxMesh.createElementArray();
 
   // read and store textures
   const textureResources = new TextureResources();
@@ -50,6 +52,10 @@ const main = () => {
   const testTexture = new Texture();
   testTexture.fromPNGImage(testTextureImage);
   textureResources.add("testTexture", testTexture);
+  const skyboxColorImage = EngineToolbox.readImage("./textures/skybox_color_01.png");
+  const skyboxColor = new Texture();
+  skyboxColor.fromPNGImage(skyboxColorImage);
+  textureResources.add("skybox_color", skyboxColor);
 
   // create scene objects
   const gameObject = new GameObject();
@@ -58,13 +64,12 @@ const main = () => {
   gameObject.transform.rotation = new Vector3(0, 0, 0);
   gameObject.transform.scale = new Vector3(1, 1, 1);
 
-  const gameObject2 = new GameObject();
-  gameObject2.mesh = box;
-  gameObject2.transform.location = new Vector3(0, 0, -4);
-  gameObject2.transform.rotation = new Vector3(0, 0, 0);
-  gameObject2.transform.scale = new Vector3(1, 1, 1);
+  const skybox = new GameObject();
+  skybox.mesh = skyboxMesh;
+  skybox.transform.rotation = new Vector3(0, 180, 0);
 
   const camera = new Camera();
+  camera.projection.fov = 75;
   camera.transform.rebuildMatrix();
   camera.projection.rebuildMatrix();
 
@@ -80,36 +85,47 @@ const main = () => {
   material.uniforms.ambientLightColor.value = ambientLight.color.toArray();
   material.uniforms.ambientLightValue.value = [ambientLight.value];
   material.uniforms.color0Sampler.value = [0];
-  material.uniforms.useVertexColor.value = [1];
+  material.uniforms.useVertexColor.value = [0];
   material.uniforms.useEmission.value = [0];
 
   material.textures.color0 = textureResources.get("testTexture");
+
+  const skyboxMaterial = new Material(shaderProgram);
+  skyboxMaterial.uniforms.color0Sampler.value = [0];
+  skyboxMaterial.uniforms.useVertexColor.value = [0];
+  skyboxMaterial.uniforms.useEmission.value = [1];
+
+  skyboxMaterial.textures.color0 = textureResources.get("skybox_color");
+
   gameObject.material = material;
-  gameObject2.material = material;
-  
+  skybox.material = skyboxMaterial;
 
   // draw
   Renderer.setClearColor(new Vector4(0, 0, 0, 1));
   Renderer.enableDepthTest();
+
+  console.log(skybox.mesh);
 
   Game.mainFunction = () => {
     gameObject.transform.rotation.y += Time.delta * 60;
     gameObject.transform.rotation.z += Time.delta * 60;
     gameObject.transform.location = new Vector3(Math.sin(Time.now), Math.cos(Time.now), -5);
 
-    gameObject2.transform.location = new Vector3();    
-    // gameObject2.transform.rotation.y += Time.delta * 60;
-    // gameObject2.transform.rotation.z += Time.delta * 60;
+    // skybox.transform.location.z = -5;
+    // skybox.transform.rotation.x += Time.delta * 60;
+
+    // camera.transform.location.x = Math.sin(Time.now);
+    // camera.transform.rotation.x = Math.sin(Time.now) * 30;
+    // camera.transform.rotation.z = Math.sin(Time.now) * 30;
+
+    skybox.transform.location = camera.transform.location;
 
     Renderer.clear();
-    material.uniforms.useEmission.value = [1];
     Renderer.disableDepthTest();
-    Renderer.drawGameObject(gameObject2, camera);
+    Renderer.drawGameObject(skybox, camera);
     Renderer.enableDepthTest();
-    material.uniforms.useEmission.value = [0];
 
     Renderer.drawGameObject(gameObject, camera);
-    
   };
 
   Game.startLoop();

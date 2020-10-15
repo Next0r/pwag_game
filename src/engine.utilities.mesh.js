@@ -61,6 +61,12 @@ class Mesh {
     return out;
   }
 
+  flipUV() {
+    for (let i = 0; i < this.map.length; i++) {
+      this.map[i][1] = 1 - this.map[i][1];
+    }
+  }
+
   createElementArray() {
     const normalRepetitionArray = this.normalOffset !== undefined ? createRepetitionArray(this.normals) : undefined;
     const mapRepetitionArray = this.mapOffset !== undefined ? createRepetitionArray(this.map) : undefined;

@@ -102,18 +102,19 @@ class Material {
 
     this.uniforms.setLocations(this.shaderProgram);
 
+    // pass uniforms to shader only if defined
     gl.useProgram(this.shaderProgram);
-    uniformMatrix4fv(this.uniforms.modelViewMatrix);
-    uniformMatrix4fv(this.uniforms.projectionMatrix);
-    uniformMatrix4fv(this.uniforms.normalMatrix);
-    uniform3fv(this.uniforms.directLightDirection);
-    uniform3fv(this.uniforms.directLightColor);
-    uniform1fv(this.uniforms.directLightValue);
-    uniform3fv(this.uniforms.ambientLightColor);
-    uniform1fv(this.uniforms.ambientLightValue);
-    uniform1iv(this.uniforms.useVertexColor);
-    uniform1iv(this.uniforms.color0Sampler);
-    uniform1iv(this.uniforms.useEmission);
+    this.uniforms.modelViewMatrix.value && uniformMatrix4fv(this.uniforms.modelViewMatrix);
+    this.uniforms.projectionMatrix.value && uniformMatrix4fv(this.uniforms.projectionMatrix);
+    this.uniforms.normalMatrix.value && uniformMatrix4fv(this.uniforms.normalMatrix);
+    this.uniforms.directLightDirection.value && uniform3fv(this.uniforms.directLightDirection);
+    this.uniforms.directLightColor.value && uniform3fv(this.uniforms.directLightColor);
+    this.uniforms.directLightValue.value && uniform1fv(this.uniforms.directLightValue);
+    this.uniforms.ambientLightColor.value && uniform3fv(this.uniforms.ambientLightColor);
+    this.uniforms.ambientLightValue.value && uniform1fv(this.uniforms.ambientLightValue);
+    this.uniforms.useVertexColor.value && uniform1iv(this.uniforms.useVertexColor);
+    this.uniforms.color0Sampler.value && uniform1iv(this.uniforms.color0Sampler);
+    this.uniforms.useEmission.value && uniform1iv(this.uniforms.useEmission);
   }
 
   /**
