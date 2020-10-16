@@ -30,7 +30,7 @@ class Renderer {
 
     mat.uniforms.modelViewMatrix.value = modelViewMatrix.toArray();
     mat.uniforms.projectionMatrix.value = camera.projection.matrix.toArray();
-    mat.uniforms.normalMatrix.value = modelViewMatrix.clone().inverse().transpose().toArray();
+    mat.uniforms.normalMatrix.value = gameObject.transform.matrix.clone().inverse().transpose().toArray();
 
     //if (Renderer.lastMaterialUsed === mat && Renderer.lastMeshUsed !== gameObject.mesh) {
     // rebuild vao and vbos if using the same material with different mesh

@@ -17,6 +17,7 @@ const { EngineToolbox } = require("./engine.toolbox");
 const { Input } = require("./engine.input");
 const { Renderer } = require("./engine.renderer");
 const { Vector4 } = require("./engine.math.vector4");
+const { time } = require("console");
 
 const main = () => {
   // create game info
@@ -59,17 +60,13 @@ const main = () => {
 
   // create scene objects
   const gameObject = new GameObject();
-  gameObject.mesh = sphere;
-  gameObject.transform.location = new Vector3(0, 0, -5);
-  gameObject.transform.rotation = new Vector3(0, 0, 0);
-  gameObject.transform.scale = new Vector3(1, 1, 1);
+  gameObject.mesh = box;
 
   const skybox = new GameObject();
   skybox.mesh = skyboxMesh;
-  skybox.transform.rotation = new Vector3(0, 180, 0);
 
   const camera = new Camera();
-  camera.projection.fov = 75;
+  camera.projection.fov = 50;
   camera.transform.rebuildMatrix();
   camera.projection.rebuildMatrix();
 
@@ -104,23 +101,16 @@ const main = () => {
   Renderer.setClearColor(new Vector4(0, 0, 0, 1));
   Renderer.enableDepthTest();
 
-  console.log(skybox.mesh);
-
   Game.mainFunction = () => {
-    gameObject.transform.rotation.y += Time.delta * 60;
-    gameObject.transform.rotation.z += Time.delta * 60;
-    gameObject.transform.location = new Vector3(Math.sin(Time.now), Math.cos(Time.now), -5);
+    const s = 0.05;
 
-    // skybox.transform.location.z = -5;
-    // skybox.transform.rotation.x += Time.delta * 60;
+    gameObject.transform.location.z = -5;
 
-    // camera.transform.location.x = Math.sin(Time.now);
-    // camera.transform.rotation.x = Math.sin(Time.now) * 30;
-    // camera.transform.rotation.z = Math.sin(Time.now) * 30;
-
-    skybox.transform.location = camera.transform.location;
+    camera.transform.rotation.x += Input.mouse.movementY * s;
+    camera.transform.rotation.y -= Input.mouse.movementX * s;
 
     Renderer.clear();
+
     Renderer.disableDepthTest();
     Renderer.drawGameObject(skybox, camera);
     Renderer.enableDepthTest();

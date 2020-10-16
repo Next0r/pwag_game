@@ -1,6 +1,11 @@
 const { EngineToolbox } = require("./engine.toolbox");
 
-class Mouse {}
+class Mouse {
+  constructor() {
+    this.movementX = 0;
+    this.movementY = 0;
+  }
+}
 
 class Input {
   static mouse = new Mouse();
@@ -13,7 +18,6 @@ class Input {
     document.addEventListener("pointerlockchange", lockChangeAlert, false);
     canvas.requestPointerLock();
   }
-
 }
 
 const lockChangeAlert = () => {
@@ -25,8 +29,18 @@ const lockChangeAlert = () => {
   }
 };
 
+let mouseFreezeTimeout = undefined;
+
 const updatePosition = (mouse) => {
-  console.log(mouse.movementX, mouse.movementY);
+  if (mouseFreezeTimeout) {
+    clearTimeout(mouseFreezeTimeout);
+  }
+  Input.mouse.movementX = mouse.movementX;
+  Input.mouse.movementY = -mouse.movementY;
+  mouseFreezeTimeout = setTimeout(() => {
+    Input.mouse.movementX = 0;
+    Input.mouse.movementY = 0;
+  }, 20);
 };
 
 exports.Input = Input;
