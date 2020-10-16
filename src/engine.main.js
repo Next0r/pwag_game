@@ -24,11 +24,6 @@ const main = () => {
   EngineToolbox.createEngineInfo();
   const gl = EngineToolbox.getGLContext();
 
-  const canvas = EngineToolbox.getCanvas();
-  canvas.addEventListener("mousedown", () => {
-    Input.lockPointer();
-  });
-
   if (!gl) {
     return;
   }
@@ -60,7 +55,7 @@ const main = () => {
 
   // create scene objects
   const gameObject = new GameObject();
-  gameObject.mesh = box;
+  gameObject.mesh = sphere;
 
   const skybox = new GameObject();
   skybox.mesh = skyboxMesh;
@@ -101,13 +96,35 @@ const main = () => {
   Renderer.setClearColor(new Vector4(0, 0, 0, 1));
   Renderer.enableDepthTest();
 
+  Input.addKeyboardEventListeners();
+  Input.keyboard.onRelease["KeyL"] = Input.lockPointer;
+
   Game.mainFunction = () => {
-    const s = 0.05;
+    const s = 0.075;
 
     gameObject.transform.location.z = -5;
+    gameObject.transform.rotation.y += Time.delta * 20;
 
     camera.transform.rotation.x += Input.mouse.movementY * s;
     camera.transform.rotation.y -= Input.mouse.movementX * s;
+
+    const camSpeed = 3;
+    const forward = camera.transform.forward();
+    forward.scale(Time.delta * camSpeed);
+    const right = camera.transform.right();
+    right.scale(Time.delta * camSpeed);
+    if (Input.keyboard.isDown("KeyW")) {
+      camera.transform.location.add(forward);
+    } else if (Input.keyboard.isDown("KeyS")) {
+      camera.transform.location.subtract(forward);
+    }
+    if (Input.keyboard.isDown("KeyA")) {
+      camera.transform.location.subtract(right);
+    } else if (Input.keyboard.isDown("KeyD")) {
+      camera.transform.location.add(right);
+    }
+
+    skybox.transform.location = camera.transform.location;
 
     Renderer.clear();
 

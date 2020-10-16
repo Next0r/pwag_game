@@ -17,6 +17,36 @@ class Vector3 {
     return [this.x, this.y, this.z];
   }
 
+  /**
+   * @param {Vector3} vector
+   */
+  add(vector) {
+    this.x += vector.x;
+    this.y += vector.y;
+    this.z += vector.z;
+    return this;
+  }
+
+  /**
+   * @param {Vector3} vector
+   */
+  subtract(vector) {
+    this.x -= vector.x;
+    this.y -= vector.y;
+    this.z -= vector.z;
+    return this;
+  }
+
+  /**
+   * @param {Number} value
+   */
+  scale(value) {
+    this.x *= value;
+    this.y *= value;
+    this.z *= value;
+    return this;
+  }
+
   static up = new Vector3(0, 1, 0);
   static right = new Vector3(1, 0, 0);
   static forward = new Vector3(0, 0, 1);

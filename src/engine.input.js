@@ -4,11 +4,34 @@ class Mouse {
   constructor() {
     this.movementX = 0;
     this.movementY = 0;
+    this.locked = false;
+  }
+}
+
+class Keyboard {
+  constructor() {
+    this._keyInfo = {};
+    this.onRelease = {};
+  }
+
+  isDown(code) {
+    return this._keyInfo[code] === true;
   }
 }
 
 class Input {
   static mouse = new Mouse();
+  static keyboard = new Keyboard();
+
+  static addKeyboardEventListeners() {
+    window.addEventListener("keydown", (keyboard) => {
+      setKeyDown(keyboard.code);
+    });
+    window.addEventListener("keyup", (keyboard) => {
+      setKeyUp(keyboard.code);
+      executeOnReleaseFunction(keyboard.code);
+    });
+  }
 
   static lockPointer() {
     const canvas = EngineToolbox.getCanvas();
@@ -17,8 +40,23 @@ class Input {
     }
     document.addEventListener("pointerlockchange", lockChangeAlert, false);
     canvas.requestPointerLock();
+    Input.mouse.locked = true;
   }
 }
+
+const executeOnReleaseFunction = (code) => {
+  if (typeof Input.keyboard.onRelease[code] === "function") {
+    Input.keyboard.onRelease[code]();
+  }
+};
+
+const setKeyDown = (code) => {
+  Input.keyboard._keyInfo[code] = true;
+};
+
+const setKeyUp = (code) => {
+  Input.keyboard._keyInfo[code] = false;
+};
 
 const lockChangeAlert = () => {
   const canvas = EngineToolbox.getCanvas();

@@ -1,5 +1,6 @@
 const { Matrix4 } = require("./engine.math.matrix4");
 const { Vector3 } = require("./engine.math.vector3");
+const { Vector4 } = require("./engine.math.vector4");
 
 class Transform {
   constructor() {
@@ -21,6 +22,14 @@ class Transform {
     scaleMatrix.scale(this.scale);
     this.matrix.fromMatrix4(locationMatrix.multiply(rotationMatrix.multiply(scaleMatrix)));
     return this;
+  }
+
+  forward() {
+    return new Vector3(-this.matrix.m20, -this.matrix.m21, -this.matrix.m22);
+  }
+
+  right() {
+    return new Vector3(this.matrix.m00, this.matrix.m01, this.matrix.m02);
   }
 
   /**
