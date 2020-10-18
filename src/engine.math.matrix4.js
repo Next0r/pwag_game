@@ -160,6 +160,16 @@ class Matrix4 {
     return this;
   }
 
+  ortho({ aspect = 1.333, near = 0.1, far = 100 }) {
+    this.m00 = 1 / aspect;
+    this.m11 = 1;
+    this.m22 = -2 / (far - near);
+    this.m30 = 0;
+    this.m31 = 0;
+    this.m32 = -(near + far) / (far - near);
+    return this;
+  }
+
   /**
    *
    * @param {Matrix4} matrix

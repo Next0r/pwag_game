@@ -12,7 +12,7 @@ const { Time } = require("./engine.time");
 const { readFile } = require("fs");
 const { TextureResources } = require("./engine.textureResources");
 const { Texture } = require("./engine.material.textures");
-const { removeDoubles, toArrayWithUniqueValues, createRepetitionArray } = require("./engine.utilities.mesh");
+const { removeDoubles, toArrayWithUniqueValues, createRepetitionArray, Mesh } = require("./engine.utilities.mesh");
 const { EngineToolbox } = require("./engine.toolbox");
 const { Input } = require("./engine.input");
 const { Renderer } = require("./engine.renderer");
@@ -41,21 +41,32 @@ const main = () => {
   plane2.createElementArray();
   const skyboxMesh = utilitiesCollada.readColladaFile("./models/skybox.dae")[0];
   skyboxMesh.createElementArray();
+  const guiPlaneMesh = Mesh.createGUIPlane();
 
   // read and store textures
   const textureResources = new TextureResources();
+
   const testTextureImage = EngineToolbox.readImage("./textures/test_color.png");
   const testTexture = new Texture();
   testTexture.fromPNGImage(testTextureImage);
   textureResources.add("testTexture", testTexture);
+
   const skyboxColorImage = EngineToolbox.readImage("./textures/skybox_color_01.png");
   const skyboxColor = new Texture();
   skyboxColor.fromPNGImage(skyboxColorImage);
   textureResources.add("skybox_color", skyboxColor);
 
+  const guiSightImage = EngineToolbox.readImage("./textures/gui_sight.png");
+  const guiSightTexture = new Texture();
+  guiSightTexture.fromPNGImage(guiSightImage);
+  textureResources.add("gui_sight", guiSightTexture);
+
   // create scene objects
+  const GUIElement = new GameObject();
+  GUIElement.mesh = guiPlaneMesh;
+
   const gameObject = new GameObject();
-  gameObject.mesh = sphere;
+  gameObject.mesh = box;
 
   const skybox = new GameObject();
   skybox.mesh = skyboxMesh;
@@ -63,7 +74,7 @@ const main = () => {
   const camera = new Camera();
   camera.projection.fov = 50;
   camera.transform.rebuildMatrix();
-  camera.projection.rebuildMatrix();
+  camera.projection.rebuildMatrixPerspective();
 
   const directLight = new DirectLight();
   const ambientLight = new AmbientLight();
@@ -89,12 +100,21 @@ const main = () => {
 
   skyboxMaterial.textures.color0 = textureResources.get("skybox_color");
 
+  const guiMaterial = new Material(shaderProgram);
+  guiMaterial.uniforms.color0Sampler.value = [0];
+  guiMaterial.uniforms.useVertexColor.value = [0];
+  guiMaterial.uniforms.useEmission.value = [1];
+
+  guiMaterial.textures.color0 = textureResources.get("gui_sight");
+
   gameObject.material = material;
   skybox.material = skyboxMaterial;
+  GUIElement.material = guiMaterial;
 
   // draw
   Renderer.setClearColor(new Vector4(0, 0, 0, 1));
   Renderer.enableDepthTest();
+  Renderer.enableAlphaBlend();
 
   Input.addKeyboardEventListeners();
   Input.keyboard.onRelease["KeyL"] = Input.lockPointer;
@@ -126,13 +146,21 @@ const main = () => {
 
     skybox.transform.location = camera.transform.location;
 
-    Renderer.clear();
+    GUIElement.transform.location = new Vector3(0, 0, -1);
+    GUIElement.transform.scale = new Vector3(0.15, 0.15, 0.15);
 
+    Renderer.clear();
+    // skybox
     Renderer.disableDepthTest();
     Renderer.drawGameObject(skybox, camera);
     Renderer.enableDepthTest();
-
+    // opaque elements
     Renderer.drawGameObject(gameObject, camera);
+
+    // gui
+    Renderer.enableAlphaBlend();
+    Renderer.drawGUIElement(GUIElement, camera);
+    Renderer.disableAlphaBlend();
   };
 
   Game.startLoop();

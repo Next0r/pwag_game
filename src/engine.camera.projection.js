@@ -9,7 +9,7 @@ class Projection {
     this.matrix = new Matrix4();
   }
 
-  rebuildMatrix() {
+  rebuildMatrixPerspective() {
     this.matrix.identity();
     this.matrix.projection({
       fov: this.fov,
@@ -17,6 +17,13 @@ class Projection {
       near: this.near,
       far: this.far,
     });
+    return this;
+  }
+
+  rebuildMatrixOrtho() {
+    this.matrix.identity();
+    this.matrix.ortho({ aspect: this.aspect, near: this.near, far: this.far });
+    return this;
   }
 }
 

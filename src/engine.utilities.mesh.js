@@ -25,8 +25,46 @@ class Mesh {
     this.elementArray = [];
   }
 
+  static createGUIPlane() {
+    const plane = new Mesh();
+    plane.name = "GUIPlane";
+    plane.positions = [
+      [-1, -1, 0],
+      [1, -1, 0],
+      [-1, 1, 0],
+      [1, 1, 0],
+    ];
+    plane.normals = [[0, 0, 1]];
+    plane.map = [
+      [1, 1],
+      [0, 0],
+      [0, 1],
+      [1, 1],
+      [1, 0],
+      [0, 0],
+    ];
+    plane.positionOffset = 0;
+    plane.normalOffset = 1;
+    plane.mapOffset = 2;
+    plane.colorOffset = undefined;
+    plane.vertices = [
+      [1, 0, 0],
+      [2, 0, 1],
+      [0, 0, 2],
+      [1, 0, 3],
+      [3, 0, 4],
+      [2, 0, 5],
+    ];
+    plane.createElementArray();
+    return plane;
+  }
+
   getPositionsArray() {
     const out = [];
+    if (this.positionOffset === undefined) {
+      return out;
+    }
+
     for (let vertex of this.reducedVertices) {
       const positionIndex = vertex[this.positionOffset];
       out.push(...this.positions[positionIndex], 1);
@@ -36,6 +74,10 @@ class Mesh {
 
   getNormalsArray() {
     const out = [];
+    if (this.normalOffset === undefined) {
+      return out;
+    }
+
     for (let vertex of this.reducedVertices) {
       const normalIndex = vertex[this.normalOffset];
       out.push(...this.normals[normalIndex], 0);
@@ -45,6 +87,10 @@ class Mesh {
 
   getColorsArray() {
     const out = [];
+    if (this.colorOffset === undefined) {
+      return out;
+    }
+
     for (let vertex of this.reducedVertices) {
       const colorIndex = vertex[this.colorOffset];
       out.push(...this.colors[colorIndex]);
@@ -54,6 +100,10 @@ class Mesh {
 
   getMapArray() {
     const out = [];
+    if (this.mapOffset === undefined) {
+      return out;
+    }
+
     for (let vertex of this.reducedVertices) {
       const mapIndex = vertex[this.mapOffset];
       out.push(...this.map[mapIndex], 0);

@@ -3,6 +3,7 @@ const { GameObject } = require("./engine.gameObject");
 const { EngineInfo } = require("./engine.info");
 const { EngineToolbox } = require("./engine.toolbox");
 const { Vector4 } = require("./engine.math.vector4");
+const { Matrix4 } = require("./engine.math.matrix4");
 
 const gl = EngineToolbox.getGLContext();
 
@@ -17,11 +18,37 @@ class Renderer {
   //   static lastMaterialUsed = undefined;
 
   /**
+   *
+   * @param {GameObject} GUIElement
+   * @param {Camera} camera
+   */
+  static drawGUIElement(GUIElement, camera) {
+    camera.projection.rebuildMatrixOrtho();
+    GUIElement.transform.rebuildMatrix();
+
+    const mat = GUIElement.material;
+    const modelViewMatrix = GUIElement.transform.matrix.clone();
+
+    mat.uniforms.modelViewMatrix.value = modelViewMatrix.toArray();
+    mat.uniforms.projectionMatrix.value = camera.projection.matrix.toArray();
+    mat.uniforms.normalMatrix.value = GUIElement.transform.matrix.clone().inverse().transpose().toArray();
+
+    mat.createVertexArray(GUIElement.mesh);
+
+    mat.uploadUniforms();
+    mat.uploadTextures();
+    mat.useProgram();
+    mat.bindVertexArray();
+
+    gl.drawElements(gl.TRIANGLES, GUIElement.mesh.elementArray.length, gl.UNSIGNED_INT, 0);
+  }
+
+  /**
    * @param {GameObject} gameObject
    * @param {Camera} camera
    */
   static drawGameObject(gameObject, camera) {
-    camera.projection.rebuildMatrix();
+    camera.projection.rebuildMatrixPerspective();
     camera.transform.rebuildMatrix();
     gameObject.transform.rebuildMatrix();
 
@@ -81,6 +108,21 @@ class Renderer {
       return;
     }
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  }
+
+  static enableAlphaBlend() {
+    if (!gl) {
+      return;
+    }
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  }
+
+  static disableAlphaBlend() {
+    if (!gl) {
+      return;
+    }
+    gl.disable(gl.BLEND);
   }
 }
 
