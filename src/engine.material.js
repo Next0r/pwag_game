@@ -114,6 +114,9 @@ class Material {
     this.uniforms.ambientLightValue.value && uniform1fv(this.uniforms.ambientLightValue);
     this.uniforms.useVertexColor.value && uniform1iv(this.uniforms.useVertexColor);
     this.uniforms.color0Sampler.value && uniform1iv(this.uniforms.color0Sampler);
+    this.uniforms.color1Sampler.value && uniform1iv(this.uniforms.color1Sampler);
+    this.uniforms.useColor0.value && uniform1iv(this.uniforms.useColor0);
+    this.uniforms.useColor1.value && uniform1iv(this.uniforms.useColor1);
     this.uniforms.useEmission.value && uniform1iv(this.uniforms.useEmission);
   }
 

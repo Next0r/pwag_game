@@ -3,6 +3,12 @@
 precision highp float;
 
 uniform sampler2D u_color0_sampler;
+uniform sampler2D u_color1_sampler;
+
+uniform int u_use_vertex_color;
+uniform int u_use_emission;
+uniform int u_use_color0;
+uniform int u_use_color1;
 
 out vec4 out_color;
 in vec4 vertex_color;
@@ -13,20 +19,38 @@ in float direct_light_value;
 in vec3 ambient_light_color;
 in float ambient_light_value;
 in vec3 map;
-flat in int use_vertex_color;
-flat in int use_emission;
+
+vec4 white_color = vec4(1, 1, 1, 1);
+vec4 black_color = vec4(0, 0, 0, 0);
+
+vec4 get_vertex_color() {
+  vec4 col = (vertex_color * float(u_use_vertex_color)) +
+    (white_color * float(1 - u_use_vertex_color));
+  return col;
+}
+
+vec4 get_texture_color() {
+  vec4 color0 = texture(u_color0_sampler, vec2(map));
+  vec4 color1 = texture(u_color1_sampler, vec2(map));
+
+  vec4 col = (color0 * ((1.0 - color1.a) * float(u_use_color1) + 1.0 * float(1 - u_use_color1)) * float(u_use_color0))
+   + (color1 * float(u_use_color1)); 
+  
+  return col;
+}
 
 void main() {
   
-  vec4 base_color = (vertex_color * float(use_vertex_color)) + (vec4(1, 1, 1, 1) * float((1 - use_vertex_color)));
+  vec4 base_color = get_vertex_color();
   float lambert_factor = max(dot(vec3(normal), -direct_light_direction), 0.0);
   vec4 color0 = texture(u_color0_sampler, vec2(map));
+  vec4 color1 = texture(u_color1_sampler, vec2(map));
 
-  vec4 ambient_coefficient = vec4(ambient_light_color * ambient_light_value, 1) * float((1 - use_emission));
+  vec4 ambient_coefficient = vec4(ambient_light_color * ambient_light_value, 1) * float((1 - u_use_emission));
 
 
-  out_color = base_color * color0
-    * (float((1 - use_emission)) * vec4(direct_light_color * direct_light_value * lambert_factor, 1) 
-    + float(use_emission) * vec4(1, 1, 1, 1))
+  out_color = base_color * get_texture_color()
+    * (float((1 - u_use_emission)) * vec4(direct_light_color * direct_light_value * lambert_factor, 1) 
+    + float(u_use_emission) * vec4(1, 1, 1, 1))
     + ambient_coefficient;
 }

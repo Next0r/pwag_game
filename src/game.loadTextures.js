@@ -20,6 +20,10 @@ const loadTextures = () => {
   const guiSightTexture = new Texture();
   guiSightTexture.fromPNGImage(guiSightImage);
   textureResources.add("guiSight", guiSightTexture);
+
+  const unityImage = EngineToolbox.readImage("./textures/unity.png");
+  const unityTexture = new Texture().fromPNGImage(unityImage);
+  textureResources.add("unity", unityTexture);
 };
 
 exports.loadTextures = loadTextures;

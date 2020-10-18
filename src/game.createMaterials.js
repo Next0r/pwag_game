@@ -12,11 +12,11 @@ const createMaterials = () => {
 
   const shaderProgram = createShaderProgram(vertexShaderSource, fragmentShaderSource);
 
-  const boxMaterial = new Material(shaderProgram);
+  const planeMaterial = new Material(shaderProgram);
   const skyboxMaterial = new Material(shaderProgram);
   const guiSightMaterial = new Material(shaderProgram);
 
-  materialResources.add("box", boxMaterial);
+  materialResources.add("plane", planeMaterial);
   materialResources.add("skybox", skyboxMaterial);
   materialResources.add("guiSight", guiSightMaterial);
 };

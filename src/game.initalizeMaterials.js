@@ -12,7 +12,7 @@ const initializeMaterials = () => {
   /**
    * @type {Material}
    */
-  const boxMaterial = materialResources.get("box");
+  const planeMaterial = materialResources.get("plane");
   /**
    * @type {Material}
    */
@@ -31,22 +31,30 @@ const initializeMaterials = () => {
    */
   const directLight = scene.get("directLight");
 
-  boxMaterial.uniforms.ambientLightColor.value = ambientLight.color.toArray();
-  boxMaterial.uniforms.ambientLightValue.value = [ambientLight.value];
-  boxMaterial.uniforms.directLightDirection.value = directLight.direction.toArray();
-  boxMaterial.uniforms.directLightColor.value = directLight.color.toArray();
-  boxMaterial.uniforms.directLightValue.value = [directLight.value];
-  boxMaterial.uniforms.color0Sampler.value = [0];
-  boxMaterial.uniforms.useVertexColor.value = [0];
-  boxMaterial.uniforms.useEmission.value = [0];
-  boxMaterial.textures.color0 = textureResources.get("testColor");
+  planeMaterial.uniforms.ambientLightColor.value = ambientLight.color.toArray();
+  planeMaterial.uniforms.ambientLightValue.value = [ambientLight.value];
+  planeMaterial.uniforms.directLightDirection.value = directLight.direction.toArray();
+  planeMaterial.uniforms.directLightColor.value = directLight.color.toArray();
+  planeMaterial.uniforms.directLightValue.value = [directLight.value];
+  planeMaterial.uniforms.color0Sampler.value = [0];
+  planeMaterial.uniforms.color1Sampler.value = [1];
+  planeMaterial.uniforms.useColor0.value = [1];
+  planeMaterial.uniforms.useColor1.value = [1];
+  planeMaterial.uniforms.useVertexColor.value = [0];
+  planeMaterial.uniforms.useEmission.value = [0];
+  planeMaterial.textures.color0 = textureResources.get("testColor");
+  planeMaterial.textures.color1 = textureResources.get("unity");
 
   skyboxMaterial.uniforms.color0Sampler.value = [0];
+  skyboxMaterial.uniforms.useColor0.value = [1];
+  skyboxMaterial.uniforms.useColor1.value = [0];
   skyboxMaterial.uniforms.useVertexColor.value = [0];
   skyboxMaterial.uniforms.useEmission.value = [1];
   skyboxMaterial.textures.color0 = textureResources.get("skyboxColor");
 
   guiSightMaterial.uniforms.color0Sampler.value = [0];
+  guiSightMaterial.uniforms.useColor0.value = [1];
+  guiSightMaterial.uniforms.useColor1.value = [0];
   guiSightMaterial.uniforms.useVertexColor.value = [0];
   guiSightMaterial.uniforms.useEmission.value = [1];
   guiSightMaterial.textures.color0 = textureResources.get("guiSight");

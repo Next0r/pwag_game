@@ -53,15 +53,15 @@ const main = () => {
   Input.keyboard.onRelease["KeyL"] = Input.lockPointer;
 
   const camera = scene.get("camera");
-  const box = scene.get("box");
+  const plane = scene.get("plane");
   const skybox = scene.get("skybox");
   const guiSight = scene.get("guiSight");
 
   Game.mainFunction = () => {
     const s = 0.075;
 
-    box.transform.location.z = -5;
-    box.transform.rotation.y += Time.delta * 20;
+    plane.transform.location.z = -5;
+    // plane.transform.rotation.y += Time.delta * 20;
 
     camera.transform.rotation.x += Input.mouse.movementY * s;
     camera.transform.rotation.y -= Input.mouse.movementX * s;
@@ -93,7 +93,7 @@ const main = () => {
     Renderer.drawGameObject(skybox, camera);
     Renderer.enableDepthTest();
     // opaque elements
-    Renderer.drawGameObject(box, camera);
+    Renderer.drawGameObject(plane, camera);
 
     // gui (uses alpha - draw as last)
     Renderer.enableAlphaBlend();

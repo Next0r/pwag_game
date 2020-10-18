@@ -27,9 +27,9 @@ const createSceneElements = () => {
   skybox.mesh = meshResources.get("skybox");
   skybox.material = materialResources.get("skybox");
 
-  const box = new GameObject();
-  box.mesh = meshResources.get("box");
-  box.material = materialResources.get("box");
+  const plane = new GameObject();
+  plane.mesh = meshResources.get("planeMock");
+  plane.material = materialResources.get("plane");
 
   scene.add("camera", camera);
   scene.add("ambientLight", ambientLight);
@@ -37,7 +37,7 @@ const createSceneElements = () => {
 
   scene.add("guiSight", guiSight);
   scene.add("skybox", skybox);
-  scene.add("box", box);
+  scene.add("plane", plane);
 };
 
 exports.createSceneElements = createSceneElements;
