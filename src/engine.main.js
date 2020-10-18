@@ -11,7 +11,7 @@ const { EngineInfo } = require("./engine.info");
 const { DataBase } = require("./engine.dataBase");
 const { createSceneElements } = require("./game.createSceneElements");
 const { createMaterials } = require("./game.createMaterials");
-const { initializeMaterials } = require("./game.initalizeMaterials");
+const { initializeMaterials } = require("./game.initializeMaterials");
 
 const main = () => {
   const engineInfo = new EngineInfo();
@@ -29,20 +29,11 @@ const main = () => {
   engineInfo.add("materialResources", new DataBase());
   engineInfo.add("scene", scene);
 
-  // load mesh resources
-  loadMeshes();
-
-  // load texture resources
-  loadTextures();
-
-  // create materials
-  createMaterials();
-
-  // create scene (camera, lights, game objects ...)
-  createSceneElements();
-
-  // initialize materials with scene info and textures
-  initializeMaterials();
+  loadMeshes(); // load mesh resources
+  loadTextures(); // load texture resources
+  createMaterials(); // create materials
+  createSceneElements(); // create scene (camera, lights, game objects ...)
+  initializeMaterials(); // initialize materials with scene info and textures
 
   // draw
   Renderer.setClearColor(new Vector4(0, 0, 0, 1));
@@ -61,7 +52,7 @@ const main = () => {
     const s = 0.075;
 
     plane.transform.location.z = -5;
-    // plane.transform.rotation.y += Time.delta * 20;
+    plane.transform.rotation.y += Time.delta * 20;
 
     camera.transform.rotation.x += Input.mouse.movementY * s;
     camera.transform.rotation.y -= Input.mouse.movementX * s;

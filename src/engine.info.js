@@ -18,7 +18,11 @@ class EngineInfo {
   }
 
   get(id) {
-    return this._data[id];
+    const data = this._data[id];
+    if (data === undefined) {
+      console.warn(`Cannot find element with id: ${id}.`);
+    }
+    return data;
   }
 
   delete(id) {
