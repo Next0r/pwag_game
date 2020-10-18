@@ -20,6 +20,9 @@ const { loadTextures } = require("./game.loadTextures");
 const { loadMeshes } = require("./game.loadMeshes");
 const { EngineInfo } = require("./engine.info");
 const { DataBase } = require("./engine.dataBase");
+const { createSceneElements } = require("./game.createSceneElements");
+const { createMaterials } = require("./game.createMaterials");
+const { initializeMaterials } = require("./game.initalizeMaterials");
 
 const main = () => {
   const engineInfo = new EngineInfo();
@@ -30,69 +33,29 @@ const main = () => {
     return;
   }
 
-  const vsSource = EngineToolbox.readTextFile("./shaders/testVS.txt");
-  const fsSource = EngineToolbox.readTextFile("./shaders/testFS.txt");
+  const scene = new DataBase();
 
   engineInfo.add("meshResources", new DataBase());
   engineInfo.add("textureResources", new DataBase());
   engineInfo.add("materialResources", new DataBase());
-  engineInfo.add("scene", new DataBase());
+  engineInfo.add("scene", scene);
 
   // load mesh resources
-  const meshResources = engineInfo.get("meshResources");
+  // const meshResources = engineInfo.get("meshResources");
   loadMeshes();
 
   // load texture resources
-  const textureResources = engineInfo.get("textureResources");
+  // const textureResources = engineInfo.get("textureResources");
   loadTextures();
 
-  // create scene objects
-  const GUIElement = new GameObject();
-  GUIElement.mesh = meshResources.get("gui_plane");
+  // create materials
+  createMaterials();
 
-  const gameObject = new GameObject();
-  gameObject.mesh = meshResources.get("box");
+  // create scene (camera, lights, game objects ...)
+  createSceneElements();
 
-  const skybox = new GameObject();
-  skybox.mesh = meshResources.get("skybox");
-
-  const camera = new Camera();
-  camera.projection.fov = 50;
-
-  const directLight = new DirectLight();
-  const ambientLight = new AmbientLight();
-
-  // setup material parameters
-  const shaderProgram = createShaderProgram(vsSource, fsSource);
-  const material = new Material(shaderProgram);
-  material.uniforms.directLightDirection.value = directLight.direction.toArray();
-  material.uniforms.directLightColor.value = directLight.color.toArray();
-  material.uniforms.directLightValue.value = [directLight.value];
-  material.uniforms.ambientLightColor.value = ambientLight.color.toArray();
-  material.uniforms.ambientLightValue.value = [ambientLight.value];
-  material.uniforms.color0Sampler.value = [0];
-  material.uniforms.useVertexColor.value = [0];
-  material.uniforms.useEmission.value = [0];
-
-  material.textures.color0 = textureResources.get("testTexture");
-
-  const skyboxMaterial = new Material(shaderProgram);
-  skyboxMaterial.uniforms.color0Sampler.value = [0];
-  skyboxMaterial.uniforms.useVertexColor.value = [0];
-  skyboxMaterial.uniforms.useEmission.value = [1];
-
-  skyboxMaterial.textures.color0 = textureResources.get("skybox_color");
-
-  const guiMaterial = new Material(shaderProgram);
-  guiMaterial.uniforms.color0Sampler.value = [0];
-  guiMaterial.uniforms.useVertexColor.value = [0];
-  guiMaterial.uniforms.useEmission.value = [1];
-
-  guiMaterial.textures.color0 = textureResources.get("gui_sight");
-
-  gameObject.material = material;
-  skybox.material = skyboxMaterial;
-  GUIElement.material = guiMaterial;
+  // initialize materials with scene info and textures
+  initializeMaterials();
 
   // draw
   Renderer.setClearColor(new Vector4(0, 0, 0, 1));
@@ -102,11 +65,16 @@ const main = () => {
   Input.addKeyboardEventListeners();
   Input.keyboard.onRelease["KeyL"] = Input.lockPointer;
 
+  const camera = scene.get("camera");
+  const box = scene.get("box");
+  const skybox = scene.get("skybox");
+  const guiSight = scene.get("guiSight");
+
   Game.mainFunction = () => {
     const s = 0.075;
 
-    gameObject.transform.location.z = -5;
-    gameObject.transform.rotation.y += Time.delta * 20;
+    box.transform.location.z = -5;
+    box.transform.rotation.y += Time.delta * 20;
 
     camera.transform.rotation.x += Input.mouse.movementY * s;
     camera.transform.rotation.y -= Input.mouse.movementX * s;
@@ -129,8 +97,8 @@ const main = () => {
 
     skybox.transform.location = camera.transform.location;
 
-    GUIElement.transform.location = new Vector3(0, 0, -1);
-    GUIElement.transform.scale = new Vector3(0.15, 0.15, 0.15);
+    guiSight.transform.location = new Vector3(0, 0, -1);
+    guiSight.transform.scale = new Vector3(0.15, 0.15, 0.15);
 
     Renderer.clear();
     // skybox
@@ -138,11 +106,11 @@ const main = () => {
     Renderer.drawGameObject(skybox, camera);
     Renderer.enableDepthTest();
     // opaque elements
-    Renderer.drawGameObject(gameObject, camera);
+    Renderer.drawGameObject(box, camera);
 
-    // gui
+    // gui (uses alpha - draw as last)
     Renderer.enableAlphaBlend();
-    Renderer.drawGUIElement(GUIElement, camera);
+    Renderer.drawGUIElement(guiSight, camera);
     Renderer.disableAlphaBlend();
   };
 

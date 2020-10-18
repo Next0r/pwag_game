@@ -9,17 +9,17 @@ const loadTextures = () => {
   const testTextureImage = EngineToolbox.readImage("./textures/test_color.png");
   const testTexture = new Texture();
   testTexture.fromPNGImage(testTextureImage);
-  textureResources.add("testTexture", testTexture);
+  textureResources.add("testColor", testTexture);
 
   const skyboxColorImage = EngineToolbox.readImage("./textures/skybox_color_01.png");
   const skyboxColor = new Texture();
   skyboxColor.fromPNGImage(skyboxColorImage);
-  textureResources.add("skybox_color", skyboxColor);
+  textureResources.add("skyboxColor", skyboxColor);
 
   const guiSightImage = EngineToolbox.readImage("./textures/gui_sight.png");
   const guiSightTexture = new Texture();
   guiSightTexture.fromPNGImage(guiSightImage);
-  textureResources.add("gui_sight", guiSightTexture);
+  textureResources.add("guiSight", guiSightTexture);
 };
 
 exports.loadTextures = loadTextures;

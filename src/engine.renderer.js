@@ -4,6 +4,7 @@ const { EngineInfo } = require("./engine.info");
 const { EngineToolbox } = require("./engine.toolbox");
 const { Vector4 } = require("./engine.math.vector4");
 const { Matrix4 } = require("./engine.math.matrix4");
+const { Vector3 } = require("./engine.math.vector3");
 
 const gl = EngineToolbox.getGLContext();
 
@@ -18,7 +19,9 @@ class Renderer {
   //   static lastMaterialUsed = undefined;
 
   /**
-   *
+   * Applies scale correction to GUI element (to take screen aspect into account),
+   * enforces element's location to be in front of camera and draws it with
+   * orthogonal projection.
    * @param {GameObject} GUIElement
    * @param {Camera} camera
    */
@@ -28,9 +31,14 @@ class Renderer {
 
     const mat = GUIElement.material;
     const modelViewMatrix = GUIElement.transform.matrix.clone();
+    // correct element scale with screen aspect
+    const scaleCorrection = new Vector3(1 / camera.projection.aspect, 1, 1);
+    modelViewMatrix.scale(scaleCorrection);
+    // force z position to -1
+    modelViewMatrix.m32 = -1;
 
     mat.uniforms.modelViewMatrix.value = modelViewMatrix.toArray();
-    mat.uniforms.projectionMatrix.value = camera.projection.matrix.toArray();
+    mat.uniforms.projectionMatrix.value = new Matrix4().toArray();
     mat.uniforms.normalMatrix.value = GUIElement.transform.matrix.clone().inverse().transpose().toArray();
 
     mat.createVertexArray(GUIElement.mesh);

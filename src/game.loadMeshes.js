@@ -20,7 +20,7 @@ const loadMeshes = () => {
   meshResources.add("box", box);
   meshResources.add("sphere", sphere);
   meshResources.add("skybox", skybox);
-  meshResources.add("gui_plane", guiPlane);
+  meshResources.add("guiPlane", guiPlane);
 };
 
 exports.loadMeshes = loadMeshes;
