@@ -83,7 +83,7 @@ class Renderer {
       return;
     }
     const engineInfo = new EngineInfo();
-    engineInfo.set("clearColor", clearColor);
+    engineInfo.add("clearColor", clearColor);
     gl.clearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
     return this;
   }

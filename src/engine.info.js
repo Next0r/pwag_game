@@ -13,7 +13,7 @@ class EngineInfo {
 
   static instance = undefined;
 
-  set(id, property) {
+  add(id, property) {
     this._data[id] = property;
   }
 

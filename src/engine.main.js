@@ -1,5 +1,4 @@
 const { createShaderProgram } = require("./engine.shader");
-const utilitiesCollada = require("./engine.utilities.collada");
 const { Vector3 } = require("./engine.math.vector3");
 const { GameObject } = require("./engine.gameObject");
 const { Camera } = require("./engine.camera");
@@ -10,7 +9,6 @@ const { Material } = require("./engine.material");
 const { Game } = require("./engine.game");
 const { Time } = require("./engine.time");
 const { readFile } = require("fs");
-const { TextureResources } = require("./engine.textureResources");
 const { Texture } = require("./engine.material.textures");
 const { removeDoubles, toArrayWithUniqueValues, createRepetitionArray, Mesh } = require("./engine.utilities.mesh");
 const { EngineToolbox } = require("./engine.toolbox");
@@ -18,9 +16,13 @@ const { Input } = require("./engine.input");
 const { Renderer } = require("./engine.renderer");
 const { Vector4 } = require("./engine.math.vector4");
 const { time } = require("console");
+const { loadTextures } = require("./game.loadTextures");
+const { loadMeshes } = require("./game.loadMeshes");
+const { EngineInfo } = require("./engine.info");
+const { DataBase } = require("./engine.dataBase");
 
 const main = () => {
-  // create game info
+  const engineInfo = new EngineInfo();
   EngineToolbox.createEngineInfo();
   const gl = EngineToolbox.getGLContext();
 
@@ -28,53 +30,34 @@ const main = () => {
     return;
   }
 
-  // read resources
   const vsSource = EngineToolbox.readTextFile("./shaders/testVS.txt");
   const fsSource = EngineToolbox.readTextFile("./shaders/testFS.txt");
-  const box = utilitiesCollada.readColladaFile("./models/box2.dae")[0];
-  box.createElementArray();
-  const sphere = utilitiesCollada.readColladaFile("./models/sphere.dae")[0];
-  sphere.createElementArray();
-  const plane = utilitiesCollada.readColladaFile("./models/plane.dae")[0];
-  plane.createElementArray();
-  const plane2 = utilitiesCollada.readColladaFile("./models/plane2.dae")[0]; // with vertex colors
-  plane2.createElementArray();
-  const skyboxMesh = utilitiesCollada.readColladaFile("./models/skybox.dae")[0];
-  skyboxMesh.createElementArray();
-  const guiPlaneMesh = Mesh.createGUIPlane();
 
-  // read and store textures
-  const textureResources = new TextureResources();
+  engineInfo.add("meshResources", new DataBase());
+  engineInfo.add("textureResources", new DataBase());
+  engineInfo.add("materialResources", new DataBase());
+  engineInfo.add("scene", new DataBase());
 
-  const testTextureImage = EngineToolbox.readImage("./textures/test_color.png");
-  const testTexture = new Texture();
-  testTexture.fromPNGImage(testTextureImage);
-  textureResources.add("testTexture", testTexture);
+  // load mesh resources
+  const meshResources = engineInfo.get("meshResources");
+  loadMeshes();
 
-  const skyboxColorImage = EngineToolbox.readImage("./textures/skybox_color_01.png");
-  const skyboxColor = new Texture();
-  skyboxColor.fromPNGImage(skyboxColorImage);
-  textureResources.add("skybox_color", skyboxColor);
-
-  const guiSightImage = EngineToolbox.readImage("./textures/gui_sight.png");
-  const guiSightTexture = new Texture();
-  guiSightTexture.fromPNGImage(guiSightImage);
-  textureResources.add("gui_sight", guiSightTexture);
+  // load texture resources
+  const textureResources = engineInfo.get("textureResources");
+  loadTextures();
 
   // create scene objects
   const GUIElement = new GameObject();
-  GUIElement.mesh = guiPlaneMesh;
+  GUIElement.mesh = meshResources.get("gui_plane");
 
   const gameObject = new GameObject();
-  gameObject.mesh = box;
+  gameObject.mesh = meshResources.get("box");
 
   const skybox = new GameObject();
-  skybox.mesh = skyboxMesh;
+  skybox.mesh = meshResources.get("skybox");
 
   const camera = new Camera();
   camera.projection.fov = 50;
-  camera.transform.rebuildMatrix();
-  camera.projection.rebuildMatrixPerspective();
 
   const directLight = new DirectLight();
   const ambientLight = new AmbientLight();
