@@ -1,4 +1,5 @@
 const { EngineInfo } = require("./engine.info");
+const { Mesh } = require("./engine.utilities.mesh");
 
 const { readColladaFile } = require("./engine.utilities.collada");
 

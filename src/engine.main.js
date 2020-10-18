@@ -1,21 +1,10 @@
-const { createShaderProgram } = require("./engine.shader");
 const { Vector3 } = require("./engine.math.vector3");
-const { GameObject } = require("./engine.gameObject");
-const { Camera } = require("./engine.camera");
-const { DirectLight } = require("./engine.light.direct");
-const { AmbientLight } = require("./engine.light.ambient");
-const { Matrix4 } = require("./engine.math.matrix4");
-const { Material } = require("./engine.material");
 const { Game } = require("./engine.game");
 const { Time } = require("./engine.time");
-const { readFile } = require("fs");
-const { Texture } = require("./engine.material.textures");
-const { removeDoubles, toArrayWithUniqueValues, createRepetitionArray, Mesh } = require("./engine.utilities.mesh");
 const { EngineToolbox } = require("./engine.toolbox");
 const { Input } = require("./engine.input");
 const { Renderer } = require("./engine.renderer");
 const { Vector4 } = require("./engine.math.vector4");
-const { time } = require("console");
 const { loadTextures } = require("./game.loadTextures");
 const { loadMeshes } = require("./game.loadMeshes");
 const { EngineInfo } = require("./engine.info");
@@ -41,11 +30,9 @@ const main = () => {
   engineInfo.add("scene", scene);
 
   // load mesh resources
-  // const meshResources = engineInfo.get("meshResources");
   loadMeshes();
 
   // load texture resources
-  // const textureResources = engineInfo.get("textureResources");
   loadTextures();
 
   // create materials
