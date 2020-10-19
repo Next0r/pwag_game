@@ -5,13 +5,10 @@ const { EngineToolbox } = require("./engine.toolbox");
 const { Input } = require("./engine.input");
 const { Renderer } = require("./engine.renderer");
 const { Vector4 } = require("./engine.math.vector4");
-const { loadTextures } = require("./game.loadTextures");
-const { loadMeshes } = require("./game.loadMeshes");
 const { EngineInfo } = require("./engine.info");
-const { DataBase } = require("./engine.dataBase");
-const { createSceneElements } = require("./game.createSceneElements");
-const { createMaterials } = require("./game.createMaterials");
-const { initializeMaterials } = require("./game.initializeMaterials");
+const { CreateEngineResources } = require("./engine.resources");
+const { createShaderProgram } = require("./engine.shader");
+const { gameInit } = require("./game.init");
 
 const main = () => {
   const engineInfo = new EngineInfo();
@@ -22,18 +19,14 @@ const main = () => {
     return;
   }
 
-  const scene = new DataBase();
+  const resources = CreateEngineResources();
+  resources.build();
+  gameInit();
 
-  engineInfo.add("meshResources", new DataBase());
-  engineInfo.add("textureResources", new DataBase());
-  engineInfo.add("materialResources", new DataBase());
-  engineInfo.add("scene", scene);
-
-  loadMeshes(); // load mesh resources
-  loadTextures(); // load texture resources
-  createMaterials(); // create materials
-  createSceneElements(); // create scene (camera, lights, game objects ...)
-  initializeMaterials(); // initialize materials with scene info and textures
+  const plane = resources.gameObjects.plane;
+  const camera = resources.gameObjects.camera;
+  const skybox = resources.gameObjects.skybox;
+  const guiSight = resources.gameObjects.guiSight;
 
   // draw
   Renderer.setClearColor(new Vector4(0, 0, 0, 1));
@@ -42,11 +35,6 @@ const main = () => {
 
   Input.addKeyboardEventListeners();
   Input.keyboard.onRelease["KeyL"] = Input.lockPointer;
-
-  const camera = scene.get("camera");
-  const plane = scene.get("plane");
-  const skybox = scene.get("skybox");
-  const guiSight = scene.get("guiSight");
 
   Game.mainFunction = () => {
     const s = 0.075;

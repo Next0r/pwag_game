@@ -1,0 +1,7 @@
+{
+  "texturesDir": "./textures",
+  "meshesDir": "./models",
+  "shadersDir": "./shaders",
+  "gameObjects": ["skybox", "guiSight", "plane"],
+  "materials": ["skybox", "guiSight", "plane"]
+}

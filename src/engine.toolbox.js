@@ -67,6 +67,16 @@ class EngineToolbox {
 
     return true;
   }
+
+  static readSettings() {
+    const settingsText = this.readTextFile("./settings.json");
+    if (!settingsText) {
+      console.warn("Cannot read settings.json file.");
+      return;
+    }
+    const settings = JSON.parse(settingsText);
+    return settings;
+  }
 }
 
 exports.EngineToolbox = EngineToolbox;

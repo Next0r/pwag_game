@@ -1,11 +1,12 @@
+const { Vector3 } = require("./engine.math.vector3");
 const { EngineToolbox } = require("./engine.toolbox");
 const gl = EngineToolbox.getGLContext();
 
 class Uniform {
-  constructor(name) {
+  constructor(name, value) {
     this.name = name;
     this.location = undefined;
-    this.value = undefined;
+    this.value = value;
   }
 
   /**
@@ -32,22 +33,22 @@ class MaterialUniforms {
     this.projectionMatrix = new Uniform("u_projection_matrix");
     this.normalMatrix = new Uniform("u_normal_matrix");
 
-    this.directLightDirection = new Uniform("u_direct_light_direction");
-    this.directLightColor = new Uniform("u_direct_light_color");
-    this.directLightValue = new Uniform("u_direct_light_value");
+    this.directLightDirection = new Uniform("u_direct_light_direction", [0, -1, 0]);
+    this.directLightColor = new Uniform("u_direct_light_color", [1, 1, 1]);
+    this.directLightValue = new Uniform("u_direct_light_value", [1]);
 
-    this.ambientLightColor = new Uniform("u_ambient_light_color");
-    this.ambientLightValue = new Uniform("u_ambient_light_value");
+    this.ambientLightColor = new Uniform("u_ambient_light_color", [1, 1, 1]);
+    this.ambientLightValue = new Uniform("u_ambient_light_value", [0.1]);
 
-    this.color0Sampler = new Uniform("u_color0_sampler");
-    this.color1Sampler = new Uniform("u_color1_sampler");
+    this.color0Sampler = new Uniform("u_color0_sampler", [0]);
+    this.color1Sampler = new Uniform("u_color1_sampler", [1]);
 
-    this.useColor0 = new Uniform("u_use_color0");
-    this.useColor1 = new Uniform("u_use_color1");
+    this.useColor0 = new Uniform("u_use_color0", [1]);
+    this.useColor1 = new Uniform("u_use_color1", [0]);
 
-    this.useVertexColor = new Uniform("u_use_vertex_color");
+    this.useVertexColor = new Uniform("u_use_vertex_color", [0]);
 
-    this.useEmission = new Uniform("u_use_emission");
+    this.useEmission = new Uniform("u_use_emission", [0]);
   }
 
   /**
