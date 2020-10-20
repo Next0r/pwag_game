@@ -5,6 +5,7 @@ const { EngineToolbox } = require("./engine.toolbox");
 const { Vector4 } = require("./engine.math.vector4");
 const { Matrix4 } = require("./engine.math.matrix4");
 const { Vector3 } = require("./engine.math.vector3");
+const { gameInit } = require("./game.init");
 
 const gl = EngineToolbox.getGLContext();
 
@@ -38,7 +39,7 @@ class Renderer {
 
     mat.uniforms.modelViewMatrix.value = modelViewMatrix.toArray();
     mat.uniforms.projectionMatrix.value = new Matrix4().toArray();
-    mat.uniforms.normalMatrix.value = GUIElement.transform.matrix.clone().inverse().transpose().toArray();
+    mat.uniforms.normalMatrix.value = new Matrix4().toArray();
 
     mat.createVertexArray(GUIElement.mesh);
 
@@ -62,7 +63,13 @@ class Renderer {
 
     mat.uniforms.modelViewMatrix.value = modelViewMatrix.toArray();
     mat.uniforms.projectionMatrix.value = camera.projection.matrix.toArray();
-    mat.uniforms.normalMatrix.value = gameObject.transform.matrix.clone().inverse().transpose().toArray();
+    const scaleFactorMatrix = new Matrix4().scale(gameObject.transform.matrix.getScale());
+    mat.uniforms.normalMatrix.value = gameObject.transform.matrix
+      .clone()
+      .inverse()
+      .transpose() // normal matrix without scaling factor applied
+      .multiply(scaleFactorMatrix)
+      .toArray(); // normal matrix with scaling factor applied
 
     //if (Renderer.lastMaterialUsed === mat && Renderer.lastMeshUsed !== gameObject.mesh) {
     // rebuild vao and vbos if using the same material with different mesh

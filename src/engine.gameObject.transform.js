@@ -27,7 +27,7 @@ class Transform {
    * @param {Number} angle
    */
   rotateZ(angle) {
-    this.rotationMatrix.rotate(Vector3.up, angle);
+    this.rotationMatrix.rotate(Vector3.forward, angle);
     return this;
   }
   /**
@@ -55,16 +55,19 @@ class Transform {
 
   applyLocation() {
     this.matrix.multiply(this.locationMatrix);
+    this.locationMatrix.identity();
     return this;
   }
 
   applyRotation() {
     this.matrix.multiply(this.rotationMatrix);
+    this.rotationMatrix.identity();
     return this;
   }
 
   applyScale() {
     this.matrix.multiply(this.scaleMatrix);
+    this.scaleMatrix.identity();
     return this;
   }
 }

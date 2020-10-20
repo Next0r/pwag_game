@@ -24,6 +24,41 @@ class Matrix4 {
     this.m33 = 1;
   }
 
+  getScale() {
+    const sx = Math.sqrt(this.m00 * this.m00 + this.m10 * this.m10 + this.m20 * this.m20);
+    const sy = Math.sqrt(this.m01 * this.m01 + this.m11 * this.m11 + this.m21 * this.m21);
+    const sz = Math.sqrt(this.m02 * this.m02 + this.m12 * this.m12 + this.m22 * this.m22);
+    return new Vector3(sx, sy, sz);
+  }
+
+  /**
+   *
+   * @param {Number} scalar
+   */
+  scalarMultiply(scalar) {
+    this.m00 *= scalar;
+    this.m10 *= scalar;
+    this.m20 *= scalar;
+    this.m30 *= scalar;
+    this.m01 *= scalar;
+    this.m11 *= scalar;
+    this.m21 *= scalar;
+    this.m31 *= scalar;
+    this.m02 *= scalar;
+    this.m12 *= scalar;
+    this.m22 *= scalar;
+    this.m32 *= scalar;
+    this.m03 *= scalar;
+    this.m13 *= scalar;
+    this.m23 *= scalar;
+    this.m33 *= scalar;
+    return this;
+  }
+
+  position() {
+    return new Vector3(this.m30, this.m31, this.m32);
+  }
+
   forward() {
     return new Vector3(-this.m20, -this.m21, -this.m22);
   }

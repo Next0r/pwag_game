@@ -7,9 +7,7 @@ class Vector4 {
   }
 
   normalize() {
-    const l = Math.sqrt(
-      this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w
-    );
+    const l = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w);
     this.x = this.x / l;
     this.y = this.y / l;
     this.z = this.z / l;
