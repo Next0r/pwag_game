@@ -80,12 +80,12 @@ const resourceBuilder = (state) => ({
 });
 
 /**
- * @typedef {Object} Meshes
+ * @typedef {Object} EngineResourcesMeshes
  * @property {Mesh} guiPlane
  */
 
 /**
- * @typedef {Object} GameObjects
+ * @typedef {Object} EngineResourcesGameObjects
  * @property {Camera} camera
  * @property {DirectLight} directLight
  * @property {AmbientLight} ambientLight
@@ -94,10 +94,10 @@ const resourceBuilder = (state) => ({
 /**
  * @typedef {Object} EngineResources
  * @property {Object} textures
- * @property {Meshes} meshes
+ * @property {EngineResourcesMeshes} meshes
  * @property {Object} shaders
  * @property {Object} materials
- * @property {GameObjects} gameObjects
+ * @property {EngineResourcesGameObjects} gameObjects
  * @property {Function} build
  */
 

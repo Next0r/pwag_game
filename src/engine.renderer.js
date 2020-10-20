@@ -27,7 +27,6 @@ class Renderer {
    */
   static drawGUIElement(GUIElement, camera) {
     camera.projection.rebuildMatrixOrtho();
-    GUIElement.transform.rebuildMatrix();
 
     const mat = GUIElement.material;
     const modelViewMatrix = GUIElement.transform.matrix.clone();
@@ -57,8 +56,6 @@ class Renderer {
    */
   static drawGameObject(gameObject, camera) {
     camera.projection.rebuildMatrixPerspective();
-    camera.transform.rebuildMatrix();
-    gameObject.transform.rebuildMatrix();
 
     const mat = gameObject.material;
     const modelViewMatrix = camera.transform.matrix.clone().inverse().multiply(gameObject.transform.matrix);

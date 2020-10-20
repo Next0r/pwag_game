@@ -5,6 +5,10 @@ class Vector3 {
     this.z = z;
   }
 
+  clone() {
+    return new Vector3(this.x, this.y, this.z);
+  }
+
   normalize() {
     const l = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
     this.x = this.x / l;
@@ -49,7 +53,7 @@ class Vector3 {
 
   static up = new Vector3(0, 1, 0);
   static right = new Vector3(1, 0, 0);
-  static forward = new Vector3(0, 0, 1);
+  static forward = new Vector3(0, 0, -1);
 }
 
 exports.Vector3 = Vector3;

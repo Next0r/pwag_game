@@ -24,6 +24,18 @@ class Matrix4 {
     this.m33 = 1;
   }
 
+  forward() {
+    return new Vector3(-this.m20, -this.m21, -this.m22);
+  }
+
+  up() {
+    return new Vector3(this.m10, this.m11, this.m12);
+  }
+
+  right() {
+    return new Vector3(this.m00, this.m01, this.m02);
+  }
+
   /**
    *
    * @param {Matrix4} matrix

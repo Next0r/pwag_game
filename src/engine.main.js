@@ -9,10 +9,12 @@ const { EngineInfo } = require("./engine.info");
 const { CreateEngineResources } = require("./engine.resources");
 const { createShaderProgram } = require("./engine.shader");
 const { gameInit } = require("./game.init");
+const { GameObject } = require("./engine.gameObject");
+const { Matrix4 } = require("./engine.math.matrix4");
+const { rmdir } = require("fs");
 
 const main = () => {
-  const engineInfo = new EngineInfo();
-  EngineToolbox.createEngineInfo();
+  const engineInfo = EngineToolbox.createEngineInfo();
   const gl = EngineToolbox.getGLContext();
 
   if (!gl) {
@@ -26,7 +28,14 @@ const main = () => {
   const plane = resources.gameObjects.plane;
   const camera = resources.gameObjects.camera;
   const skybox = resources.gameObjects.skybox;
+  /**
+   * @type {GameObject}
+   */
   const guiSight = resources.gameObjects.guiSight;
+  /**
+   * @type {GameObject}
+   */
+  const box = resources.gameObjects.box;
 
   // draw
   Renderer.setClearColor(new Vector4(0, 0, 0, 1));
@@ -36,35 +45,44 @@ const main = () => {
   Input.addKeyboardEventListeners();
   Input.keyboard.onRelease["KeyL"] = Input.lockPointer;
 
+  // plane.transform.location.z = -20;
+
+  let planeRotationY = 0;
+  let planeRotationX = 0;
+  let planePosition = new Vector3();
+  let boxPosition = new Vector3(0, 0, -5);
+  let guiSightScale = new Vector3(0.2, 0.2, 0.2);
+  let guiSightSensitivity = 0.0025;
+  let guiSightPosition = new Vector3(0, 0, 0);
+
   Game.mainFunction = () => {
-    const s = 0.075;
+    box.transform.reset();
+    box.transform.translate(boxPosition);
+    box.transform.applyLocation();
 
-    plane.transform.location.z = -5;
-    plane.transform.rotation.y += Time.delta * 20;
-
-    camera.transform.rotation.x += Input.mouse.movementY * s;
-    camera.transform.rotation.y -= Input.mouse.movementX * s;
-
-    const camSpeed = 3;
-    const forward = camera.transform.forward();
-    forward.scale(Time.delta * camSpeed);
-    const right = camera.transform.right();
-    right.scale(Time.delta * camSpeed);
-    if (Input.keyboard.isDown("KeyW")) {
-      camera.transform.location.add(forward);
-    } else if (Input.keyboard.isDown("KeyS")) {
-      camera.transform.location.subtract(forward);
-    }
-    if (Input.keyboard.isDown("KeyA")) {
-      camera.transform.location.subtract(right);
-    } else if (Input.keyboard.isDown("KeyD")) {
-      camera.transform.location.add(right);
+    if (guiSightPosition.x > -1 && Input.mouse.movementX < 0) {
+      guiSightPosition.x += Input.mouse.movementX * guiSightSensitivity;
+    } else if (guiSightPosition.x <= -1 && Input.mouse.movementX > 0) {
+      guiSightPosition.x += Input.mouse.movementX * guiSightSensitivity;
     }
 
-    skybox.transform.location = camera.transform.location;
+    if (guiSightPosition.x < 1 && Input.mouse.movementX > 0) {
+      guiSightPosition.x += Input.mouse.movementX * guiSightSensitivity;
+    } else if (guiSightPosition.x >= 1 && Input.mouse.movementX < 0) {
+      guiSightPosition.x += Input.mouse.movementX * guiSightSensitivity;
+    }
 
-    guiSight.transform.location = new Vector3(0, 0, -1);
-    guiSight.transform.scale = new Vector3(0.15, 0.15, 0.15);
+    if (guiSightPosition.x < -1) {
+      guiSightPosition.x = -1;
+    } else if (guiSightPosition.x > 1) {
+      guiSightPosition.x = 1;
+    }
+    
+    guiSight.transform.reset();
+    guiSight.transform.translate(guiSightPosition);
+    guiSight.transform.scale(guiSightScale);
+    guiSight.transform.applyLocation();
+    guiSight.transform.applyScale();
 
     Renderer.clear();
     // skybox
@@ -72,7 +90,8 @@ const main = () => {
     Renderer.drawGameObject(skybox, camera);
     Renderer.enableDepthTest();
     // opaque elements
-    Renderer.drawGameObject(plane, camera);
+    // Renderer.drawGameObject(plane, camera);
+    Renderer.drawGameObject(box, camera);
 
     // gui (uses alpha - draw as last)
     Renderer.enableAlphaBlend();
