@@ -4,11 +4,13 @@ precision highp float;
 
 uniform sampler2D u_color0_sampler;
 uniform sampler2D u_color1_sampler;
+uniform sampler2D u_normal0_sampler;
 
 uniform int u_use_vertex_color;
 uniform int u_use_emission;
 uniform int u_use_color0;
 uniform int u_use_color1;
+uniform int u_use_normal0;
 
 out vec4 out_color;
 in vec4 vertex_color;
@@ -19,6 +21,8 @@ in float direct_light_value;
 in vec3 ambient_light_color;
 in float ambient_light_value;
 in vec3 map;
+//in vec4 tangent;
+//in vec4 bitangent;
 
 vec4 white_color = vec4(1, 1, 1, 1);
 vec4 black_color = vec4(0, 0, 0, 0);
@@ -39,10 +43,15 @@ vec4 get_texture_color() {
   return col;
 }
 
+vec4 get_normal(){
+  vec4 texture_normal = normalize(texture(u_normal0_sampler, vec2(map)) * 2.0 - 1.0);
+  return float(u_use_normal0) * texture_normal + float(1 - u_use_normal0) * normal;
+}
+
 void main() {
   
   vec4 base_color = get_vertex_color();
-  float lambert_factor = max(dot(vec3(normal), -direct_light_direction), 0.0);
+  float lambert_factor = max(dot(vec3(get_normal()), -direct_light_direction), 0.0);
   vec4 color0 = texture(u_color0_sampler, vec2(map));
   vec4 color1 = texture(u_color1_sampler, vec2(map));
 

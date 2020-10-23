@@ -1,5 +1,6 @@
 const { CreateEngineResources } = require("./engine.resources");
 const { createShaderProgram } = require("./engine.shader");
+const { GameObject } = require("./engine.gameObject");
 
 const gameInit = () => {
   const resources = CreateEngineResources();
@@ -13,6 +14,9 @@ const gameInit = () => {
   skybox.mesh = resources.meshes.skybox;
   skybox.material = resources.materials.skybox;
 
+  /**
+   * @type {GameObject}
+   */
   const plane = resources.gameObjects.plane;
   plane.mesh = resources.meshes.plane_mock;
   plane.material = resources.materials.plane;
@@ -42,8 +46,10 @@ const gameInit = () => {
   plane.material.uniforms.ambientLightColor.value = ambientLight.color.toArray();
   plane.material.uniforms.ambientLightValue.value = [ambientLight.value];
   plane.material.uniforms.useColor1.value = [1];
+  plane.material.uniforms.useNormal0.value = [0];
   plane.material.textures.color0 = resources.textures.test_color;
   plane.material.textures.color1 = resources.textures.unity;
+  plane.material.textures.normal0 = resources.textures.normalMap01;
 
   skybox.material.uniforms.useEmission.value = [1];
   skybox.material.textures.color0 = resources.textures.skybox_color_01;

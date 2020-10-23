@@ -44,6 +44,7 @@ class MaterialTextures {
   constructor() {
     this.color0 = new Texture();
     this.color1 = new Texture();
+    this.normal0 = new Texture();
   }
 }
 

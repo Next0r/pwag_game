@@ -36,6 +36,10 @@ class Material {
       gl.activeTexture(gl.TEXTURE1);
       gl.bindTexture(gl.TEXTURE_2D, this.textures.color1.textureObject);
     }
+    if (this.textures.normal0.textureObject) {
+      gl.activeTexture(gl.TEXTURE2);
+      gl.bindTexture(gl.TEXTURE_2D, this.textures.normal0.textureObject);
+    }
   }
 
   /**
@@ -54,6 +58,8 @@ class Material {
     deleteBuffer(this.attributes.normal.vbo);
     deleteBuffer(this.attributes.map.vbo);
     deleteBuffer(this.attributes.color.vbo);
+    // deleteBuffer(this.attributes.tangent.vbo);
+    // deleteBuffer(this.attributes.bitangent.vbo);
 
     this.vertexArrayObject = gl.createVertexArray();
     gl.bindVertexArray(this.vertexArrayObject);
@@ -62,11 +68,15 @@ class Material {
     const mapBuffer = gl.createBuffer();
     const colorBuffer = gl.createBuffer();
     const elementArrayBuffer = gl.createBuffer();
+    // const tangentBuffer = gl.createBuffer();
+    // const bitangentBuffer = gl.createBuffer();
 
     this.attributes.position.vbo = positionBuffer;
     this.attributes.normal.vbo = positionBuffer;
     this.attributes.map.vbo = mapBuffer;
     this.attributes.color.vbo = colorBuffer;
+    // this.attributes.tangent.vbo = tangentBuffer;
+    // this.attributes.bitangent.vbo = bitangentBuffer;
     this.elementArray.vbo = elementArrayBuffer;
 
     this.attributes.setLocations(this.shaderProgram);
@@ -77,6 +87,8 @@ class Material {
     bufferData(normalsBuffer, this.attributes.normal);
     bufferData(mapBuffer, this.attributes.map, 3);
     bufferData(colorBuffer, this.attributes.color);
+    // bufferData(tangentBuffer, this.attributes.tangent);
+    // bufferData(bitangentBuffer, this.attributes.bitangent);
     bufferElementArray(elementArrayBuffer, this.elementArray);
   }
 
@@ -115,8 +127,10 @@ class Material {
     this.uniforms.useVertexColor.value && uniform1iv(this.uniforms.useVertexColor);
     this.uniforms.color0Sampler.value && uniform1iv(this.uniforms.color0Sampler);
     this.uniforms.color1Sampler.value && uniform1iv(this.uniforms.color1Sampler);
+    this.uniforms.normal0Sampler.value && uniform1iv(this.uniforms.normal0Sampler);
     this.uniforms.useColor0.value && uniform1iv(this.uniforms.useColor0);
     this.uniforms.useColor1.value && uniform1iv(this.uniforms.useColor1);
+    this.uniforms.useNormal0.value && uniform1iv(this.uniforms.useNormal0);
     this.uniforms.useEmission.value && uniform1iv(this.uniforms.useEmission);
   }
 

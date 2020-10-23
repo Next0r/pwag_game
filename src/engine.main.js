@@ -13,6 +13,7 @@ const { GameObject } = require("./engine.gameObject");
 const { Matrix4 } = require("./engine.math.matrix4");
 const { rmdir } = require("fs");
 const { handleGuiSight } = require("./game.handleGuiSight");
+const { Mesh } = require("./engine.utilities.mesh");
 
 const main = () => {
   const engineInfo = EngineToolbox.createEngineInfo();
@@ -76,6 +77,7 @@ const main = () => {
   // m.fromArray([1, 1, 2, 3, 4, 1, 5, 6, 7, 8, 1, 9, 10, 11, 12, 1]);
   // m.transpose();
   // console.log(m);
+
 
   Game.mainFunction = () => {
     planeRotationY -= guiSightPosition.x * planeRotationSpeed;
