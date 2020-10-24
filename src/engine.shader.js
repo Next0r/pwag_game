@@ -1,10 +1,6 @@
 const { EngineToolbox } = require("./engine.toolbox");
-const gl = EngineToolbox.getGLContext();
-
 const createShader = (type, source) => {
-  if (!gl) {
-    return;
-  }
+  const gl = EngineToolbox.getGLContext();
 
   const shader = gl.createShader(type);
   gl.shaderSource(shader, source);
@@ -20,9 +16,7 @@ const createShader = (type, source) => {
 };
 
 const createShaderProgram = (vsSource, fsSource) => {
-  if (!gl) {
-    return;
-  }
+  const gl = EngineToolbox.getGLContext();
 
   const vertexShader = createShader(gl.VERTEX_SHADER, vsSource);
   const fragmentShader = createShader(gl.FRAGMENT_SHADER, fsSource);
@@ -37,7 +31,7 @@ const createShaderProgram = (vsSource, fsSource) => {
   gl.linkProgram(program);
 
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    console.warn(`An error occurred linkin shader program: ${gl.getProgramInfoLog(program)}.`);
+    console.warn(`An error occurred linking shader program: ${gl.getProgramInfoLog(program)}.`);
     gl.deleteProgram();
     return;
   }

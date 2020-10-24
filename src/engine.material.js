@@ -4,8 +4,6 @@ const { MaterialUniforms, Uniform } = require("./engine.material.uniforms");
 const { EngineToolbox } = require("./engine.toolbox");
 const { Mesh } = require("./engine.utilities.mesh");
 
-const gl = EngineToolbox.getGLContext();
-
 class Material {
   /**
    * @param {WebGLProgram} shaderProgram
@@ -25,9 +23,7 @@ class Material {
    * after changing material textures to apply any changes.
    */
   uploadTextures() {
-    if (!gl) {
-      return;
-    }
+    const gl = EngineToolbox.getGLContext();
     if (this.textures.color0.textureObject) {
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, this.textures.color0.textureObject);
@@ -49,7 +45,8 @@ class Material {
    * @param {Mesh} mesh
    */
   createVertexArray(mesh) {
-    if (!gl || !this.shaderProgram || !mesh) {
+    const gl = EngineToolbox.getGLContext();
+    if (!this.shaderProgram || !mesh) {
       return;
     }
 
@@ -98,7 +95,8 @@ class Material {
    * changed.
    */
   useProgram() {
-    if (!gl || !this.shaderProgram) {
+    const gl = EngineToolbox.getGLContext();
+    if (!this.shaderProgram) {
       return;
     }
     gl.useProgram(this.shaderProgram);
@@ -108,7 +106,8 @@ class Material {
    * Passes all uniform values to shader program.
    */
   uploadUniforms() {
-    if (!gl || !this.shaderProgram) {
+    const gl = EngineToolbox.getGLContext();
+    if (!this.shaderProgram) {
       return;
     }
 
@@ -139,7 +138,8 @@ class Material {
    * shader program attribute buffers.
    */
   bindVertexArray() {
-    if (!gl || !this.vertexArrayObject) {
+    const gl = EngineToolbox.getGLContext();
+    if (!this.vertexArrayObject) {
       return;
     }
     gl.bindVertexArray(this.vertexArrayObject);
@@ -153,6 +153,7 @@ exports.Material = Material;
  * @param {Uniform} uniform
  */
 const uniformMatrix4fv = (uniform) => {
+  const gl = EngineToolbox.getGLContext();
   gl.uniformMatrix4fv(uniform.location, false, uniform.value);
 };
 
@@ -160,6 +161,7 @@ const uniformMatrix4fv = (uniform) => {
  * @param {Uniform} uniform
  */
 const uniform3fv = (uniform) => {
+  const gl = EngineToolbox.getGLContext();
   gl.uniform3fv(uniform.location, uniform.value);
 };
 
@@ -167,6 +169,7 @@ const uniform3fv = (uniform) => {
  * @param {Uniform} uniform
  */
 const uniform1fv = (uniform) => {
+  const gl = EngineToolbox.getGLContext();
   gl.uniform1fv(uniform.location, uniform.value);
 };
 
@@ -174,6 +177,7 @@ const uniform1fv = (uniform) => {
  * @param {Uniform} uniform
  */
 const uniform1iv = (uniform) => {
+  const gl = EngineToolbox.getGLContext();
   gl.uniform1iv(uniform.location, uniform.value);
 };
 
@@ -182,6 +186,7 @@ const uniform1iv = (uniform) => {
  * @param {Attribute} attribute
  */
 const bufferData = (buffer, attribute, size = 4) => {
+  const gl = EngineToolbox.getGLContext();
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
   gl.bufferData(gl.ARRAY_BUFFER, attribute.value, gl.STATIC_DRAW);
   gl.vertexAttribPointer(attribute.location, size, gl.FLOAT, false, 0, 0);
@@ -193,6 +198,7 @@ const bufferData = (buffer, attribute, size = 4) => {
  * @param {VBOContainer} elementArray
  */
 const bufferElementArray = (buffer, elementArray) => {
+  const gl = EngineToolbox.getGLContext();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, elementArray.value, gl.STATIC_DRAW);
 };
@@ -201,6 +207,7 @@ const bufferElementArray = (buffer, elementArray) => {
  * @param {WebGLBuffer} buffer
  */
 const deleteBuffer = (buffer) => {
+  const gl = EngineToolbox.getGLContext();
   if (buffer) {
     gl.deleteBuffer(buffer);
   }
@@ -210,6 +217,7 @@ const deleteBuffer = (buffer) => {
  * @param {WebGLVertexArrayObject} vertexArrayObject
  */
 const deleteVertexArray = (vertexArrayObject) => {
+  const gl = EngineToolbox.getGLContext();
   if (vertexArrayObject) {
     gl.deleteVertexArray(vertexArrayObject);
   }

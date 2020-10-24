@@ -1,6 +1,5 @@
 const { PNG } = require("pngjs");
 const { EngineToolbox } = require("./engine.toolbox");
-const gl = EngineToolbox.getGLContext();
 
 class Texture {
   constructor() {
@@ -16,7 +15,8 @@ class Texture {
    * @param {import("pngjs").PNGWithMetadata} pngImage
    */
   fromPNGImage(pngImage) {
-    if (!gl || !pngImage) {
+    const gl = EngineToolbox.getGLContext();
+    if (!pngImage) {
       return;
     }
     this.width = pngImage.width;

@@ -5,7 +5,6 @@ const { EngineToolbox } = require("./engine.toolbox");
 const { Input } = require("./engine.input");
 const { Renderer } = require("./engine.renderer");
 const { Vector4 } = require("./engine.math.vector4");
-const { EngineInfo } = require("./engine.info");
 const { CreateEngineResources } = require("./engine.resources");
 const { createShaderProgram } = require("./engine.shader");
 const { gameInit } = require("./game.init");
@@ -18,7 +17,8 @@ const { CreateBoxCollider } = require("./engine.boxCollider");
 const { CreateCollisionSystem } = require("./engine.collisionSystem");
 
 const main = () => {
-  const engineInfo = EngineToolbox.createEngineInfo();
+  EngineToolbox.createCanvas();
+
   const gl = EngineToolbox.getGLContext();
 
   if (!gl) {

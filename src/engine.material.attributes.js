@@ -1,6 +1,6 @@
 const { EngineToolbox } = require("./engine.toolbox");
 const { Mesh } = require("./engine.utilities.mesh");
-const gl = EngineToolbox.getGLContext();
+// const gl = EngineToolbox.getGLContext();
 
 class VBOContainer {
   constructor() {
@@ -23,7 +23,8 @@ class Attribute extends VBOContainer {
    * @param {WebGLProgram} shaderProgram
    */
   setLocation(shaderProgram) {
-    if (!gl || !shaderProgram) {
+    const gl = EngineToolbox.getGLContext();
+    if (!shaderProgram) {
       return;
     }
     this.location = gl.getAttribLocation(shaderProgram, this.name);

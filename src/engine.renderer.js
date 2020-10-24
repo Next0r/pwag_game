@@ -1,13 +1,10 @@
 const { Camera } = require("./engine.camera");
 const { GameObject } = require("./engine.gameObject");
-const { EngineInfo } = require("./engine.info");
 const { EngineToolbox } = require("./engine.toolbox");
 const { Vector4 } = require("./engine.math.vector4");
 const { Matrix4 } = require("./engine.math.matrix4");
 const { Vector3 } = require("./engine.math.vector3");
 const { gameInit } = require("./game.init");
-
-const gl = EngineToolbox.getGLContext();
 
 class Renderer {
   //   /**
@@ -27,6 +24,7 @@ class Renderer {
    * @param {Camera} camera
    */
   static drawGUIElement(GUIElement, camera) {
+    const gl = EngineToolbox.getGLContext();
     camera.projection.rebuildMatrixOrtho();
 
     const mat = GUIElement.material;
@@ -56,6 +54,7 @@ class Renderer {
    * @param {Camera} camera
    */
   static drawGameObject(gameObject, camera) {
+    const gl = EngineToolbox.getGLContext();
     camera.projection.rebuildMatrixPerspective();
 
     const mat = gameObject.material;
@@ -91,50 +90,41 @@ class Renderer {
    * @param {Vector4} clearColor
    */
   static setClearColor(clearColor) {
-    if (!gl) {
-      return;
-    }
-    const engineInfo = new EngineInfo();
-    engineInfo.add("clearColor", clearColor);
+    const gl = EngineToolbox.getGLContext();
     gl.clearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
     return this;
   }
 
   static enableDepthTest() {
-    if (!gl) {
-      return;
-    }
+    const gl = EngineToolbox.getGLContext();
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
+    return this;
   }
 
   static disableDepthTest() {
-    if (!gl) {
-      return;
-    }
+    const gl = EngineToolbox.getGLContext();
     gl.disable(gl.DEPTH_TEST);
+    return this;
   }
 
   static clear() {
-    if (!gl) {
-      return;
-    }
+    const gl = EngineToolbox.getGLContext();
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    return this;
   }
 
   static enableAlphaBlend() {
-    if (!gl) {
-      return;
-    }
+    const gl = EngineToolbox.getGLContext();
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    return this;
   }
 
   static disableAlphaBlend() {
-    if (!gl) {
-      return;
-    }
+    const gl = EngineToolbox.getGLContext();
     gl.disable(gl.BLEND);
+    return this;
   }
 }
 

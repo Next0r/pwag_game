@@ -1,6 +1,5 @@
 const { Vector3 } = require("./engine.math.vector3");
 const { EngineToolbox } = require("./engine.toolbox");
-const gl = EngineToolbox.getGLContext();
 
 class Uniform {
   constructor(name, value) {
@@ -13,7 +12,8 @@ class Uniform {
    * @param {WebGLProgram} shaderProgram
    */
   setLocation(shaderProgram) {
-    if (!gl || !shaderProgram) {
+    const gl = EngineToolbox.getGLContext();
+    if (!shaderProgram) {
       return;
     }
     this.location = gl.getUniformLocation(shaderProgram, this.name);

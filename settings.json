@@ -3,5 +3,8 @@
   "meshesDir": "./models",
   "shadersDir": "./shaders",
   "gameObjects": ["skybox", "guiSight", "plane", "box", "box2"],
-  "materials": ["skybox", "guiSight", "plane"]
+  "materials": ["skybox", "guiSight", "plane"],
+  "canvasID": "game_window",
+  "width": 800,
+  "height": 600
 }

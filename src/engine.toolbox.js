@@ -1,19 +1,11 @@
 const fs = require("fs");
 const { PNG } = require("pngjs");
-const { EngineInfo } = require("./engine.info");
 
 class EngineToolbox {
-  static createEngineInfo() {
-    return new EngineInfo();
-  }
-
-  static getCanvasID() {
-    const engineInfo = new EngineInfo();
-    return engineInfo.get("canvasID");
-  }
+  static _glContext = undefined;
 
   static getCanvas() {
-    const canvasID = EngineToolbox.getCanvasID();
+    const canvasID = EngineToolbox.readSettings().canvasID;
     return document.getElementById(canvasID);
   }
 
@@ -21,10 +13,30 @@ class EngineToolbox {
    * @returns {WebGL2RenderingContext}
    */
   static getGLContext() {
+    if (EngineToolbox._glContext) {
+      return EngineToolbox._glContext;
+    }
+
     const canvas = EngineToolbox.getCanvas();
     if (canvas) {
-      return canvas.getContext("webgl2");
+      EngineToolbox._glContext = canvas.getContext("webgl2");
+      return EngineToolbox._glContext;
     }
+  }
+
+  static createCanvas() {
+    const settings = this.readSettings();
+    const width = settings.width;
+    const height = settings.height;
+    const id = settings.canvasID;
+    const canvas = document.createElement("canvas");
+    canvas.id = id;
+    canvas.width = width;
+    canvas.height = height;
+    canvas.setAttribute("width", width.toString());
+    canvas.setAttribute("height", height.toString());
+    document.body.appendChild(canvas);
+    return this;
   }
 
   static readTextFile(path) {
