@@ -4,6 +4,19 @@ const { Mesh } = require("./engine.utilities.mesh");
 const { Vector4 } = require("./engine.math.vector4");
 
 /**
+ * @typedef {Object} BoxCollider
+ * @property {String} id
+ * @property {Vector3} size
+ * @property {Vector3} center
+ * @property {Matrix4} transformationMatrix
+ * @property {function} onCollide
+ * @property {function} recalculate
+ * @property {function} getVertices
+ * @property {function} getNormals
+ * @property {function} doesCollide
+ */
+
+/**
  *
  * @param {*} colliderID
  */
@@ -12,6 +25,7 @@ const CreateBoxCollider = (colliderID) => ({
   size: new Vector3(),
   center: new Vector3(),
   transformationMatrix: new Matrix4(),
+  onCollide: () => {},
 
   /**
    *

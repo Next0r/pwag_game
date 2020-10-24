@@ -1,6 +1,7 @@
 const { CreateEngineResources } = require("./engine.resources");
 const { createShaderProgram } = require("./engine.shader");
 const { GameObject } = require("./engine.gameObject");
+const { CreateBoxCollider } = require("./engine.boxCollider");
 
 const gameInit = () => {
   const resources = CreateEngineResources();
@@ -20,14 +21,29 @@ const gameInit = () => {
   const plane = resources.gameObjects.plane;
   plane.mesh = resources.meshes.plane_mock;
   plane.material = resources.materials.plane;
-
+  /**
+   * @type {GameObject}
+   */
   const box = resources.gameObjects.box;
   box.mesh = resources.meshes.box2;
   box.material = resources.materials.plane;
+  // Create and link box collider to box object
+  const boxCollider = CreateBoxCollider("box");
+  boxCollider.recalculate(box.mesh);
+  boxCollider.transformationMatrix = box.transform.matrix;
+  box.colliders.push(boxCollider);
 
+  /**
+   * @type {GameObject}
+   */
   const box2 = resources.gameObjects.box2;
   box2.mesh = resources.meshes.box2;
   box2.material = resources.materials.plane;
+  // Create and link box collider to box2 object
+  const box2Collider = CreateBoxCollider("box2");
+  box2Collider.recalculate(box2.mesh);
+  box2Collider.transformationMatrix = box2.transform.matrix;
+  box2.colliders.push(box2Collider);
 
   // get material sources and create shader program
   const vsSource = resources.shaders.testVS;

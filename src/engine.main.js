@@ -15,17 +15,22 @@ const { rmdir } = require("fs");
 const { handleGuiSight } = require("./game.handleGuiSight");
 const { Mesh } = require("./engine.utilities.mesh");
 const { CreateBoxCollider } = require("./engine.boxCollider");
+const { CreateCollisionSystem } = require("./engine.collisionSystem");
 
 const main = () => {
   const engineInfo = EngineToolbox.createEngineInfo();
   const gl = EngineToolbox.getGLContext();
 
   if (!gl) {
+    console.warn("Cannot acquire WebGL2 rendering context.");
     return;
   }
 
   const resources = CreateEngineResources();
   resources.build();
+
+  const collisionSystem = CreateCollisionSystem();
+
   gameInit();
 
   /**
@@ -74,8 +79,8 @@ const main = () => {
   const planeMaxRotationZ = 30;
   camera.projection.far = 1000;
 
-  // let box2PosX = 0;
-  // let box2RotZ = 0;
+  let box2PosX = 0;
+  let box2RotZ = 0;
 
   Input.keyboard.onRelease["KeyF"] = () => {
     planeSpeed = 20;
@@ -129,22 +134,24 @@ const main = () => {
     box.transform.applyLocation();
     box.transform.applyScale();
 
-    // box2.transform.reset();
-    // box2.transform.translate(new Vector3(box2PosX, 0, 0));
-    // box2.transform.rotateZ(box2RotZ);
-    // box2RotZ += Time.delta * 90;
-    // box2.transform.applyLocation();
-    // box2.transform.applyRotation();
+    box2.transform.reset();
+    box2.transform.translate(new Vector3(box2PosX, 0, 0));
+    box2.transform.rotateZ(box2RotZ);
+    box2RotZ += Time.delta * 90;
+    box2.transform.applyLocation();
+    box2.transform.applyRotation();
 
-    // if (Input.keyboard.isDown("KeyA")) {
-    //   box2PosX -= Time.delta;
-    // } else if (Input.keyboard.isDown("KeyD")) {
-    //   box2PosX += Time.delta;
-    // }
+    if (Input.keyboard.isDown("KeyA")) {
+      box2PosX -= Time.delta;
+    } else if (Input.keyboard.isDown("KeyD")) {
+      box2PosX += Time.delta;
+    }
 
     // if (boxCollider.doesCollide(box2Collider)) {
     //   console.log("collision!");
     // }
+
+    collisionSystem.checkCollisions();
 
     Renderer.clear();
     // skybox
@@ -162,7 +169,7 @@ const main = () => {
     Renderer.disableAlphaBlend();
   };
 
-  Game.startLoop();
+  Game.start();
 };
 
 window.onload = main;

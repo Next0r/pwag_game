@@ -7,6 +7,10 @@ class GameObject {
     this.transform = new Transform();
     this.mesh = new Mesh();
     this.material = new Material();
+    /**
+     * @type {import("./engine.boxCollider").BoxCollider[]}
+     */
+    this.colliders = [];
   }
 }
 
