@@ -1,10 +1,10 @@
-const { CreateEngineResources } = require("./engine.resources");
+const { engineResources } = require("./engine.resources");
 const { createShaderProgram } = require("./engine.shader");
 const { GameObject } = require("./engine.gameObject");
 const { CreateBoxCollider } = require("./engine.boxCollider");
 
 const gameInit = () => {
-  const resources = CreateEngineResources();
+  const resources = engineResources;
 
   // bind mesh and materials to game objects
   const guiSight = resources.gameObjects.guiSight;

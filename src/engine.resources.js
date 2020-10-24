@@ -9,8 +9,19 @@ const { readColladaFile } = require("./engine.utilities.collada");
 const { Material } = require("./engine.material");
 const { GameObject } = require("./engine.gameObject");
 
-const resourceBuilder = (state) => ({
-  build: () => {
+const engineResources = {
+  textures: {},
+  meshes: {
+    guiPlane: Mesh.createGUIPlane(),
+  },
+  shaders: {},
+  materials: {},
+  gameObjects: {
+    camera: new Camera(),
+    directLight: new DirectLight(),
+    ambientLight: new AmbientLight(),
+  },
+  build() {
     const settings = EngineToolbox.readSettings();
     if (!settings) {
       return;
@@ -26,7 +37,7 @@ const resourceBuilder = (state) => ({
         const texture = new Texture().fromPNGImage(image);
         const id = textureName.split(".");
         id.pop();
-        state.textures[id] = texture;
+        this.textures[id] = texture;
       }
     }
 
@@ -40,7 +51,7 @@ const resourceBuilder = (state) => ({
         mesh.createElementArray();
         const id = meshName.split(".");
         id.pop();
-        state.meshes[id] = mesh;
+        this.meshes[id] = mesh;
       }
     }
 
@@ -53,7 +64,7 @@ const resourceBuilder = (state) => ({
         const shaderSource = EngineToolbox.readTextFile(`${settings.shadersDir}/${shaderName}`);
         const id = shaderName.split(".");
         id.pop();
-        state.shaders[id] = shaderSource;
+        this.shaders[id] = shaderSource;
       }
     }
 
@@ -61,7 +72,7 @@ const resourceBuilder = (state) => ({
     const materialNames = settings.materials;
     if (materialNames && materialNames instanceof Array) {
       for (let name of materialNames) {
-        state.materials[name] = new Material();
+        this.materials[name] = new Material();
       }
     } else {
       console.warn("Invalid materials array. Cannot create materials.");
@@ -71,66 +82,12 @@ const resourceBuilder = (state) => ({
     const gameObjectNames = settings.gameObjects;
     if (gameObjectNames && gameObjectNames instanceof Array) {
       for (let name of gameObjectNames) {
-        state.gameObjects[name] = new GameObject();
+        this.gameObjects[name] = new GameObject();
       }
     } else {
       console.warn("Invalid game object array. Cannot create game objects.");
     }
   },
-});
-
-/**
- * @typedef {Object} EngineResourcesMeshes
- * @property {Mesh} guiPlane
- */
-
-/**
- * @typedef {Object} EngineResourcesGameObjects
- * @property {Camera} camera
- * @property {DirectLight} directLight
- * @property {AmbientLight} ambientLight
- */
-
-/**
- * @typedef {Object} EngineResources
- * @property {Object} textures
- * @property {EngineResourcesMeshes} meshes
- * @property {Object} shaders
- * @property {Object} materials
- * @property {EngineResourcesGameObjects} gameObjects
- * @property {Function} build
- */
-
-/**
- * @returns {EngineResources}
- */
-const CreateEngineResources = () => {
-  if (CreateEngineResources.instance) {
-    return CreateEngineResources.instance;
-  }
-
-  const self = {
-    textures: {},
-    meshes: {
-      guiPlane: Mesh.createGUIPlane(),
-    },
-    shaders: {},
-    materials: {},
-    gameObjects: {
-      camera: new Camera(),
-      directLight: new DirectLight(),
-      ambientLight: new AmbientLight(),
-    },
-    build: () => {},
-  };
-
-  Object.assign(self, resourceBuilder(self));
-
-  CreateEngineResources.instance = self;
-
-  return self;
 };
 
-CreateEngineResources.instance = undefined;
-
-exports.CreateEngineResources = CreateEngineResources;
+exports.engineResources = engineResources;

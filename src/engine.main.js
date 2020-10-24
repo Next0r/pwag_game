@@ -5,7 +5,7 @@ const { EngineToolbox } = require("./engine.toolbox");
 const { Input } = require("./engine.input");
 const { Renderer } = require("./engine.renderer");
 const { Vector4 } = require("./engine.math.vector4");
-const { CreateEngineResources } = require("./engine.resources");
+const { engineResources } = require("./engine.resources");
 const { createShaderProgram } = require("./engine.shader");
 const { gameInit } = require("./game.init");
 const { GameObject } = require("./engine.gameObject");
@@ -18,7 +18,6 @@ const { CreateCollisionSystem } = require("./engine.collisionSystem");
 
 const main = () => {
   EngineToolbox.createCanvas();
-
   const gl = EngineToolbox.getGLContext();
 
   if (!gl) {
@@ -26,7 +25,9 @@ const main = () => {
     return;
   }
 
-  const resources = CreateEngineResources();
+  const settings = EngineToolbox.readSettings();
+
+  const resources = engineResources;
   resources.build();
 
   const collisionSystem = CreateCollisionSystem();
@@ -38,6 +39,7 @@ const main = () => {
    */
   const plane = resources.gameObjects.plane;
   const camera = resources.gameObjects.camera;
+  camera.projection.aspect = settings.width / settings.height;
   /**
    * @type {GameObject}
    */

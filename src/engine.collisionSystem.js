@@ -1,10 +1,10 @@
-const { CreateEngineResources } = require("./engine.resources");
+const { engineResources } = require("./engine.resources");
 
 const { GameObject } = require("./engine.gameObject");
 
 const CreateCollisionSystem = () => ({
   checkCollisions() {
-    const resources = CreateEngineResources();
+    const resources = engineResources;
     /**
      * @type {GameObject[]}
      */

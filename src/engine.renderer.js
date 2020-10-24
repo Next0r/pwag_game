@@ -6,16 +6,7 @@ const { Matrix4 } = require("./engine.math.matrix4");
 const { Vector3 } = require("./engine.math.vector3");
 const { gameInit } = require("./game.init");
 
-class Renderer {
-  //   /**
-  //    * @type {Mesh}
-  //    */
-  //   static lastMeshUsed = undefined;
-  //   /**
-  //    * @type {Material}
-  //    */
-  //   static lastMaterialUsed = undefined;
-
+const Renderer = {
   /**
    * Applies scale correction to GUI element (to take screen aspect into account),
    * enforces element's location to be in front of camera and draws it with
@@ -23,7 +14,7 @@ class Renderer {
    * @param {GameObject} GUIElement
    * @param {Camera} camera
    */
-  static drawGUIElement(GUIElement, camera) {
+  drawGUIElement(GUIElement, camera) {
     const gl = EngineToolbox.getGLContext();
     camera.projection.rebuildMatrixOrtho();
 
@@ -47,13 +38,13 @@ class Renderer {
     mat.bindVertexArray();
 
     gl.drawElements(gl.TRIANGLES, GUIElement.mesh.elementArray.length, gl.UNSIGNED_INT, 0);
-  }
+  },
 
   /**
    * @param {GameObject} gameObject
    * @param {Camera} camera
    */
-  static drawGameObject(gameObject, camera) {
+  drawGameObject(gameObject, camera) {
     const gl = EngineToolbox.getGLContext();
     camera.projection.rebuildMatrixPerspective();
 
@@ -84,48 +75,48 @@ class Renderer {
     //Renderer.lastMaterialUsed = gameObject.material;
 
     gl.drawElements(gl.TRIANGLES, gameObject.mesh.elementArray.length, gl.UNSIGNED_INT, 0);
-  }
+  },
 
   /**
    * @param {Vector4} clearColor
    */
-  static setClearColor(clearColor) {
+  setClearColor(clearColor) {
     const gl = EngineToolbox.getGLContext();
     gl.clearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
     return this;
-  }
+  },
 
-  static enableDepthTest() {
+  enableDepthTest() {
     const gl = EngineToolbox.getGLContext();
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
     return this;
-  }
+  },
 
-  static disableDepthTest() {
+  disableDepthTest() {
     const gl = EngineToolbox.getGLContext();
     gl.disable(gl.DEPTH_TEST);
     return this;
-  }
+  },
 
-  static clear() {
+  clear() {
     const gl = EngineToolbox.getGLContext();
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     return this;
-  }
+  },
 
-  static enableAlphaBlend() {
+  enableAlphaBlend() {
     const gl = EngineToolbox.getGLContext();
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     return this;
-  }
+  },
 
-  static disableAlphaBlend() {
+  disableAlphaBlend() {
     const gl = EngineToolbox.getGLContext();
     gl.disable(gl.BLEND);
     return this;
-  }
-}
+  },
+};
 
 exports.Renderer = Renderer;

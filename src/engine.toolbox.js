@@ -1,18 +1,18 @@
 const fs = require("fs");
 const { PNG } = require("pngjs");
 
-class EngineToolbox {
-  static _glContext = undefined;
+const EngineToolbox = {
+  _glContext: undefined,
 
-  static getCanvas() {
+  getCanvas() {
     const canvasID = EngineToolbox.readSettings().canvasID;
     return document.getElementById(canvasID);
-  }
+  },
 
   /**
    * @returns {WebGL2RenderingContext}
    */
-  static getGLContext() {
+  getGLContext() {
     if (EngineToolbox._glContext) {
       return EngineToolbox._glContext;
     }
@@ -22,9 +22,9 @@ class EngineToolbox {
       EngineToolbox._glContext = canvas.getContext("webgl2");
       return EngineToolbox._glContext;
     }
-  }
+  },
 
-  static createCanvas() {
+  createCanvas() {
     const settings = this.readSettings();
     const width = settings.width;
     const height = settings.height;
@@ -37,18 +37,18 @@ class EngineToolbox {
     canvas.setAttribute("height", height.toString());
     document.body.appendChild(canvas);
     return this;
-  }
+  },
 
-  static readTextFile(path) {
+  readTextFile(path) {
     try {
       const file = fs.readFileSync(path, { encoding: "utf8" });
       return file;
     } catch (err) {
       return undefined;
     }
-  }
+  },
 
-  static readImage(path) {
+  readImage(path) {
     try {
       const imageBuffer = fs.readFileSync(path);
       const png = PNG.sync.read(imageBuffer);
@@ -56,17 +56,17 @@ class EngineToolbox {
     } catch (err) {
       return undefined;
     }
-  }
+  },
 
-  static isPowerOf2(value) {
+  isPowerOf2(value) {
     return (value & (value - 1)) === 0;
-  }
+  },
 
   /**
    * @param {Array} array1
    * @param {Array} array2
    */
-  static compareArrays(array1, array2) {
+  compareArrays(array1, array2) {
     if (array1.length !== array2.length) {
       return false;
     }
@@ -78,9 +78,9 @@ class EngineToolbox {
     }
 
     return true;
-  }
+  },
 
-  static readSettings() {
+  readSettings() {
     const settingsText = this.readTextFile("./settings.json");
     if (!settingsText) {
       console.warn("Cannot read settings.json file.");
@@ -88,7 +88,7 @@ class EngineToolbox {
     }
     const settings = JSON.parse(settingsText);
     return settings;
-  }
-}
+  },
+};
 
 exports.EngineToolbox = EngineToolbox;
