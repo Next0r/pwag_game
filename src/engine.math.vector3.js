@@ -51,6 +51,14 @@ class Vector3 {
     return this;
   }
 
+  /**
+   *
+   * @param {Vector3} vector3
+   */
+  dot(vector3) {
+    return this.x * vector3.x + this.y * vector3.y + this.z * vector3.z;
+  }
+
   static up = new Vector3(0, 1, 0);
   static right = new Vector3(1, 0, 0);
   static forward = new Vector3(0, 0, -1);

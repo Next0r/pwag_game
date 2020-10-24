@@ -14,6 +14,7 @@ const { Matrix4 } = require("./engine.math.matrix4");
 const { rmdir } = require("fs");
 const { handleGuiSight } = require("./game.handleGuiSight");
 const { Mesh } = require("./engine.utilities.mesh");
+const { CreateBoxCollider } = require("./engine.boxCollider");
 
 const main = () => {
   const engineInfo = EngineToolbox.createEngineInfo();
@@ -44,6 +45,10 @@ const main = () => {
    * @type {GameObject}
    */
   const box = resources.gameObjects.box;
+  /**
+   * @type {GameObject}
+   */
+  const box2 = resources.gameObjects.box2;
 
   // draw
   Renderer.setClearColor(new Vector4(0, 0, 0, 1));
@@ -69,15 +74,19 @@ const main = () => {
   const planeMaxRotationZ = 30;
   camera.projection.far = 1000;
 
+  // let box2PosX = 0;
+  // let box2RotZ = 0;
+
   Input.keyboard.onRelease["KeyF"] = () => {
     planeSpeed = 20;
   };
 
-  // const m = new Matrix4();
-  // m.fromArray([1, 1, 2, 3, 4, 1, 5, 6, 7, 8, 1, 9, 10, 11, 12, 1]);
-  // m.transpose();
-  // console.log(m);
-
+  // const boxCollider = CreateBoxCollider("box");
+  // const box2Collider = CreateBoxCollider("box2");
+  // boxCollider.recalculate(box.mesh);
+  // box2Collider.recalculate(box.mesh);
+  // boxCollider.transformationMatrix = box.transform.matrix;
+  // box2Collider.transformationMatrix = box2.transform.matrix;
 
   Game.mainFunction = () => {
     planeRotationY -= guiSightPosition.x * planeRotationSpeed;
@@ -115,8 +124,27 @@ const main = () => {
     skybox.transform.applyLocation();
 
     box.transform.reset();
+    box.transform.translate(new Vector3(2.1, 0, 0));
     box.transform.scale(new Vector3(3, 3, 3));
+    box.transform.applyLocation();
     box.transform.applyScale();
+
+    // box2.transform.reset();
+    // box2.transform.translate(new Vector3(box2PosX, 0, 0));
+    // box2.transform.rotateZ(box2RotZ);
+    // box2RotZ += Time.delta * 90;
+    // box2.transform.applyLocation();
+    // box2.transform.applyRotation();
+
+    // if (Input.keyboard.isDown("KeyA")) {
+    //   box2PosX -= Time.delta;
+    // } else if (Input.keyboard.isDown("KeyD")) {
+    //   box2PosX += Time.delta;
+    // }
+
+    // if (boxCollider.doesCollide(box2Collider)) {
+    //   console.log("collision!");
+    // }
 
     Renderer.clear();
     // skybox
@@ -126,6 +154,7 @@ const main = () => {
     // opaque elements
     Renderer.drawGameObject(plane, camera);
     Renderer.drawGameObject(box, camera);
+    Renderer.drawGameObject(box2, camera);
 
     // gui (uses alpha - draw as last)
     Renderer.enableAlphaBlend();

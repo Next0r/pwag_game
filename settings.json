@@ -2,6 +2,6 @@
   "texturesDir": "./textures",
   "meshesDir": "./models",
   "shadersDir": "./shaders",
-  "gameObjects": ["skybox", "guiSight", "plane", "box"],
+  "gameObjects": ["skybox", "guiSight", "plane", "box", "box2"],
   "materials": ["skybox", "guiSight", "plane"]
 }

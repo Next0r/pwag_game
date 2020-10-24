@@ -25,6 +25,10 @@ const gameInit = () => {
   box.mesh = resources.meshes.box2;
   box.material = resources.materials.plane;
 
+  const box2 = resources.gameObjects.box2;
+  box2.mesh = resources.meshes.box2;
+  box2.material = resources.materials.plane;
+
   // get material sources and create shader program
   const vsSource = resources.shaders.testVS;
   const fsSource = resources.shaders.testFS;
