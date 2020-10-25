@@ -2,9 +2,24 @@
   "texturesDir": "./textures",
   "meshesDir": "./models",
   "shadersDir": "./shaders",
-  "gameObjects": ["skybox", "guiSight", "plane", "box", "box2"],
-  "materials": ["skybox", "guiSight", "plane"],
+  "gameObjects": [
+    "skybox",
+    "guiSight",
+    "plane",
+    "box",
+    "box2",
+    "concrete",
+    "startMenuAircraft"
+  ],
+  "materials": [
+    "skybox",
+    "guiSight",
+    "aircraft",
+    "concrete",
+    "guiText"
+  ],
   "canvasID": "game_window",
   "width": 1024,
-  "height": 576
+  "height": 576,
+  "textGridSize": 0.08333
 }

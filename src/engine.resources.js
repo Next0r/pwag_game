@@ -13,6 +13,9 @@ const engineResources = {
   textures: {},
   meshes: {
     guiPlane: Mesh.createGUIPlane(),
+    textGUIPlane: Mesh.createGUIPlane().scaleMap(
+      EngineToolbox.getSettings().textGridSize
+    ),
   },
   shaders: {},
   materials: {},
@@ -22,7 +25,7 @@ const engineResources = {
     ambientLight: new AmbientLight(),
   },
   build() {
-    const settings = EngineToolbox.readSettings();
+    const settings = EngineToolbox.getSettings();
     if (!settings) {
       return;
     }
@@ -33,7 +36,9 @@ const engineResources = {
       console.warn("Cannot read texture resources.");
     } else {
       for (let textureName of textureNames) {
-        const image = EngineToolbox.readImage(`${settings.texturesDir}/${textureName}`);
+        const image = EngineToolbox.readImage(
+          `${settings.texturesDir}/${textureName}`
+        );
         const texture = new Texture().fromPNGImage(image);
         const id = textureName.split(".");
         id.pop();
@@ -61,7 +66,9 @@ const engineResources = {
       console.warn("Cannot read shader resources.");
     } else {
       for (let shaderName of shaderNames) {
-        const shaderSource = EngineToolbox.readTextFile(`${settings.shadersDir}/${shaderName}`);
+        const shaderSource = EngineToolbox.readTextFile(
+          `${settings.shadersDir}/${shaderName}`
+        );
         const id = shaderName.split(".");
         id.pop();
         this.shaders[id] = shaderSource;

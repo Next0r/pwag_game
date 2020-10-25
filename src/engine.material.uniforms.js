@@ -51,6 +51,9 @@ class MaterialUniforms {
     this.useVertexColor = new Uniform("u_use_vertex_color", [0]);
 
     this.useEmission = new Uniform("u_use_emission", [0]);
+
+    this.mapOffsetX = new Uniform("u_map_offset_x", [0]);
+    this.mapOffsetY = new Uniform("u_map_offset_y", [0]);
   }
 
   /**
@@ -73,6 +76,8 @@ class MaterialUniforms {
     this.useNormal0.setLocation(shaderProgram);
     this.useVertexColor.setLocation(shaderProgram);
     this.useEmission.setLocation(shaderProgram);
+    this.mapOffsetX.setLocation(shaderProgram);
+    this.mapOffsetY.setLocation(shaderProgram);
   }
 }
 

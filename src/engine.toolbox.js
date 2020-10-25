@@ -3,9 +3,10 @@ const { PNG } = require("pngjs");
 
 const EngineToolbox = {
   _glContext: undefined,
+  _settings: undefined,
 
   getCanvas() {
-    const canvasID = EngineToolbox.readSettings().canvasID;
+    const canvasID = EngineToolbox.getSettings().canvasID;
     return document.getElementById(canvasID);
   },
 
@@ -13,8 +14,8 @@ const EngineToolbox = {
    * @returns {WebGL2RenderingContext}
    */
   getGLContext() {
-    if (EngineToolbox._glContext) {
-      return EngineToolbox._glContext;
+    if (this._glContext) {
+      return this._glContext;
     }
 
     const canvas = EngineToolbox.getCanvas();
@@ -25,7 +26,7 @@ const EngineToolbox = {
   },
 
   createCanvas() {
-    const settings = this.readSettings();
+    const settings = this.getSettings();
     const width = settings.width;
     const height = settings.height;
     const id = settings.canvasID;
@@ -80,7 +81,11 @@ const EngineToolbox = {
     return true;
   },
 
-  readSettings() {
+  getSettings() {
+    if (this._settings) {
+      return this._settings;
+    }
+
     const settingsText = this.readTextFile("./settings.json");
     if (!settingsText) {
       console.warn("Cannot read settings.json file.");

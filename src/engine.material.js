@@ -131,6 +131,8 @@ class Material {
     this.uniforms.useColor1.value && uniform1iv(this.uniforms.useColor1);
     this.uniforms.useNormal0.value && uniform1iv(this.uniforms.useNormal0);
     this.uniforms.useEmission.value && uniform1iv(this.uniforms.useEmission);
+    this.uniforms.mapOffsetX.value && uniform1fv(this.uniforms.mapOffsetX);
+    this.uniforms.mapOffsetY.value && uniform1fv(this.uniforms.mapOffsetY);
   }
 
   /**

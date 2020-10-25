@@ -63,6 +63,17 @@ class Mesh {
     return plane;
   }
 
+  /**
+   * @param {Number} scaleFactor
+   */
+  scaleMap(scaleFactor) {
+    for (let i = 0; i < this.map.length; i += 1) {
+      this.map[i][0] *= scaleFactor;
+      this.map[i][1] *= scaleFactor;
+    }
+    return this;
+  }
+
   createTangents() {
     if (this.mapOffset === undefined && this.vertices.length !== 0) {
       return;
@@ -195,14 +206,6 @@ class Mesh {
       elementArray.push(i);
     }
 
-    if (this.mapOffset !== undefined) {
-      // Add tangent and bitangent index to vertex data
-      this.createTangents();
-      for (let i = 0; i < verticesClone.length; i += 1) {
-        verticesClone[i].push(i);
-      }
-    }
-
     for (let i = 0; i < this.vertices.length; i += 1) {
       const vertex = this.vertices[i];
 
@@ -223,16 +226,6 @@ class Mesh {
           this.colorOffset !== undefined && nextVertexInfo.push(...this.colors[nextVertex[this.colorOffset]]);
 
           if (EngineToolbox.compareArrays(nextVertexInfo, vertexInfo)) {
-            if (this.mapOffset !== undefined) {
-              this.tangents[i][0] += this.tangents[j][0];
-              this.tangents[i][1] += this.tangents[j][1];
-              this.tangents[i][2] += this.tangents[j][2];
-
-              this.bitangents[i][0] += this.bitangents[j][0];
-              this.bitangents[i][1] += this.bitangents[j][1];
-              this.bitangents[i][2] += this.bitangents[j][2];
-            }
-
             verticesClone[j] = undefined;
             elementArray[j] = i;
           }
