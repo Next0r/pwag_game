@@ -9,14 +9,12 @@ const { Input } = require("./engine.input");
 
 const handleStartMenu = () => {
   const resources = engineResources;
+  initStartMenu();
 
-  Game.awake = () => {
-    initStartMenu();
-
-    Input.keyboard.onRelease["Space"] = function () {
-      console.log("game start!");
-      Input.keyboard.onRelease["Space"] = undefined;
-    };
+  Input.keyboard.onRelease["Space"] = function () {
+    Input.keyboard.onRelease["Space"] = undefined;
+    Game.stop();
+    require("./game.handleLevel").handleLevel();
   };
 
   const aircraft = resources.gameObjects.startMenuAircraft;
@@ -25,6 +23,7 @@ const handleStartMenu = () => {
 
   let camRotationY = 0;
   let textSize = 0.075;
+  let cameraOffset = 12;
 
   Game.update = () => {
     camRotationY += Time.delta * 2;
@@ -34,7 +33,7 @@ const handleStartMenu = () => {
     camera.transform.applyRotation();
     camera.transform.rotateX(-45);
     camera.transform.applyRotation();
-    camera.transform.translate(new Vector3(0, 0, 12));
+    camera.transform.translate(new Vector3(0, 0, cameraOffset));
     camera.transform.applyLocation();
 
     textSize + Math.sin(Time.now * 5);
@@ -50,8 +49,6 @@ const handleStartMenu = () => {
       charWidth: 0.55,
       center: true,
     });
-
-    Renderer.drawGUIElement(resources.textures.gui_sight);
     Renderer.disableAlphaBlend();
   };
 

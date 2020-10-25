@@ -5,12 +5,21 @@
   "gameObjects": [
     "skybox",
     "plane",
+    "aircraft",
+    "gate01",
     "box",
     "box2",
     "concrete",
     "startMenuAircraft"
   ],
-  "materials": ["skybox", "guiElement", "aircraft", "concrete", "guiText"],
+  "materials": [
+    "skybox",
+    "guiElement",
+    "aircraft",
+    "concrete",
+    "guiText",
+    "gate"
+  ],
   "canvasID": "game_window",
   "width": 1024,
   "height": 576,

@@ -1,8 +1,10 @@
 const { Time } = require("./engine.time");
 
 class Game {
+  static _requestHandle = undefined;
+
   static update = () => {};
-  static awake = () => {};
+  // static awake = () => {};
 
   static loop(now) {
     Time.now = now * 0.001;
@@ -11,15 +13,19 @@ class Game {
     if (typeof Game.update === "function") {
       Game.update();
     }
-    requestAnimationFrame(Game.loop);
+    Game._requestHandle = requestAnimationFrame(Game.loop);
   }
 
   /**
    * Calls awake function and starts game loop
    */
   static start() {
-    Game.awake();
-    requestAnimationFrame(Game.loop);
+    // Game.awake();
+    Game._requestHandle = requestAnimationFrame(Game.loop);
+  }
+
+  static stop() {
+    Game._requestHandle && cancelAnimationFrame(Game._requestHandle);
   }
 }
 

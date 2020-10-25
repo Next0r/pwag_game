@@ -1,53 +1,59 @@
 const { Input } = require("./engine.input");
 const { Vector3 } = require("./engine.math.vector3");
+const { engineResources } = require("./engine.resources");
 
 /**
  *
- * @param {Vector3} guiSightPosition
  * @param {Number} guiSightSensitivity
  */
-const handleGuiSight = (guiSightPosition, guiSightSensitivity) => {
+const handleGuiSight = (
+  position = { posX: 0, posY: 0 },
+  guiSightSensitivity
+) => {
   const movementX = Input.mouse.movementX * guiSightSensitivity;
-  const movementY = Input.mouse.movementY * guiSightSensitivity;
+  const movementY =
+    Input.mouse.movementY *
+    guiSightSensitivity *
+    engineResources.gameObjects.camera.projection.aspect;
 
   if (!movementX && !movementY) {
     return;
   }
 
-  if (guiSightPosition.x > -1 && movementX < 0) {
-    guiSightPosition.x += movementX;
-  } else if (guiSightPosition.x <= -1 && movementX > 0) {
-    guiSightPosition.x += movementX;
+  if (position.posX > -1 && movementX < 0) {
+    position.posX += movementX;
+  } else if (position.posX <= -1 && movementX > 0) {
+    position.posX += movementX;
   }
 
-  if (guiSightPosition.x < 1 && movementX > 0) {
-    guiSightPosition.x += movementX;
-  } else if (guiSightPosition.x >= 1 && movementX < 0) {
-    guiSightPosition.x += movementX;
+  if (position.posX < 1 && movementX > 0) {
+    position.posX += movementX;
+  } else if (position.posX >= 1 && movementX < 0) {
+    position.posX += movementX;
   }
 
-  if (guiSightPosition.x < -1) {
-    guiSightPosition.x = -1;
-  } else if (guiSightPosition.x > 1) {
-    guiSightPosition.x = 1;
+  if (position.posX < -1) {
+    position.posX = -1;
+  } else if (position.posX > 1) {
+    position.posX = 1;
   }
 
-  if (guiSightPosition.y > -1 && movementY < 0) {
-    guiSightPosition.y += movementY;
-  } else if (guiSightPosition.y <= -1 && movementY > 0) {
-    guiSightPosition.y += movementY;
+  if (position.posY > -1 && movementY < 0) {
+    position.posY += movementY;
+  } else if (position.posY <= -1 && movementY > 0) {
+    position.posY += movementY;
   }
 
-  if (guiSightPosition.y < 1 && movementY > 0) {
-    guiSightPosition.y += movementY;
-  } else if (guiSightPosition.y >= 1 && movementY < 0) {
-    guiSightPosition.y += movementY;
+  if (position.posY < 1 && movementY > 0) {
+    position.posY += movementY;
+  } else if (position.posY >= 1 && movementY < 0) {
+    position.posY += movementY;
   }
 
-  if (guiSightPosition.y > 1) {
-    guiSightPosition.y = 1;
-  } else if (guiSightPosition.y < -1) {
-    guiSightPosition.y = -1;
+  if (position.posY > 1) {
+    position.posY = 1;
+  } else if (position.posY < -1) {
+    position.posY = -1;
   }
 };
 
