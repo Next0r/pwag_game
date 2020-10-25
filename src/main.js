@@ -1,6 +1,7 @@
 const { create } = require("domain");
 const { app } = require("electron");
 const electron = require("electron");
+const { handleStartMenu } = require("./game.handleStartMenu");
 
 function createWindow() {
   const win = new electron.BrowserWindow({
@@ -17,3 +18,4 @@ function createWindow() {
 }
 
 app.whenReady().then(createWindow);
+

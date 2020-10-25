@@ -2,7 +2,7 @@ const { engineResources } = require("./engine.resources");
 
 const { GameObject } = require("./engine.gameObject");
 
-const CreateCollisionSystem = () => ({
+const CollisionSystem = {
   checkCollisions() {
     const resources = engineResources;
     /**
@@ -15,7 +15,8 @@ const CreateCollisionSystem = () => ({
      */
     const colliders = [];
     for (let prop in gameObjects) {
-      gameObjects[prop].colliders && colliders.push(...gameObjects[prop].colliders);
+      gameObjects[prop].colliders &&
+        colliders.push(...gameObjects[prop].colliders);
     }
 
     for (let i = 0; i < colliders.length; i += 1) {
@@ -34,6 +35,6 @@ const CreateCollisionSystem = () => ({
       }
     }
   },
-});
+};
 
-exports.CreateCollisionSystem = CreateCollisionSystem;
+exports.CollisionSystem = CollisionSystem;

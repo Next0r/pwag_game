@@ -7,14 +7,13 @@ const { Renderer } = require("./engine.renderer");
 const { Vector4 } = require("./engine.math.vector4");
 const { engineResources } = require("./engine.resources");
 const { createShaderProgram } = require("./engine.shader");
-const { gameInit } = require("./game.init");
 const { GameObject } = require("./engine.gameObject");
 const { Matrix4 } = require("./engine.math.matrix4");
 const { rmdir } = require("fs");
 const { handleGuiSight } = require("./game.handleGuiSight");
 const { Mesh } = require("./engine.utilities.mesh");
 const { CreateBoxCollider } = require("./engine.boxCollider");
-const { CreateCollisionSystem } = require("./engine.collisionSystem");
+const { CollisionSystem } = require("./engine.collisionSystem");
 const { handleStartMenu } = require("./game.handleStartMenu");
 
 const main = () => {
@@ -29,17 +28,18 @@ const main = () => {
   const settings = EngineToolbox.getSettings();
   const resources = engineResources;
   resources.build();
-  const collisionSystem = CreateCollisionSystem();
   const camera = resources.gameObjects.camera;
   camera.projection.aspect = settings.width / settings.height;
 
-  // draw
+  Input.addKeyboardEventListeners();
   Renderer.setClearColor(new Vector4(0, 0, 0, 1));
   Renderer.enableDepthTest();
   Renderer.enableAlphaBlend();
 
-  handleStartMenu();
-  
+  const startUpFile = require(settings.startUpFile);
+  if (typeof startUpFile[settings.startUpFunction] === "function") {
+    startUpFile[settings.startUpFunction]();
+  }
 };
 
 window.onload = main;

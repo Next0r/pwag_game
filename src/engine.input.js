@@ -1,29 +1,25 @@
 const { EngineToolbox } = require("./engine.toolbox");
 
-class Mouse {
-  constructor() {
-    this.movementX = 0;
-    this.movementY = 0;
-    this.locked = false;
-  }
-}
+const mouse = {
+  movementX: 0,
+  movementY: 0,
+  locked: false,
+};
 
-class Keyboard {
-  constructor() {
-    this._keyInfo = {};
-    this.onRelease = {};
-  }
+const keyboard = {
+  _keyInfo: {},
+  onRelease: {},
 
   isDown(code) {
     return this._keyInfo[code] === true;
-  }
-}
+  },
+};
 
-class Input {
-  static mouse = new Mouse();
-  static keyboard = new Keyboard();
+const Input = {
+  mouse: mouse,
+  keyboard: keyboard,
 
-  static addKeyboardEventListeners() {
+  addKeyboardEventListeners() {
     window.addEventListener("keydown", (keyboard) => {
       setKeyDown(keyboard.code);
     });
@@ -31,9 +27,9 @@ class Input {
       setKeyUp(keyboard.code);
       executeOnReleaseFunction(keyboard.code);
     });
-  }
+  },
 
-  static lockPointer() {
+  lockPointer() {
     const canvas = EngineToolbox.getCanvas();
     if (!canvas) {
       return;
@@ -41,8 +37,8 @@ class Input {
     document.addEventListener("pointerlockchange", lockChangeAlert, false);
     canvas.requestPointerLock();
     Input.mouse.locked = true;
-  }
-}
+  },
+};
 
 const executeOnReleaseFunction = (code) => {
   if (typeof Input.keyboard.onRelease[code] === "function") {

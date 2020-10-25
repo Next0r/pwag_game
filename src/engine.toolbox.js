@@ -85,13 +85,13 @@ const EngineToolbox = {
     if (this._settings) {
       return this._settings;
     }
-
     const settingsText = this.readTextFile("./settings.json");
     if (!settingsText) {
       console.warn("Cannot read settings.json file.");
       return;
     }
     const settings = JSON.parse(settingsText);
+    this._settings = settings;
     return settings;
   },
 };

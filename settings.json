@@ -4,22 +4,17 @@
   "shadersDir": "./shaders",
   "gameObjects": [
     "skybox",
-    "guiSight",
     "plane",
     "box",
     "box2",
     "concrete",
     "startMenuAircraft"
   ],
-  "materials": [
-    "skybox",
-    "guiSight",
-    "aircraft",
-    "concrete",
-    "guiText"
-  ],
+  "materials": ["skybox", "guiElement", "aircraft", "concrete", "guiText"],
   "canvasID": "game_window",
   "width": 1024,
   "height": 576,
-  "textGridSize": 0.08333
+  "textGridSize": 0.08333,
+  "startUpFile": "./game.handleStartMenu",
+  "startUpFunction": "handleStartMenu"
 }

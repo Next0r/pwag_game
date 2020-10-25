@@ -5,12 +5,18 @@ const { engineResources } = require("./engine.resources");
 const { initStartMenu } = require("./game.initStartMenu");
 const { GameObject } = require("./engine.gameObject");
 const { Time } = require("./engine.time");
+const { Input } = require("./engine.input");
 
 const handleStartMenu = () => {
   const resources = engineResources;
 
   Game.awake = () => {
     initStartMenu();
+
+    Input.keyboard.onRelease["Space"] = function () {
+      console.log("game start!");
+      Input.keyboard.onRelease["Space"] = undefined;
+    };
   };
 
   const aircraft = resources.gameObjects.startMenuAircraft;
@@ -18,6 +24,7 @@ const handleStartMenu = () => {
   const camera = resources.gameObjects.camera;
 
   let camRotationY = 0;
+  let textSize = 0.075;
 
   Game.update = () => {
     camRotationY += Time.delta * 2;
@@ -30,6 +37,8 @@ const handleStartMenu = () => {
     camera.transform.translate(new Vector3(0, 0, 12));
     camera.transform.applyLocation();
 
+    textSize + Math.sin(Time.now * 5);
+
     Renderer.drawGameObject(aircraft);
     Renderer.drawGameObject(concrete);
 
@@ -37,10 +46,12 @@ const handleStartMenu = () => {
     Renderer.drawString("Press [SPACE] to start", {
       posX: 0,
       posY: -0.5,
-      size: 0.075,
+      size: textSize + Math.sin(Time.now * Math.PI) * textSize * 0.1,
       charWidth: 0.55,
       center: true,
     });
+
+    Renderer.drawGUIElement(resources.textures.gui_sight);
     Renderer.disableAlphaBlend();
   };
 

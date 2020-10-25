@@ -52,6 +52,13 @@ const initStartMenu = () => {
   /**
    * @type {Material}
    */
+  const guiElementMaterial = resources.materials.guiElement;
+  guiElementMaterial.shaderProgram = shaderProgram;
+  guiElementMaterial.uniforms.useEmission.value = [1];
+
+  /**
+   * @type {Material}
+   */
   const guiTextMaterial = resources.materials.guiText;
   guiTextMaterial.shaderProgram = shaderProgram;
   guiTextMaterial.uniforms.useEmission.value = [1];

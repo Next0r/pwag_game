@@ -4,7 +4,6 @@ const { EngineToolbox } = require("./engine.toolbox");
 const { Vector4 } = require("./engine.math.vector4");
 const { Matrix4 } = require("./engine.math.matrix4");
 const { Vector3 } = require("./engine.math.vector3");
-const { gameInit } = require("./game.init");
 const { engineResources } = require("./engine.resources");
 const { charTable } = require("./engine.charTable");
 
@@ -15,23 +14,29 @@ const Renderer = {
    * orthogonal projection.
    * @param {GameObject} GUIElement
    */
-  drawGUIElement(GUIElement) {
+  drawGUIElement(
+    texture,
+    options = { posX: 0, posY: 0, scaleX: 0.1, scaleY: 0.1 }
+  ) {
     const gl = EngineToolbox.getGLContext();
     const camera = engineResources.gameObjects.camera;
+    const { posX, posY, scaleX, scaleY } = options;
 
-    const mat = GUIElement.material;
-    const modelViewMatrix = GUIElement.transform.matrix.clone();
-    // correct element scale with screen aspect
-    const scaleCorrection = new Vector3(1 / camera.projection.aspect, 1, 1);
-    modelViewMatrix.scale(scaleCorrection);
-    // force z position to -1
-    modelViewMatrix.m32 = -1;
+    const mat = engineResources.materials.guiElement;
+    mat.textures.color0 = texture;
+
+    const modelViewMatrix = new Matrix4();
+    modelViewMatrix.m30 = posX;
+    (modelViewMatrix.m31 = posY), (modelViewMatrix.m32 = -1);
+    modelViewMatrix.m00 = scaleX / camera.projection.aspect;
+    modelViewMatrix.m11 = scaleY;
+    modelViewMatrix.m22 = 1;
 
     mat.uniforms.modelViewMatrix.value = modelViewMatrix.toArray();
     mat.uniforms.projectionMatrix.value = new Matrix4().toArray();
     mat.uniforms.normalMatrix.value = new Matrix4().toArray();
 
-    mat.createVertexArray(GUIElement.mesh);
+    mat.createVertexArray(engineResources.meshes.guiPlane);
 
     mat.uploadUniforms();
     mat.uploadTextures();
@@ -40,7 +45,7 @@ const Renderer = {
 
     gl.drawElements(
       gl.TRIANGLES,
-      GUIElement.mesh.elementArray.length,
+      engineResources.meshes.guiPlane.elementArray.length,
       gl.UNSIGNED_INT,
       0
     );
@@ -100,12 +105,10 @@ const Renderer = {
   ) {
     const { posX, posY, size, charWidth, center, toRight } = options;
     let posXOffset = 0;
+    const strLen = string.length;
 
-    if (center) {
-      posXOffset = -string.length * size * charWidth * 0.5;
-    } else if (toRight) {
-      posXOffset = -string.length * size * charWidth;
-    }
+    center && (posXOffset = -strLen * size * charWidth * 0.5);
+    toRight && (posXOffset = -strLen * size * charWidth);
 
     for (let char of string) {
       this.drawChar(char, posX + posXOffset, posY, size);
@@ -118,19 +121,15 @@ const Renderer = {
     const camera = engineResources.gameObjects.camera;
     const charDescriptor = charTable[char.charCodeAt(0)];
 
-    const textPlane = engineResources.meshes.textGUIPlane;
     const mat = engineResources.materials.guiText;
 
-    const locationMatrix = new Matrix4();
-    locationMatrix.translate(new Vector3(posX, posY, -1));
-
-    const scaleMatrix = new Matrix4();
-    scaleMatrix.scale(
-      new Vector3((1 / camera.projection.aspect) * size, 1 * size, 1 * size)
-    );
-
     const modelViewMatrix = new Matrix4();
-    modelViewMatrix.multiply(locationMatrix).multiply(scaleMatrix);
+    modelViewMatrix.m30 = posX;
+    modelViewMatrix.m31 = posY;
+    modelViewMatrix.m32 = -1;
+    modelViewMatrix.m00 = size / camera.projection.aspect;
+    modelViewMatrix.m11 = size;
+    modelViewMatrix.m22 = size;
 
     mat.uniforms.modelViewMatrix.value = modelViewMatrix.toArray();
     mat.uniforms.projectionMatrix.value = new Matrix4().toArray();
@@ -143,7 +142,7 @@ const Renderer = {
       EngineToolbox.getSettings().textGridSize * charDescriptor.posY,
     ];
 
-    mat.createVertexArray(textPlane);
+    mat.createVertexArray(engineResources.meshes.textGUIPlane);
 
     mat.uploadUniforms();
     mat.uploadTextures();
@@ -152,7 +151,7 @@ const Renderer = {
 
     gl.drawElements(
       gl.TRIANGLES,
-      textPlane.elementArray.length,
+      engineResources.meshes.textGUIPlane.elementArray.length,
       gl.UNSIGNED_INT,
       0
     );
