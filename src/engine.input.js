@@ -1,9 +1,10 @@
 const { EngineToolbox } = require("./engine.toolbox");
 
 const mouse = {
+  _lastMovementsX: [0, 0, 0],
+  _lastMovementsY: [0, 0, 0],
   movementX: 0,
   movementY: 0,
-  locked: false,
 };
 
 const keyboard = {
@@ -36,7 +37,6 @@ const Input = {
     }
     document.addEventListener("pointerlockchange", lockChangeAlert, false);
     canvas.requestPointerLock();
-    Input.mouse.locked = true;
   },
 };
 
@@ -69,11 +69,34 @@ const updatePosition = (mouse) => {
   if (mouseFreezeTimeout) {
     clearTimeout(mouseFreezeTimeout);
   }
-  Input.mouse.movementX = mouse.movementX;
-  Input.mouse.movementY = -mouse.movementY;
+
+  const avgMovementX =
+    (mouse.movementX +
+      Input.mouse._lastMovementsX.reduce((prev, curr) => {
+        return prev + curr;
+      })) /
+    (Input.mouse._lastMovementsX.length + 1);
+
+  const avgMovementY =
+    (mouse.movementY +
+      Input.mouse._lastMovementsY.reduce((prev, curr) => {
+        return prev + curr;
+      })) /
+    (Input.mouse._lastMovementsY.length + 1);
+
+  Input.mouse.movementX = avgMovementX;
+  Input.mouse.movementY = -avgMovementY;
+
+  Input.mouse._lastMovementsX.push(mouse.movementX);
+  Input.mouse._lastMovementsY.push(mouse.movementY);
+  Input.mouse._lastMovementsX.shift();
+  Input.mouse._lastMovementsY.shift();
+
   mouseFreezeTimeout = setTimeout(() => {
     Input.mouse.movementX = 0;
     Input.mouse.movementY = 0;
+    Input.mouse._lastMovementsX = [0, 0, 0];
+    Input.mouse._lastMovementsY = [0, 0, 0];
   }, 20);
 };
 

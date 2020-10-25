@@ -10,7 +10,6 @@ const { createShaderProgram } = require("./engine.shader");
 const { GameObject } = require("./engine.gameObject");
 const { Matrix4 } = require("./engine.math.matrix4");
 const { rmdir } = require("fs");
-const { handleGuiSight } = require("./game.handleGuiSight");
 const { Mesh } = require("./engine.utilities.mesh");
 const { CreateBoxCollider } = require("./engine.boxCollider");
 const { CollisionSystem } = require("./engine.collisionSystem");

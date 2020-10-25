@@ -3,24 +3,36 @@ const { engineResources } = require("./engine.resources");
 const { aircraftBehaviour } = require("./game.aircraftBehaviour");
 
 const cameraBehaviour = {
-  camera: engineResources.gameObjects.camera,
   cameraOffset: new Vector3(0, 3, 15),
   cameraPosition: new Vector3(),
+  cameraRotation: new Vector3(),
 
   followAircraft() {
     const aircraftPosition = aircraftBehaviour.aircraftPosition;
     const aircraftRotation = aircraftBehaviour.aircraftRotation;
+    const camera = engineResources.gameObjects.camera;
 
-    this.camera.transform.reset();
-    this.camera.transform.translate(aircraftPosition);
-    this.camera.transform.applyLocation();
-    this.camera.transform.rotateY(aircraftRotation.y);
-    this.camera.transform.rotateX(aircraftRotation.x);
-    this.camera.transform.applyRotation();
-    this.camera.transform.translate(this.cameraOffset);
-    this.camera.transform.applyLocation();
+    camera.transform.reset();
+    camera.transform.translate(aircraftPosition);
+    camera.transform.applyLocation();
+    camera.transform.rotateY(aircraftRotation.y);
+    camera.transform.rotateX(aircraftRotation.x);
+    camera.transform.applyRotation();
+    camera.transform.translate(this.cameraOffset);
+    camera.transform.applyLocation();
 
-    this.cameraPosition = this.camera.transform.matrix.position();
+    this.cameraPosition = camera.transform.matrix.getPosition();
+  },
+
+  rotateAround() {
+    const camera = engineResources.gameObjects.camera;
+    camera.transform.reset();
+    camera.transform.rotateY(this.cameraRotation.y);
+    camera.transform.applyRotation();
+    camera.transform.rotateX(this.cameraRotation.x);
+    camera.transform.applyRotation();
+    camera.transform.translate(this.cameraOffset);
+    camera.transform.applyLocation();
   },
 };
 

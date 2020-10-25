@@ -6,6 +6,7 @@ const { initStartMenu } = require("./game.initStartMenu");
 const { GameObject } = require("./engine.gameObject");
 const { Time } = require("./engine.time");
 const { Input } = require("./engine.input");
+const { cameraBehaviour } = require("./game.cameraBehaviour");
 
 const handleStartMenu = () => {
   const resources = engineResources;
@@ -19,22 +20,16 @@ const handleStartMenu = () => {
 
   const aircraft = resources.gameObjects.startMenuAircraft;
   const concrete = resources.gameObjects.concrete;
-  const camera = resources.gameObjects.camera;
 
-  let camRotationY = 0;
   let textSize = 0.075;
-  let cameraOffset = 12;
+
+  cameraBehaviour.cameraRotation = new Vector3(-45, 0, 0);
+  cameraBehaviour.cameraOffset = new Vector3(0, 0, 12);
+  const cameraRotationSpeed = 2;
 
   Game.update = () => {
-    camRotationY += Time.delta * 2;
-
-    camera.transform.reset();
-    camera.transform.rotateY(camRotationY);
-    camera.transform.applyRotation();
-    camera.transform.rotateX(-45);
-    camera.transform.applyRotation();
-    camera.transform.translate(new Vector3(0, 0, cameraOffset));
-    camera.transform.applyLocation();
+    cameraBehaviour.cameraRotation.y += Time.delta * cameraRotationSpeed;
+    cameraBehaviour.rotateAround();
 
     textSize + Math.sin(Time.now * 5);
 

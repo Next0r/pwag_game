@@ -55,7 +55,7 @@ class Matrix4 {
     return this;
   }
 
-  position() {
+  getPosition() {
     return new Vector3(this.m30, this.m31, this.m32);
   }
 
