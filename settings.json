@@ -6,7 +6,6 @@
     "skybox",
     "plane",
     "aircraft",
-    "gate01",
     "box",
     "box2",
     "concrete",
@@ -19,8 +18,8 @@
     "concrete",
     "guiText",
     "gate",
-    "gate_lamp_off",
-    "gate_lap_on"
+    "gate_lamps_off",
+    "gate_lamps_on"
   ],
   "canvasID": "game_window",
   "width": 1024,

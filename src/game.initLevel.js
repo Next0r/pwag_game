@@ -1,8 +1,9 @@
 const { engineResources } = require("./engine.resources");
 const { createShaderProgram } = require("./engine.shader");
 const { GameObject } = require("./engine.gameObject");
+const { Material } = require("./engine.material");
 
-const initHandleLevel = () => {
+const initLevel = () => {
   const resources = engineResources;
 
   const vsSource = resources.shaders.testVS;
@@ -26,14 +27,6 @@ const initHandleLevel = () => {
   const aircraft = resources.gameObjects.aircraft;
   aircraft.mesh = resources.meshes.plane_mock;
   aircraft.material = resources.materials.aircraft;
-
-  /**
-   * @type {GameObject}
-   */
-  const gate01 = resources.gameObjects.gate01;
-  gate01.mesh = resources.meshes.gate;
-  gate01.material = resources.materials.gate;
-
 
   const directLight = resources.gameObjects.directLight;
   const ambientLight = resources.gameObjects.ambientLight;
@@ -63,7 +56,7 @@ const initHandleLevel = () => {
   mat.textures.color1 = resources.textures.unity;
 
   // gate material
-  mat = gate01.material;
+  mat = resources.materials.gate;
   mat.shaderProgram = shaderProgram;
   mat.uniforms.directLightDirection.value = directLight.direction.toArray();
   mat.uniforms.directLightColor.value = directLight.color.toArray();
@@ -71,6 +64,27 @@ const initHandleLevel = () => {
   mat.uniforms.ambientLightColor.value = ambientLight.color.toArray();
   mat.uniforms.ambientLightValue.value = [ambientLight.value];
   mat.textures.color0 = resources.textures.gate_color;
+
+  /**
+   * @type {Material}
+   */
+  mat = resources.materials.gate_lamps_off;
+  mat.shaderProgram = shaderProgram;
+  mat.uniforms.directLightDirection.value = directLight.direction.toArray();
+  mat.uniforms.directLightColor.value = directLight.color.toArray();
+  mat.uniforms.directLightValue.value = [directLight.value];
+  mat.uniforms.ambientLightColor.value = ambientLight.color.toArray();
+  mat.uniforms.ambientLightValue.value = [ambientLight.value];
+  mat.uniforms.mapOffsetY.value = [-0.5];
+  mat.textures.color0 = resources.textures.lamp_sign_color;
+
+  /**
+   * @type {Material}
+   */
+  mat = resources.materials.gate_lamps_on;
+  mat.shaderProgram = shaderProgram;
+  mat.uniforms.useEmission.value = [1];
+  mat.textures.color0 = resources.textures.lamp_sign_color;
 };
 
-exports.initHandleLevel = initHandleLevel;
+exports.initLevel = initLevel;

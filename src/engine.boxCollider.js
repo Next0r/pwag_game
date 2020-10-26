@@ -32,25 +32,39 @@ const CreateBoxCollider = (colliderID) => ({
    * @param {Mesh} mesh
    */
   recalculate(mesh) {
-    let posMin = [...mesh.positions[0]];
-    let posMax = [...mesh.positions[0]];
+    let posMin = new Vector3();
+    let posMax = new Vector3();
+    posMax.x = posMin.x = mesh.positions[0].x;
+    posMax.y = posMin.y = mesh.positions[0].y;
+    posMax.z = posMin.z = mesh.positions[0].z;
 
     for (let position of mesh.positions) {
-      if (position[0] < posMin[0] && position[1] < posMin[1] && position[2] < posMin[2]) {
-        posMin = [...position];
+      if (position.x > posMax.x) {
+        posMax.x = position.x;
+      } else if (position.x < posMin.x) {
+        posMin.x = position.x;
       }
-      if (position[0] > posMax[0] && position[1] > posMax[1] && position[2] > posMax[2]) {
-        posMax = [...position];
+
+      if (position.y > posMax.y) {
+        posMax.y = position.y;
+      } else if (position.y < posMin.y) {
+        posMin.y = position.y;
+      }
+
+      if (position.z > posMax.z) {
+        posMax.z = position.z;
+      } else if (position.z < posMin.z) {
+        posMin.z = position.z;
       }
     }
 
-    this.center.x = (posMin[0] + posMax[0]) * 0.5;
-    this.center.y = (posMin[1] + posMax[1]) * 0.5;
-    this.center.z = (posMin[2] + posMax[2]) * 0.5;
+    this.center.x = (posMin.x + posMax.x) * 0.5;
+    this.center.y = (posMin.y + posMax.y) * 0.5;
+    this.center.z = (posMin.z + posMax.z) * 0.5;
 
-    this.size.x = posMax[0] - posMin[0];
-    this.size.y = posMax[1] - posMin[1];
-    this.size.z = posMax[2] - posMin[2];
+    this.size.x = posMax.x - posMin.x;
+    this.size.y = posMax.y - posMin.y;
+    this.size.z = posMax.z - posMin.z;
   },
 
   getVertices() {
@@ -59,28 +73,68 @@ const CreateBoxCollider = (colliderID) => ({
     const zs = this.size.z * 0.5;
     const vertices = [
       this.transformationMatrix.vectorMultiply(
-        new Vector4(this.center.x - xs, this.center.y - ys, this.center.z - zs, 1)
+        new Vector4(
+          this.center.x - xs,
+          this.center.y - ys,
+          this.center.z - zs,
+          1
+        )
       ),
       this.transformationMatrix.vectorMultiply(
-        new Vector4(this.center.x - xs, this.center.y - ys, this.center.z + zs, 1)
+        new Vector4(
+          this.center.x - xs,
+          this.center.y - ys,
+          this.center.z + zs,
+          1
+        )
       ),
       this.transformationMatrix.vectorMultiply(
-        new Vector4(this.center.x - xs, this.center.y + ys, this.center.z - zs, 1)
+        new Vector4(
+          this.center.x - xs,
+          this.center.y + ys,
+          this.center.z - zs,
+          1
+        )
       ),
       this.transformationMatrix.vectorMultiply(
-        new Vector4(this.center.x - xs, this.center.y + ys, this.center.z + zs, 1)
+        new Vector4(
+          this.center.x - xs,
+          this.center.y + ys,
+          this.center.z + zs,
+          1
+        )
       ),
       this.transformationMatrix.vectorMultiply(
-        new Vector4(this.center.x + xs, this.center.y - ys, this.center.z - zs, 1)
+        new Vector4(
+          this.center.x + xs,
+          this.center.y - ys,
+          this.center.z - zs,
+          1
+        )
       ),
       this.transformationMatrix.vectorMultiply(
-        new Vector4(this.center.x + xs, this.center.y - ys, this.center.z + zs, 1)
+        new Vector4(
+          this.center.x + xs,
+          this.center.y - ys,
+          this.center.z + zs,
+          1
+        )
       ),
       this.transformationMatrix.vectorMultiply(
-        new Vector4(this.center.x + xs, this.center.y + ys, this.center.z - zs, 1)
+        new Vector4(
+          this.center.x + xs,
+          this.center.y + ys,
+          this.center.z - zs,
+          1
+        )
       ),
       this.transformationMatrix.vectorMultiply(
-        new Vector4(this.center.x + xs, this.center.y + ys, this.center.z + zs, 1)
+        new Vector4(
+          this.center.x + xs,
+          this.center.y + ys,
+          this.center.z + zs,
+          1
+        )
       ),
     ];
     return vertices;
@@ -105,7 +159,7 @@ const CreateBoxCollider = (colliderID) => ({
     let e0 = v1.subtract(v0);
     let e1 = v2.subtract(v0);
 
-    normals.push(e0.cross(e1));
+    normals.push(e0.cross(e1).normalize());
 
     v0 = this.transformationMatrix.vectorMultiply(
       new Vector4(this.center.x - xs, this.center.y + ys, this.center.z + zs, 1)
@@ -120,7 +174,7 @@ const CreateBoxCollider = (colliderID) => ({
     e0 = v1.subtract(v0);
     e1 = v2.subtract(v0);
 
-    normals.push(e0.cross(e1));
+    normals.push(e0.cross(e1).normalize());
 
     v0 = this.transformationMatrix.vectorMultiply(
       new Vector4(this.center.x - xs, this.center.y - ys, this.center.z + zs, 1)
@@ -135,7 +189,7 @@ const CreateBoxCollider = (colliderID) => ({
     e0 = v1.subtract(v0);
     e1 = v2.subtract(v0);
 
-    normals.push(e0.cross(e1));
+    normals.push(e0.cross(e1).normalize());
     return normals;
   },
 
@@ -149,7 +203,14 @@ const CreateBoxCollider = (colliderID) => ({
     for (let normal of myNormals) {
       const myMinMax = getMinMax(myVertices, normal);
       const minMax = getMinMax(vertices, normal);
-      if (boundariesSeparate(myMinMax.posMin, myMinMax.posMax, minMax.posMin, minMax.posMax)) {
+      if (
+        boundariesSeparate(
+          myMinMax.posMin,
+          myMinMax.posMax,
+          minMax.posMin,
+          minMax.posMax
+        )
+      ) {
         return undefined;
       }
     }
@@ -157,7 +218,14 @@ const CreateBoxCollider = (colliderID) => ({
     for (let normal of normals) {
       const myMinMax = getMinMax(myVertices, normal);
       const minMax = getMinMax(vertices, normal);
-      if (boundariesSeparate(myMinMax.posMin, myMinMax.posMax, minMax.posMin, minMax.posMax)) {
+      if (
+        boundariesSeparate(
+          myMinMax.posMin,
+          myMinMax.posMax,
+          minMax.posMin,
+          minMax.posMax
+        )
+      ) {
         return undefined;
       }
     }

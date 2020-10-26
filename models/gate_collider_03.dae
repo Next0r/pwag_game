@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.90.1 commit date:2020-09-23, commit time:06:43, hash:3e85bb34d0d7</authoring_tool>
     </contributor>
-    <created>2020-10-26T10:44:33</created>
-    <modified>2020-10-26T10:44:33</modified>
+    <created>2020-10-26T20:06:55</created>
+    <modified>2020-10-26T20:06:55</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -16,7 +16,7 @@
     <geometry id="gate_collider_03-mesh" name="gate_collider_03">
       <mesh>
         <source id="gate_collider_03-mesh-positions">
-          <float_array id="gate_collider_03-mesh-positions-array" count="24">4.3 -0.09999996 -0.1 4.1 0.09999996 -0.09999996 4.1 -0.1 -0.1 4.3 0.1 -0.09999996 4.3 -0.1000012 8 4.1 0.09999877 8 4.1 -0.1000012 8 4.3 0.09999877 8</float_array>
+          <float_array id="gate_collider_03-mesh-positions-array" count="24">8.6 -0.2 0.1999999 8.2 -0.1999999 -0.1999999 8.2 -0.1999999 0.2 8.6 -0.1999999 -0.2 8.600001 16 0.2000016 8.200001 16 -0.1999983 8.200001 16 0.2000017 8.600001 16 -0.1999983</float_array>
           <technique_common>
             <accessor source="#gate_collider_03-mesh-positions-array" count="8" stride="3">
               <param name="X" type="float"/>
@@ -26,7 +26,7 @@
           </technique_common>
         </source>
         <source id="gate_collider_03-mesh-normals">
-          <float_array id="gate_collider_03-mesh-normals-array" count="33">0 1.49012e-7 -1 0 0 1 1.49011e-7 -1 -1.47172e-7 1 -1.5821e-7 0 -1.49012e-7 1 1.44873e-7 -1 1.50851e-7 0 0 1.49012e-7 -1 1.49012e-7 -1 -1.46253e-7 1 0 0 -1.49011e-7 1 1.48551e-7 -1 0 0</float_array>
+          <float_array id="gate_collider_03-mesh-normals-array" count="33">0 -1 0 0 1 0 2.21678e-7 0 1 1 0 0 -1.46252e-7 0 -1 -1 1.47172e-7 0 0 -1 0 1.47172e-7 0 1 1 0 0 -1.47172e-7 0 -1 -1 0 0</float_array>
           <technique_common>
             <accessor source="#gate_collider_03-mesh-normals-array" count="11" stride="3">
               <param name="X" type="float"/>
@@ -59,7 +59,7 @@
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
       <node id="gate_collider_03" name="gate_collider_03" type="NODE">
-        <matrix sid="transform">1 0 0 0 0 -4.37114e-8 1 0 0 -1 -4.37114e-8 0 0 0 0 1</matrix>
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
         <instance_geometry url="#gate_collider_03-mesh" name="gate_collider_03"/>
       </node>
     </visual_scene>

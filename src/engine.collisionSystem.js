@@ -3,27 +3,17 @@ const { engineResources } = require("./engine.resources");
 const { GameObject } = require("./engine.gameObject");
 
 const CollisionSystem = {
+  /**
+   * @type {import("./engine.boxCollider").BoxCollider[]}
+   */
+  colliders: [],
+  
   checkCollisions() {
-    const resources = engineResources;
-    /**
-     * @type {GameObject[]}
-     */
-    const gameObjects = resources.gameObjects;
+    for (let i = 0; i < this.colliders.length; i += 1) {
+      const collider = this.colliders[i];
 
-    /**
-     * @type {import("./engine.boxCollider").BoxCollider[]}
-     */
-    const colliders = [];
-    for (let prop in gameObjects) {
-      gameObjects[prop].colliders &&
-        colliders.push(...gameObjects[prop].colliders);
-    }
-
-    for (let i = 0; i < colliders.length; i += 1) {
-      const collider = colliders[i];
-
-      for (let j = i + 1; j < colliders.length; j++) {
-        const nextCollider = colliders[j];
+      for (let j = i + 1; j < this.colliders.length; j++) {
+        const nextCollider = this.colliders[j];
         const colliderID = collider.doesCollide(nextCollider);
 
         // if collision ocurred fire collision functions for both colliders
