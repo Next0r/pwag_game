@@ -27,10 +27,13 @@ const handleLevel = () => {
   const gate01 = resources.gameObjects.gate01;
 
   const sightScale = 0.1;
-  const gate01Position = new Vector3(0, 10, -100);
+  const gate01Position = new Vector3(0, 0, -5);
 
   aircraftBehaviour.aircraftPosition = new Vector3();
   aircraftBehaviour.aircraftRotation = new Vector3();
+  cameraBehaviour.cameraOffset = new Vector3(0, 3, 15);
+
+  aircraftBehaviour.aircraftVelocity = 0;
 
   Game.update = () => {
     cameraBehaviour.followAircraft();
@@ -42,6 +45,8 @@ const handleLevel = () => {
     gate01.transform.applyLocation();
 
     guiSightBehaviour.followMouse();
+
+    Renderer.clear();
 
     Renderer.disableDepthTest();
     Renderer.drawGameObject(skybox);

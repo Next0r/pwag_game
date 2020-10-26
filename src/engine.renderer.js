@@ -36,12 +36,10 @@ const Renderer = {
     mat.uniforms.projectionMatrix.value = new Matrix4().toArray();
     mat.uniforms.normalMatrix.value = new Matrix4().toArray();
 
-    mat.createVertexArray(engineResources.meshes.guiPlane);
-
+    mat.linkVertexArrays(engineResources.meshes.guiPlane);
     mat.uploadUniforms();
     mat.uploadTextures();
     mat.useProgram();
-    mat.bindVertexArray();
 
     gl.drawElements(
       gl.TRIANGLES,
@@ -77,12 +75,10 @@ const Renderer = {
       .multiply(scaleFactorMatrix)
       .toArray(); // normal matrix with scaling factor applied
 
-    mat.createVertexArray(gameObject.mesh);
-
+    mat.linkVertexArrays(gameObject.mesh);
     mat.uploadUniforms();
     mat.uploadTextures();
     mat.useProgram();
-    mat.bindVertexArray();
 
     gl.drawElements(
       gl.TRIANGLES,
@@ -142,12 +138,10 @@ const Renderer = {
       EngineToolbox.getSettings().textGridSize * charDescriptor.posY,
     ];
 
-    mat.createVertexArray(engineResources.meshes.textGUIPlane);
-
+    mat.linkVertexArrays(engineResources.meshes.textGUIPlane);
     mat.uploadUniforms();
     mat.uploadTextures();
     mat.useProgram();
-    mat.bindVertexArray();
 
     gl.drawElements(
       gl.TRIANGLES,

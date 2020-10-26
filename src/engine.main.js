@@ -14,6 +14,7 @@ const { Mesh } = require("./engine.utilities.mesh");
 const { CreateBoxCollider } = require("./engine.boxCollider");
 const { CollisionSystem } = require("./engine.collisionSystem");
 const { handleStartMenu } = require("./game.handleStartMenu");
+const { readColladaFile } = require("./engine.utilities.collada");
 
 const main = () => {
   EngineToolbox.createCanvas();

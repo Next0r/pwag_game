@@ -1,5 +1,7 @@
 const { Mesh } = require("./engine.utilities.mesh");
 const { EngineToolbox } = require("./engine.toolbox");
+const { Vector4 } = require("./engine.math.vector4");
+const { Vector3 } = require("./engine.math.vector3");
 
 /**
  *
@@ -20,22 +22,63 @@ const findSourceElement = (sourceElements, name) => {
 /**
  * @param {HTMLElement} sourceElement
  */
-const parseSourceElement = (sourceElement, glMap = false) => {
-  const accessorStride = parseInt(sourceElement.getElementsByTagName("accessor")[0].getAttribute("stride"));
-
-  const floatArrayText = sourceElement.getElementsByTagName("float_array")[0].textContent;
-
+const parseSourceElement = (sourceElement, type = "position") => {
+  const floatArrayText = sourceElement.getElementsByTagName("float_array")[0]
+    .textContent;
   const floatArrayTextElements = floatArrayText.trim().split(/\s+/);
-
+  const sourceType = type.toUpperCase();
   const dataSet = [];
-  let tmpVector = [];
-  for (let i = 0; i < floatArrayTextElements.length; i++) {
-    tmpVector.push(parseFloat(floatArrayTextElements[i]));
-    if (tmpVector.length === accessorStride) {
-      dataSet.push(tmpVector);
-      tmpVector = [];
-    }
+
+  switch (sourceType) {
+    case "POSITION":
+      for (let i = 0; i < floatArrayTextElements.length; i += 3) {
+        dataSet.push(
+          new Vector4(
+            parseFloat(floatArrayTextElements[i]),
+            parseFloat(floatArrayTextElements[i + 1]),
+            parseFloat(floatArrayTextElements[i + 2]),
+            1
+          )
+        );
+      }
+      break;
+    case "NORMAL":
+      for (let i = 0; i < floatArrayTextElements.length; i += 3) {
+        dataSet.push(
+          new Vector4(
+            parseFloat(floatArrayTextElements[i]),
+            parseFloat(floatArrayTextElements[i + 1]),
+            parseFloat(floatArrayTextElements[i + 2]),
+            0
+          )
+        );
+      }
+      break;
+    case "MAP":
+      for (let i = 0; i < floatArrayTextElements.length; i += 2) {
+        dataSet.push(
+          new Vector3(
+            parseFloat(floatArrayTextElements[i]),
+            parseFloat(floatArrayTextElements[i + 1]),
+            0
+          )
+        );
+      }
+      break;
+    case "COLOR":
+      for (let i = 0; i < floatArrayTextElements.length; i += 4) {
+        dataSet.push(
+          new Vector4(
+            parseFloat(floatArrayTextElements[i]),
+            parseFloat(floatArrayTextElements[i + 1]),
+            parseFloat(floatArrayTextElements[i + 2]),
+            parseFloat(floatArrayTextElements[i + 3])
+          )
+        );
+      }
+      break;
   }
+
   return dataSet;
 };
 
@@ -59,7 +102,8 @@ const findInputOffset = (inputElements, inputSemantic) => {
  * @param {HTMLElement} trianglesElement
  */
 const parseTrianglesElement = (trianglesElement) => {
-  const pElementText = trianglesElement.getElementsByTagName("p")[0].textContent;
+  const pElementText = trianglesElement.getElementsByTagName("p")[0]
+    .textContent;
 
   const pElementTextElements = pElementText.trim().split(/\s+/);
 
@@ -103,17 +147,21 @@ const readGeometry = (xml, geometry) => {
   }
 
   const mesh = new Mesh(geometryName);
-  mesh.positions = parseSourceElement(positionsElement);
-  mesh.normals = parseSourceElement(normalsElement);
-  mesh.map = mapElement === undefined ? [] : parseSourceElement(mapElement);
-  mesh.colors = colorsElement === undefined ? [] : parseSourceElement(colorsElement);
+  mesh.positions = parseSourceElement(positionsElement, "POSITION");
+  mesh.normals = parseSourceElement(normalsElement, "NORMAL");
+  mesh.map =
+    mapElement === undefined ? [] : parseSourceElement(mapElement, "MAP");
+  mesh.colors =
+    colorsElement === undefined
+      ? []
+      : parseSourceElement(colorsElement, "COLOR");
 
-  const meshTraingleInfo = parseTrianglesElement(trianglesElement);
-  mesh.vertices = meshTraingleInfo.vertices;
-  mesh.positionOffset = meshTraingleInfo.indexOffset;
-  mesh.normalOffset = meshTraingleInfo.normalOffset;
-  mesh.mapOffset = meshTraingleInfo.mapOffset;
-  mesh.colorOffset = meshTraingleInfo.colorOffset;
+  const meshTriangleInfo = parseTrianglesElement(trianglesElement);
+  mesh.vertices = meshTriangleInfo.vertices;
+  mesh.positionOffset = meshTriangleInfo.indexOffset;
+  mesh.normalOffset = meshTriangleInfo.normalOffset;
+  mesh.mapOffset = meshTriangleInfo.mapOffset;
+  mesh.colorOffset = meshTriangleInfo.colorOffset;
 
   return mesh;
 };
@@ -135,7 +183,6 @@ const readColladaFile = (path) => {
     const mesh = readGeometry(xml, geometry);
     mesh.flipUV();
     meshes.push(mesh);
-  
   }
 
   return meshes;

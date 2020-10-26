@@ -4,7 +4,6 @@ class Game {
   static _requestHandle = undefined;
 
   static update = () => {};
-  // static awake = () => {};
 
   static loop(now) {
     Time.now = now * 0.001;
@@ -20,7 +19,6 @@ class Game {
    * Calls awake function and starts game loop
    */
   static start() {
-    // Game.awake();
     Game._requestHandle = requestAnimationFrame(Game.loop);
   }
 

@@ -2,21 +2,10 @@ const { EngineToolbox } = require("./engine.toolbox");
 const { Mesh } = require("./engine.utilities.mesh");
 // const gl = EngineToolbox.getGLContext();
 
-class VBOContainer {
-  constructor() {
-    this.vbo = undefined;
-    this.value = new Uint32Array();
-  }
-}
-
-exports.VBOContainer = VBOContainer;
-
-class Attribute extends VBOContainer {
+class Attribute {
   constructor(name) {
-    super();
     this.name = name;
     this.location = undefined;
-    this.value = new Float32Array();
   }
 
   /**
@@ -40,8 +29,6 @@ class MaterialAttributes {
     this.normal = new Attribute("a_normal");
     this.map = new Attribute("a_map");
     this.color = new Attribute("a_color");
-    // this.tangent = new Attribute("a_tangent");
-    // this.bitangent = new Attribute("a_bitangent");
   }
 
   /**
@@ -52,23 +39,6 @@ class MaterialAttributes {
     this.normal.setLocation(shaderProgram);
     this.map.setLocation(shaderProgram);
     this.color.setLocation(shaderProgram);
-    // this.tangent.setLocation(shaderProgram);
-    // this.bitangent.setLocation(shaderProgram);
-  }
-
-  /**
-   * @param {Mesh} mesh
-   */
-  setValues(mesh) {
-    if (!mesh) {
-      return;
-    }
-    this.position.value = new Float32Array(mesh.getPositionsArray());
-    this.normal.value = new Float32Array(mesh.getNormalsArray());
-    this.map.value = new Float32Array(mesh.getMapArray());
-    this.color.value = new Float32Array(mesh.getColorsArray());
-    // this.tangent.value = new Float32Array(mesh.getTangentArray());
-    // this.bitangent.value = new Float32Array(mesh.getBitangentArray());
   }
 }
 

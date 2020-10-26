@@ -18,7 +18,9 @@
     "aircraft",
     "concrete",
     "guiText",
-    "gate"
+    "gate",
+    "gate_lamp_off",
+    "gate_lap_on"
   ],
   "canvasID": "game_window",
   "width": 1024,

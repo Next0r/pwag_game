@@ -33,6 +33,8 @@ const handleStartMenu = () => {
 
     textSize + Math.sin(Time.now * 5);
 
+    Renderer.clear();
+    
     Renderer.drawGameObject(aircraft);
     Renderer.drawGameObject(concrete);
 

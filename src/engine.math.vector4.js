@@ -7,7 +7,9 @@ class Vector4 {
   }
 
   normalize() {
-    const l = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w);
+    const l = Math.sqrt(
+      this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w
+    );
     this.x = this.x / l;
     this.y = this.y / l;
     this.z = this.z / l;
@@ -42,7 +44,29 @@ class Vector4 {
    * @param {Vector4} vector4
    */
   dot(vector4) {
-    return this.x * vector4.x + this.y * vector4.y + this.z * vector4.z + this.w * vector4.w;
+    return (
+      this.x * vector4.x +
+      this.y * vector4.y +
+      this.z * vector4.z +
+      this.w * vector4.w
+    );
+  }
+
+  toArray() {
+    return [this.x, this.y, this.z, this.w];
+  }
+
+  /**
+   *
+   * @param {Vector4} vector4
+   */
+  isEqual(vector4) {
+    return (
+      this.x === vector4.x &&
+      this.y === vector4.y &&
+      this.z === vector4.z &&
+      this.w === vector4.w
+    );
   }
 }
 
