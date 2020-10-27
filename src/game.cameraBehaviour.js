@@ -1,6 +1,6 @@
 const { Vector3 } = require("./engine.math.vector3");
 const { engineResources } = require("./engine.resources");
-const { aircraftBehaviour } = require("./game.aircraftBehaviour");
+const { aircraftController } = require("./game.aircraftController");
 
 const cameraBehaviour = {
   cameraOffset: new Vector3(0, 3, 15),
@@ -8,8 +8,8 @@ const cameraBehaviour = {
   cameraRotation: new Vector3(),
 
   followAircraft() {
-    const aircraftPosition = aircraftBehaviour.aircraftPosition;
-    const aircraftRotation = aircraftBehaviour.aircraftRotation;
+    const aircraftPosition = aircraftController.aircraftPosition;
+    const aircraftRotation = aircraftController.aircraftRotation;
     const camera = engineResources.gameObjects.camera;
 
     camera.transform.reset();

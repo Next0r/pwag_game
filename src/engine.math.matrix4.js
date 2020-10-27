@@ -24,10 +24,24 @@ class Matrix4 {
     this.m33 = 1;
   }
 
+  getRotation() {
+    const f = 180 / Math.PI;
+    const yaw = Math.atan2(-this.m02, this.m00);
+    const pitch = Math.asin(this.m01);
+    const roll = Math.atan2(-this.m21, this.m11);
+    return new Vector3(roll * f, yaw * f, pitch * f);
+  }
+
   getScale() {
-    const sx = Math.sqrt(this.m00 * this.m00 + this.m10 * this.m10 + this.m20 * this.m20);
-    const sy = Math.sqrt(this.m01 * this.m01 + this.m11 * this.m11 + this.m21 * this.m21);
-    const sz = Math.sqrt(this.m02 * this.m02 + this.m12 * this.m12 + this.m22 * this.m22);
+    const sx = Math.sqrt(
+      this.m00 * this.m00 + this.m10 * this.m10 + this.m20 * this.m20
+    );
+    const sy = Math.sqrt(
+      this.m01 * this.m01 + this.m11 * this.m11 + this.m21 * this.m21
+    );
+    const sz = Math.sqrt(
+      this.m02 * this.m02 + this.m12 * this.m12 + this.m22 * this.m22
+    );
     return new Vector3(sx, sy, sz);
   }
 
@@ -251,10 +265,26 @@ class Matrix4 {
    * @param {Vector4} vector
    */
   vectorMultiply(vector) {
-    const x = this.m00 * vector.x + this.m10 * vector.y + this.m20 * vector.z + this.m30 * vector.w;
-    const y = this.m01 * vector.x + this.m11 * vector.y + this.m21 * vector.z + this.m31 * vector.w;
-    const z = this.m02 * vector.x + this.m12 * vector.y + this.m22 * vector.z + this.m32 * vector.w;
-    const w = this.m03 * vector.x + this.m13 * vector.y + this.m23 * vector.z + this.m33 * vector.w;
+    const x =
+      this.m00 * vector.x +
+      this.m10 * vector.y +
+      this.m20 * vector.z +
+      this.m30 * vector.w;
+    const y =
+      this.m01 * vector.x +
+      this.m11 * vector.y +
+      this.m21 * vector.z +
+      this.m31 * vector.w;
+    const z =
+      this.m02 * vector.x +
+      this.m12 * vector.y +
+      this.m22 * vector.z +
+      this.m32 * vector.w;
+    const w =
+      this.m03 * vector.x +
+      this.m13 * vector.y +
+      this.m23 * vector.z +
+      this.m33 * vector.w;
     return new Vector4(x, y, z, w);
   }
 
@@ -404,34 +434,238 @@ class Matrix4 {
 
   determinant() {
     return (
-      this.m00 * mat3Det(this.m11, this.m21, this.m31, this.m12, this.m22, this.m32, this.m13, this.m23, this.m33) -
-      this.m01 * mat3Det(this.m10, this.m20, this.m30, this.m12, this.m22, this.m32, this.m13, this.m23, this.m33) +
-      this.m02 * mat3Det(this.m10, this.m20, this.m30, this.m11, this.m21, this.m31, this.m13, this.m23, this.m33) -
-      this.m03 * mat3Det(this.m10, this.m20, this.m30, this.m11, this.m21, this.m31, this.m12, this.m22, this.m32)
+      this.m00 *
+        mat3Det(
+          this.m11,
+          this.m21,
+          this.m31,
+          this.m12,
+          this.m22,
+          this.m32,
+          this.m13,
+          this.m23,
+          this.m33
+        ) -
+      this.m01 *
+        mat3Det(
+          this.m10,
+          this.m20,
+          this.m30,
+          this.m12,
+          this.m22,
+          this.m32,
+          this.m13,
+          this.m23,
+          this.m33
+        ) +
+      this.m02 *
+        mat3Det(
+          this.m10,
+          this.m20,
+          this.m30,
+          this.m11,
+          this.m21,
+          this.m31,
+          this.m13,
+          this.m23,
+          this.m33
+        ) -
+      this.m03 *
+        mat3Det(
+          this.m10,
+          this.m20,
+          this.m30,
+          this.m11,
+          this.m21,
+          this.m31,
+          this.m12,
+          this.m22,
+          this.m32
+        )
     );
   }
 
   adjoint() {
     const m = new Matrix4();
-    m.m00 = mat3Det(this.m11, this.m21, this.m31, this.m12, this.m22, this.m32, this.m13, this.m23, this.m33);
-    m.m01 = -mat3Det(this.m10, this.m20, this.m30, this.m12, this.m22, this.m32, this.m13, this.m23, this.m33);
-    m.m02 = mat3Det(this.m10, this.m20, this.m30, this.m11, this.m21, this.m31, this.m13, this.m23, this.m33);
-    m.m03 = -mat3Det(this.m10, this.m20, this.m30, this.m11, this.m21, this.m31, this.m12, this.m22, this.m32);
+    m.m00 = mat3Det(
+      this.m11,
+      this.m21,
+      this.m31,
+      this.m12,
+      this.m22,
+      this.m32,
+      this.m13,
+      this.m23,
+      this.m33
+    );
+    m.m01 = -mat3Det(
+      this.m10,
+      this.m20,
+      this.m30,
+      this.m12,
+      this.m22,
+      this.m32,
+      this.m13,
+      this.m23,
+      this.m33
+    );
+    m.m02 = mat3Det(
+      this.m10,
+      this.m20,
+      this.m30,
+      this.m11,
+      this.m21,
+      this.m31,
+      this.m13,
+      this.m23,
+      this.m33
+    );
+    m.m03 = -mat3Det(
+      this.m10,
+      this.m20,
+      this.m30,
+      this.m11,
+      this.m21,
+      this.m31,
+      this.m12,
+      this.m22,
+      this.m32
+    );
 
-    m.m10 = -mat3Det(this.m01, this.m21, this.m31, this.m02, this.m22, this.m32, this.m03, this.m23, this.m33);
-    m.m11 = mat3Det(this.m00, this.m20, this.m30, this.m02, this.m22, this.m32, this.m03, this.m23, this.m33);
-    m.m12 = -mat3Det(this.m00, this.m20, this.m30, this.m01, this.m21, this.m31, this.m03, this.m23, this.m33);
-    m.m13 = mat3Det(this.m00, this.m20, this.m30, this.m01, this.m21, this.m31, this.m02, this.m22, this.m32);
+    m.m10 = -mat3Det(
+      this.m01,
+      this.m21,
+      this.m31,
+      this.m02,
+      this.m22,
+      this.m32,
+      this.m03,
+      this.m23,
+      this.m33
+    );
+    m.m11 = mat3Det(
+      this.m00,
+      this.m20,
+      this.m30,
+      this.m02,
+      this.m22,
+      this.m32,
+      this.m03,
+      this.m23,
+      this.m33
+    );
+    m.m12 = -mat3Det(
+      this.m00,
+      this.m20,
+      this.m30,
+      this.m01,
+      this.m21,
+      this.m31,
+      this.m03,
+      this.m23,
+      this.m33
+    );
+    m.m13 = mat3Det(
+      this.m00,
+      this.m20,
+      this.m30,
+      this.m01,
+      this.m21,
+      this.m31,
+      this.m02,
+      this.m22,
+      this.m32
+    );
 
-    m.m20 = mat3Det(this.m01, this.m11, this.m31, this.m02, this.m12, this.m32, this.m03, this.m13, this.m33);
-    m.m21 = -mat3Det(this.m00, this.m10, this.m30, this.m02, this.m12, this.m32, this.m03, this.m13, this.m33);
-    m.m22 = mat3Det(this.m00, this.m10, this.m30, this.m01, this.m11, this.m31, this.m03, this.m13, this.m33);
-    m.m23 = -mat3Det(this.m00, this.m10, this.m30, this.m01, this.m11, this.m31, this.m02, this.m12, this.m32);
+    m.m20 = mat3Det(
+      this.m01,
+      this.m11,
+      this.m31,
+      this.m02,
+      this.m12,
+      this.m32,
+      this.m03,
+      this.m13,
+      this.m33
+    );
+    m.m21 = -mat3Det(
+      this.m00,
+      this.m10,
+      this.m30,
+      this.m02,
+      this.m12,
+      this.m32,
+      this.m03,
+      this.m13,
+      this.m33
+    );
+    m.m22 = mat3Det(
+      this.m00,
+      this.m10,
+      this.m30,
+      this.m01,
+      this.m11,
+      this.m31,
+      this.m03,
+      this.m13,
+      this.m33
+    );
+    m.m23 = -mat3Det(
+      this.m00,
+      this.m10,
+      this.m30,
+      this.m01,
+      this.m11,
+      this.m31,
+      this.m02,
+      this.m12,
+      this.m32
+    );
 
-    m.m30 = -mat3Det(this.m01, this.m11, this.m21, this.m02, this.m12, this.m22, this.m03, this.m13, this.m23);
-    m.m31 = mat3Det(this.m00, this.m10, this.m20, this.m02, this.m12, this.m22, this.m03, this.m13, this.m23);
-    m.m32 = -mat3Det(this.m00, this.m10, this.m20, this.m01, this.m11, this.m21, this.m03, this.m13, this.m23);
-    m.m33 = mat3Det(this.m00, this.m10, this.m20, this.m01, this.m11, this.m21, this.m02, this.m12, this.m22);
+    m.m30 = -mat3Det(
+      this.m01,
+      this.m11,
+      this.m21,
+      this.m02,
+      this.m12,
+      this.m22,
+      this.m03,
+      this.m13,
+      this.m23
+    );
+    m.m31 = mat3Det(
+      this.m00,
+      this.m10,
+      this.m20,
+      this.m02,
+      this.m12,
+      this.m22,
+      this.m03,
+      this.m13,
+      this.m23
+    );
+    m.m32 = -mat3Det(
+      this.m00,
+      this.m10,
+      this.m20,
+      this.m01,
+      this.m11,
+      this.m21,
+      this.m03,
+      this.m13,
+      this.m23
+    );
+    m.m33 = mat3Det(
+      this.m00,
+      this.m10,
+      this.m20,
+      this.m01,
+      this.m11,
+      this.m21,
+      this.m02,
+      this.m12,
+      this.m22
+    );
 
     return m.transpose();
   }
@@ -465,7 +699,14 @@ class Matrix4 {
 }
 
 const mat3Det = (m00, m10, m20, m01, m11, m21, m02, m12, m22) => {
-  return m00 * m11 * m22 + m10 * m21 * m02 + m20 * m01 * m12 - m20 * m11 * m02 - m10 * m01 * m22 - m00 * m21 * m12;
+  return (
+    m00 * m11 * m22 +
+    m10 * m21 * m02 +
+    m20 * m01 * m12 -
+    m20 * m11 * m02 -
+    m10 * m01 * m22 -
+    m00 * m21 * m12
+  );
 };
 
 exports.Matrix4 = Matrix4;

@@ -25,7 +25,7 @@ const CreateBoxCollider = (colliderID) => ({
   size: new Vector3(),
   center: new Vector3(),
   transformationMatrix: new Matrix4(),
-  onCollide: () => {},
+  onCollision: () => {},
 
   /**
    *

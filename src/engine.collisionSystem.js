@@ -19,8 +19,8 @@ const CollisionSystem = {
         // if collision ocurred fire collision functions for both colliders
         // taking part in collision
         if (colliderID !== undefined) {
-          collider.onCollide(colliderID);
-          nextCollider.onCollide(collider.id);
+          collider.onCollision(colliderID);
+          nextCollider.onCollision(collider.id);
         }
       }
     }

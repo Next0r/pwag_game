@@ -1,3 +1,5 @@
+const { CreateBoxCollider } = require("./engine.boxCollider");
+const { CollisionSystem } = require("./engine.collisionSystem");
 const { GameObject } = require("./engine.gameObject");
 const { Vector3 } = require("./engine.math.vector3");
 const { Vector4 } = require("./engine.math.vector4");
@@ -14,7 +16,17 @@ const CreateGate = () => ({
   bounceStrength: 1,
   _signPosition: new Vector3(),
   _blinkTimer: 0,
+  collider: undefined,
+  type: undefined,
 
+  addScoreCollider(colliderID) {
+    const collider = CreateBoxCollider(colliderID);
+    collider.recalculate(engineResources.meshes.gate_score_collider);
+    collider.transformationMatrix = this.gate.transform.matrix;
+    CollisionSystem.colliders.push(collider);
+    this.collider = collider;
+    return;
+  },
   draw() {
     Renderer.drawGameObject(this.gate);
     Renderer.drawGameObject(this.gateLamps);
@@ -69,11 +81,14 @@ const CreateGate = () => ({
   },
   bounce() {
     const gatePosition = this.gate.transform.matrix.getPosition();
+    const gateRotation = this.gate.transform.matrix.getRotation();
     this._signPosition.y =
       Math.sin(Time.now * this.bounceSpeed) * this.bounceStrength;
     this.gateSign.transform.reset();
     this.gateSign.transform.translate(gatePosition.add(this._signPosition));
     this.gateSign.transform.applyLocation();
+    this.gateSign.transform.rotateY(gateRotation.y);
+    this.gateSign.transform.applyRotation();
     return this;
   },
   signOff() {
@@ -84,9 +99,97 @@ const CreateGate = () => ({
     this.gateSign.material = engineResources.materials.gate_lamps_on;
     return this;
   },
+  lampsOff() {
+    this.gateLamps.material = engineResources.materials.gate_lamps_off;
+    return this;
+  },
+
+  resetSignPosition() {
+    const gatePosition = this.gate.transform.matrix.getPosition();
+    const gateRotation = this.gate.transform.matrix.getRotation();
+
+    this.gateSign.transform.reset();
+    this.gateSign.transform.translate(gatePosition);
+    this.gateSign.transform.rotateY(gateRotation.y);
+    this.gateSign.transform.applyLocation();
+    this.gateSign.transform.applyRotation();
+
+    return this;
+  },
 });
 
 const gateController = {
+  gates: [],
+  scoredGates: [],
+  nextGate: 0,
+  lastGate: undefined,
+  onLastGateScore: () => {},
+  onGateScore: () => {},
+
+  bounceNextGate() {
+    this.nextGate !== undefined && this.gates[this.nextGate].bounce();
+    return this;
+  },
+
+  blinkNextGate() {
+    this.nextGate !== undefined && this.gates[this.nextGate].blink();
+    return this;
+  },
+
+  reset() {
+    this.gates = [];
+    this.scoredGates = [];
+    this.nextGate = 0;
+    this.lastGate = undefined;
+    return this;
+  },
+
+  /**
+   * @param {[]} gates
+   */
+  setGates(gates) {
+    this.gates = gates;
+    this.scoredGates = new Array(gates.length).fill(false);
+  },
+
+  /**
+   * @param {String} colliderID
+   */
+  handleScoreCollision(colliderID) {
+    const [tag, number] = colliderID.split("_");
+    if (tag !== "GATE") {
+      return;
+    }
+
+    const gateNumber = parseInt(number);
+
+    // do not count already scored gate
+    if (this.scoredGates[gateNumber] == true) {
+      return;
+    }
+
+    // if it's first gate or previous gate has been scored
+    if (gateNumber == 0 || this.scoredGates[gateNumber - 1] == true) {
+      this.scoredGates[gateNumber] = true;
+
+      // switch off sign of scored gate
+      this.gates[gateNumber].signOff();
+      this.gates[gateNumber].lampsOff();
+      this.gates[gateNumber].resetSignPosition();
+
+      // switch on sign of next gate if exists
+      if (this.gates[gateNumber + 1] !== undefined) {
+        this.gates[gateNumber + 1].signOn();
+        this.nextGate = gateNumber + 1;
+        this.onGateScore(this.gates[gateNumber]);
+      } else {
+        // it was last gate
+        this.nextGate = undefined;
+        this.onLastGateScore(this.gates[gateNumber]);
+      }
+    }
+  },
+
   spawnGate(sign = "B") {
     const gate = CreateGate();
     gate.gate.mesh = engineResources.meshes.gate;
@@ -113,6 +216,8 @@ const gateController = {
         break;
     }
     gate.gateSign.material = engineResources.materials.gate_lamps_on;
+    gate.signOff();
+    gate.type = sign;
     return gate;
   },
 };
