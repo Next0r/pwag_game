@@ -43,7 +43,7 @@ const handleStartMenu = () => {
       posX: 0,
       posY: -0.5,
       size: textSize + Math.sin(Time.now * Math.PI) * textSize * 0.1,
-      charWidth: 0.55,
+      charWidth: 0.7,
       center: true,
     });
     Renderer.disableAlphaBlend();

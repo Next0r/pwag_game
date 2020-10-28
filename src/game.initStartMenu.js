@@ -73,7 +73,7 @@ const initStartMenu = () => {
   mat.shaderProgram = shaderProgram;
   mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.useEmission.value = [1];
-  mat.textures.color0 = resources.textures.mono55;
+  mat.textures.color0 = resources.textures.mario;
 };
 
 exports.initStartMenu = initStartMenu;

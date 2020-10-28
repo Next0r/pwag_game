@@ -3,7 +3,7 @@ const { Renderer } = require("./engine.renderer");
 const { Time } = require("./engine.time");
 
 const guiController = {
-  _charWidth: 0.55,
+  _charWidth: 0.7,
   _pointsTimer: 2,
   pointsDrawTime: 2,
   pointsJumpInTime: 0.4,
