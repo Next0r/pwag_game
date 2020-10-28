@@ -12,7 +12,7 @@ const { EngineToolbox } = require("./engine.toolbox");
 const { aircraftController } = require("./game.aircraftController");
 const { cameraBehaviour } = require("./game.cameraBehaviour");
 const { gateController } = require("./game.gateController");
-const { guiController } = require("./game.guiController");
+const { CreateJumpText, CreateSimpleText } = require("./game.guiText");
 const { guiSightBehaviour } = require("./game.guiSightBehaviour");
 const { initLevel } = require("./game.initLevel");
 const { level0Controller } = require("./game.level0Controller");
@@ -33,33 +33,42 @@ const handleLevel = () => {
   const skybox = resources.gameObjects.skybox;
   const aircraft = resources.gameObjects.aircraft;
 
-  waterController.init();
+  const jumpText = CreateJumpText();
+  const altText = CreateSimpleText({ posX: -0.95, posY: -0.9 });
+  const spdText = CreateSimpleText({ posX: -0.95, posY: -0.8 });
+  const scoreText = CreateSimpleText({ posX: -0.95, posY: 0.9 });
 
+  waterController.init();
   level0Controller.initialize();
 
   let score = 0;
   let scoreAnimated = score;
 
   gateController.onGateScore = (gate) => {
-    guiController.resetDrawPointsTimer();
-
-    console.log(gate.type);
+    jumpText.resetTimer();
     score += 100;
-    console.log(score);
+    console.log(gate.type);
   };
 
   gateController.onLastGateScore = (gate) => {
-    guiController.resetDrawPointsTimer();
-
+    jumpText.resetTimer();
     score += 100;
-    console.log(score);
     console.log("finished!");
   };
 
   const sightScale = 0.1;
 
+  /**
+   *
+   * @param {String} colliderID
+   */
   aircraftController.onCollision = (colliderID) => {
-    gateController.handleScoreCollision(colliderID);
+    const [tag] = colliderID.split("_");
+    if (tag == "GATE") {
+      gateController.handleScoreCollision(colliderID);
+    } else {
+      console.log(`${colliderID} hit!`);
+    }
   };
   aircraftController.addCollider();
   // aircraftController.aircraftVelocity = 0;
@@ -73,44 +82,35 @@ const handleLevel = () => {
   let aircraftSpeed = (aircraftController.aircraftVelocity * 3.6).toFixed(1);
 
   Game.update = () => {
-
-    if(scoreAnimated < score){
+    if (scoreAnimated < score) {
       scoreAnimated += 1;
     }
 
     cameraBehaviour.followAircraft();
     aircraftController.fly();
     skyboxBehaviour.followCamera();
-
     guiSightBehaviour.followMouse();
-
     gateController.bounceNextGate().blinkNextGate();
+    waterController.animate();
 
     CollisionSystem.checkCollisions();
 
-    waterController.animate();
-
     Renderer.clear();
-
     Renderer.disableDepthTest();
     Renderer.drawGameObject(skybox);
     Renderer.enableDepthTest();
 
     waterController.draw();
-
     Renderer.drawGameObject(aircraft);
-
-    for (let gate of gateController.gates) {
-      gate.draw();
-    }
+    gateController.draw();
 
     Renderer.enableAlphaBlend();
-    guiController.drawPoints("100");
-    guiController.drawAltitude(
-      aircraftController.aircraftPosition.y.toFixed(1).toString(2)
+    jumpText.draw("100");
+    altText.draw(
+      `Alt: ${aircraftController.aircraftPosition.y.toFixed(1).toString(2)}`
     );
-    guiController.drawSpeed(aircraftSpeed.toString());
-    guiController.drawScore(scoreAnimated.toString());
+    spdText.draw(`Spd: ${aircraftSpeed.toString()}`);
+    scoreText.draw(`Score: ${scoreAnimated.toString()}`);
 
     Renderer.drawGUIElement(resources.textures.gui_sight, {
       posX: guiSightBehaviour.posX,

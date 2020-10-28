@@ -7,6 +7,7 @@ const { GameObject } = require("./engine.gameObject");
 const { Time } = require("./engine.time");
 const { Input } = require("./engine.input");
 const { cameraBehaviour } = require("./game.cameraBehaviour");
+const { CreateResizingText } = require("./game.guiText");
 
 const handleStartMenu = () => {
   const resources = engineResources;
@@ -21,17 +22,15 @@ const handleStartMenu = () => {
   const aircraft = resources.gameObjects.startMenuAircraft;
   const concrete = resources.gameObjects.concrete;
 
-  let textSize = 0.075;
-
   cameraBehaviour.cameraRotation = new Vector3(-45, 0, 0);
   cameraBehaviour.cameraOffset = new Vector3(0, 0, 12);
   const cameraRotationSpeed = 2;
 
+  const resizingText = CreateResizingText();
+
   Game.update = () => {
     cameraBehaviour.cameraRotation.y += Time.delta * cameraRotationSpeed;
     cameraBehaviour.rotateAround();
-
-    textSize + Math.sin(Time.now * 5);
 
     Renderer.clear();
     
@@ -39,13 +38,7 @@ const handleStartMenu = () => {
     Renderer.drawGameObject(concrete);
 
     Renderer.enableAlphaBlend();
-    Renderer.drawString("Press [SPACE] to start", {
-      posX: 0,
-      posY: -0.5,
-      size: textSize + Math.sin(Time.now * Math.PI) * textSize * 0.1,
-      charWidth: 0.7,
-      center: true,
-    });
+    resizingText.draw("Press [SPACE] to start");
     Renderer.disableAlphaBlend();
   };
 

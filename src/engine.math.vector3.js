@@ -5,6 +5,10 @@ class Vector3 {
     this.z = z;
   }
 
+  length(){
+    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+  }
+
   clone() {
     return new Vector3(this.x, this.y, this.z);
   }

@@ -24,6 +24,7 @@ const CreateBoxCollider = (colliderID) => ({
   id: colliderID,
   size: new Vector3(),
   center: new Vector3(),
+  radius: 0,
   transformationMatrix: new Matrix4(),
   onCollision: () => {},
 
@@ -65,6 +66,9 @@ const CreateBoxCollider = (colliderID) => ({
     this.size.x = posMax.x - posMin.x;
     this.size.y = posMax.y - posMin.y;
     this.size.z = posMax.z - posMin.z;
+
+    this.radius = posMax.subtract(this.center).length();
+    return this;
   },
 
   getVertices() {
@@ -193,7 +197,25 @@ const CreateBoxCollider = (colliderID) => ({
     return normals;
   },
 
+  /**
+   *
+   * @param {BoxCollider} boxCollider
+   */
   doesCollide(boxCollider) {
+    const myGlobalPos = this.transformationMatrix
+      .getPosition()
+      .add(this.center);
+    const globalPos = boxCollider.transformationMatrix
+      .getPosition()
+      .add(boxCollider.center);
+
+    if (
+      globalPos.subtract(myGlobalPos).length() >
+      this.radius + boxCollider.radius
+    ) {
+      return;
+    }
+
     const myVertices = this.getVertices();
     const myNormals = this.getNormals();
 

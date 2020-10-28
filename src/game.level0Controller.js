@@ -40,6 +40,18 @@ const level0Controller = {
     g7.addScoreCollider("GATE_7");
     g8.addScoreCollider("GATE_8");
     g9.addScoreCollider("GATE_9");
+
+    g0.addGateCollider("C_0");
+    g1.addGateCollider("C_1");
+    g2.addGateCollider("C_2");
+    g3.addGateCollider("C_3");
+    g4.addGateCollider("C_4");
+    g5.addGateCollider("C_5");
+    g6.addGateCollider("C_6");
+    g7.addGateCollider("C_7");
+    g8.addGateCollider("C_8");
+    g9.addGateCollider("C_9");
+
   },
 };
 

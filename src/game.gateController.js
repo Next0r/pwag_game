@@ -16,16 +16,33 @@ const CreateGate = () => ({
   bounceStrength: 1,
   _signPosition: new Vector3(),
   _blinkTimer: 0,
-  collider: undefined,
+  // scoreCollider: undefined,
   type: undefined,
+
+  addGateCollider(colliderID) {
+    let collider = CreateBoxCollider(`${colliderID}_0`);
+    collider.recalculate(engineResources.meshes.gate_collider_01);
+    collider.transformationMatrix = this.gate.transform.matrix;
+    CollisionSystem.colliders.push(collider);
+
+    collider = CreateBoxCollider(`${colliderID}_1`);
+    collider.recalculate(engineResources.meshes.gate_collider_02);
+    collider.transformationMatrix = this.gate.transform.matrix;
+    CollisionSystem.colliders.push(collider);
+
+    collider = CreateBoxCollider(`${colliderID}_2`);
+    collider.recalculate(engineResources.meshes.gate_collider_03);
+    collider.transformationMatrix = this.gate.transform.matrix;
+    CollisionSystem.colliders.push(collider);
+    return this;
+  },
 
   addScoreCollider(colliderID) {
     const collider = CreateBoxCollider(colliderID);
     collider.recalculate(engineResources.meshes.gate_score_collider);
     collider.transformationMatrix = this.gate.transform.matrix;
     CollisionSystem.colliders.push(collider);
-    this.collider = collider;
-    return;
+    return this;
   },
   draw() {
     Renderer.drawGameObject(this.gate);
@@ -125,6 +142,13 @@ const gateController = {
   lastGate: undefined,
   onLastGateScore: () => {},
   onGateScore: () => {},
+
+  draw() {
+    for (let gate of this.gates) {
+      gate.draw();
+    }
+    return this;
+  },
 
   bounceNextGate() {
     this.nextGate !== undefined && this.gates[this.nextGate].bounce();
