@@ -19,16 +19,16 @@ const level0Controller = {
     gateController.reset();
     gateController.setGates([g0, g1, g2, g3, g4, g5, g6, g7, g8, g9]);
 
-    g0.reset().translate(new Vector3(0, 0, -100));
-    g1.reset().translate(new Vector3(0, 0, -200));
-    g2.reset().translate(new Vector3(0, 0, -300));
-    g3.reset().translate(new Vector3(0, 0, -400));
-    g4.reset().translate(new Vector3(0, 0, -500));
-    g5.reset().translate(new Vector3(0, 0, -600));
-    g6.reset().translate(new Vector3(0, 0, -700));
-    g7.reset().translate(new Vector3(0, 0, -800));
-    g8.reset().translate(new Vector3(0, 0, -900));
-    g9.reset().translate(new Vector3(0, 0, -1000));
+    g0.reset().translate(new Vector3(0, 10, -100));
+    g1.reset().translate(new Vector3(0, 10, -200));
+    g2.reset().translate(new Vector3(0, 10, -300));
+    g3.reset().translate(new Vector3(0, 10, -400));
+    g4.reset().translate(new Vector3(0, 10, -500));
+    g5.reset().translate(new Vector3(0, 10, -600));
+    g6.reset().translate(new Vector3(0, 10, -700));
+    g7.reset().translate(new Vector3(0, 10, -800));
+    g8.reset().translate(new Vector3(0, 10, -900));
+    g9.reset().translate(new Vector3(0, 10, -1000));
 
     g0.addScoreCollider("GATE_0");
     g1.addScoreCollider("GATE_1");

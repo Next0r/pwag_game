@@ -29,6 +29,8 @@ exports.Uniform = Uniform;
 
 class MaterialUniforms {
   constructor() {
+    this.modified = true;
+
     this.modelViewMatrix = new Uniform("u_model_view_matrix");
     this.projectionMatrix = new Uniform("u_projection_matrix");
     this.normalMatrix = new Uniform("u_normal_matrix");
@@ -54,6 +56,9 @@ class MaterialUniforms {
 
     this.mapOffsetX = new Uniform("u_map_offset_x", [0]);
     this.mapOffsetY = new Uniform("u_map_offset_y", [0]);
+
+    this.mapTilingX = new Uniform("u_map_tiling_x",[1]);
+    this.mapTilingY = new Uniform("u_map_tiling_y",[1]);
   }
 
   /**
@@ -78,6 +83,8 @@ class MaterialUniforms {
     this.useEmission.setLocation(shaderProgram);
     this.mapOffsetX.setLocation(shaderProgram);
     this.mapOffsetY.setLocation(shaderProgram);
+    this.mapTilingX.setLocation(shaderProgram);
+    this.mapTilingY.setLocation(shaderProgram);
   }
 }
 

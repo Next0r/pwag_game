@@ -24,8 +24,6 @@ out float direct_light_value;
 out vec3 ambient_light_color;
 out float ambient_light_value;
 out vec3 map;
-flat out int use_vertex_color;
-flat out int use_emission;
 
 
 void main() {

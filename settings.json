@@ -19,7 +19,8 @@
     "guiText",
     "gate",
     "gate_lamps_off",
-    "gate_lamps_on"
+    "gate_lamps_on",
+    "water"
   ],
   "canvasID": "game_window",
   "width": 1024,

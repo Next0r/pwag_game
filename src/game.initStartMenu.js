@@ -18,51 +18,62 @@ const initStartMenu = () => {
   const aircraft = resources.gameObjects.startMenuAircraft;
   aircraft.mesh = resources.meshes.startMenuAircraft;
   aircraft.material = resources.materials.aircraft;
-  aircraft.material.shaderProgram = shaderProgram;
 
   /**
    *@type {GameObject}
    */
   const concrete = resources.gameObjects.concrete;
-  concrete.mesh = resources.meshes.concretePlane;
+  concrete.mesh = resources.meshes.concrete_plane;
   concrete.material = resources.materials.concrete;
-  concrete.material.shaderProgram = shaderProgram;
 
   // update materials settings and textures
   const ambientLight = resources.gameObjects.ambientLight;
   const directLight = resources.gameObjects.directLight;
 
-  aircraft.material.uniforms.directLightDirection.value = directLight.direction.toArray();
-  aircraft.material.uniforms.directLightColor.value = directLight.color.toArray();
-  aircraft.material.uniforms.directLightValue.value = [directLight.value];
-  aircraft.material.uniforms.ambientLightColor.value = ambientLight.color.toArray();
-  aircraft.material.uniforms.ambientLightValue.value = [ambientLight.value];
-  aircraft.material.uniforms.useColor1.value = [1];
-  aircraft.material.uniforms.useNormal0.value = [0];
-  aircraft.material.textures.color0 = resources.textures.test_color;
-  aircraft.material.textures.color1 = resources.textures.unity;
-
-  concrete.material.uniforms.directLightDirection.value = directLight.direction.toArray();
-  concrete.material.uniforms.directLightColor.value = directLight.color.toArray();
-  concrete.material.uniforms.directLightValue.value = [directLight.value];
-  concrete.material.uniforms.ambientLightColor.value = ambientLight.color.toArray();
-  concrete.material.uniforms.ambientLightValue.value = [ambientLight.value];
-  concrete.material.textures.color0 = resources.textures.concrete01;
+  let mat = aircraft.material;
+  mat.shaderProgram = shaderProgram;
+  mat.uniforms.setLocations(shaderProgram);
+  mat.uniforms.directLightDirection.value = directLight.direction.toArray();
+  mat.uniforms.directLightColor.value = directLight.color.toArray();
+  mat.uniforms.directLightValue.value = [directLight.value];
+  mat.uniforms.ambientLightColor.value = ambientLight.color.toArray();
+  mat.uniforms.ambientLightValue.value = [ambientLight.value];
+  mat.uniforms.useColor1.value = [1];
+  mat.uniforms.useNormal0.value = [0];
+  mat.textures.color0 = resources.textures.test_color;
+  mat.textures.color1 = resources.textures.unity;
 
   /**
    * @type {Material}
    */
-  const guiElementMaterial = resources.materials.guiElement;
-  guiElementMaterial.shaderProgram = shaderProgram;
-  guiElementMaterial.uniforms.useEmission.value = [1];
+  mat = concrete.material;
+  mat.shaderProgram = shaderProgram;
+  mat.uniforms.setLocations(shaderProgram);
+  mat.uniforms.directLightDirection.value = directLight.direction.toArray();
+  mat.uniforms.directLightColor.value = directLight.color.toArray();
+  mat.uniforms.directLightValue.value = [directLight.value];
+  mat.uniforms.ambientLightColor.value = ambientLight.color.toArray();
+  mat.uniforms.ambientLightValue.value = [ambientLight.value];
+  mat.uniforms.mapTilingX.value = [5];
+  mat.uniforms.mapTilingY.value = [5];
+  mat.textures.color0 = resources.textures.concrete01;
 
   /**
    * @type {Material}
    */
-  const guiTextMaterial = resources.materials.guiText;
-  guiTextMaterial.shaderProgram = shaderProgram;
-  guiTextMaterial.uniforms.useEmission.value = [1];
-  guiTextMaterial.textures.color0 = resources.textures.mono55;
+  mat = resources.materials.guiElement;
+  mat.shaderProgram = shaderProgram;
+  mat.uniforms.setLocations(shaderProgram);
+  mat.uniforms.useEmission.value = [1];
+
+  /**
+   * @type {Material}
+   */
+  mat = resources.materials.guiText;
+  mat.shaderProgram = shaderProgram;
+  mat.uniforms.setLocations(shaderProgram);
+  mat.uniforms.useEmission.value = [1];
+  mat.textures.color0 = resources.textures.mono55;
 };
 
 exports.initStartMenu = initStartMenu;

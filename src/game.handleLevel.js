@@ -3,6 +3,7 @@ const { CollisionSystem } = require("./engine.collisionSystem");
 const { Game } = require("./engine.game");
 const { GameObject } = require("./engine.gameObject");
 const { Input } = require("./engine.input");
+const { CreateVector2 } = require("./engine.math.vector2");
 const { Vector3 } = require("./engine.math.vector3");
 const { Renderer } = require("./engine.renderer");
 const { engineResources } = require("./engine.resources");
@@ -15,6 +16,7 @@ const { guiSightBehaviour } = require("./game.guiSightBehaviour");
 const { initLevel } = require("./game.initLevel");
 const { level0Controller } = require("./game.level0Controller");
 const { skyboxBehaviour } = require("./game.skyboxBehaviour");
+const { waterController, CreateWater } = require("./game.waterController");
 
 const handleLevel = () => {
   const resources = engineResources;
@@ -29,6 +31,9 @@ const handleLevel = () => {
 
   const skybox = resources.gameObjects.skybox;
   const aircraft = resources.gameObjects.aircraft;
+
+  waterController.init();
+
   level0Controller.initialize();
 
   let score = 0;
@@ -51,6 +56,7 @@ const handleLevel = () => {
     gateController.handleScoreCollision(colliderID);
   };
   aircraftController.addCollider();
+  // aircraftController.aircraftVelocity = 0;
 
   cameraBehaviour.cameraOffset = new Vector3(0, 3, 20);
 
@@ -69,12 +75,15 @@ const handleLevel = () => {
 
     CollisionSystem.checkCollisions();
 
+    waterController.animate();
+    
     Renderer.clear();
 
     Renderer.disableDepthTest();
     Renderer.drawGameObject(skybox);
     Renderer.enableDepthTest();
 
+    waterController.draw();
     Renderer.drawGameObject(aircraft);
 
     for (let gate of gateController.gates) {

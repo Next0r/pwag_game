@@ -22,6 +22,9 @@ const Renderer = {
     const camera = engineResources.gameObjects.camera;
     const { posX, posY, scaleX, scaleY } = options;
 
+    /**
+     * @type {Material}
+     */
     const mat = engineResources.materials.guiElement;
     mat.textures.color0 = texture;
 
@@ -37,6 +40,7 @@ const Renderer = {
     mat.uniforms.normalMatrix.value = new Matrix4().toArray();
 
     mat.linkVertexArrays(engineResources.meshes.guiPlane);
+    mat.uploadMatrix
     mat.uploadUniforms();
     mat.uploadTextures();
     mat.useProgram();

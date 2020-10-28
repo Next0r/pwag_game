@@ -12,7 +12,7 @@ const aircraftController = {
   zRotPerSec: 80,
   maxAcZRot: 60,
   aircraftVelocity: 30,
-  aircraftPosition: new Vector3(),
+  aircraftPosition: new Vector3(0, 15, 0),
   rotBackSpeed: 3,
   onCollision: () => {},
 

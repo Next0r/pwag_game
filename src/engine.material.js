@@ -77,14 +77,6 @@ class Material {
     gl.vertexAttribPointer(loc, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(loc);
 
-    const e = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, e);
-    gl.bufferData(
-      gl.ELEMENT_ARRAY_BUFFER,
-      new Uint32Array(mesh.elementArray),
-      gl.STATIC_DRAW
-    );
-
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.elementArrayVBO);
   }
 
@@ -109,8 +101,6 @@ class Material {
     if (!this.shaderProgram) {
       return;
     }
-
-    this.uniforms.setLocations(this.shaderProgram);
 
     // pass uniforms to shader only if defined
     gl.useProgram(this.shaderProgram);
@@ -144,6 +134,8 @@ class Material {
     this.uniforms.useEmission.value && uniform1iv(this.uniforms.useEmission);
     this.uniforms.mapOffsetX.value && uniform1fv(this.uniforms.mapOffsetX);
     this.uniforms.mapOffsetY.value && uniform1fv(this.uniforms.mapOffsetY);
+    this.uniforms.mapTilingX.value && uniform1fv(this.uniforms.mapTilingX);
+    this.uniforms.mapTilingY.value && uniform1fv(this.uniforms.mapTilingY);
   }
 
   /**

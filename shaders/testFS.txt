@@ -13,6 +13,8 @@ uniform int u_use_color1;
 uniform int u_use_normal0;
 uniform float u_map_offset_x;
 uniform float u_map_offset_y;
+uniform float u_map_tiling_x;
+uniform float u_map_tiling_y;
 
 out vec4 out_color;
 in vec4 vertex_color;
@@ -23,14 +25,12 @@ in float direct_light_value;
 in vec3 ambient_light_color;
 in float ambient_light_value;
 in vec3 map;
-//in vec4 tangent;
-//in vec4 bitangent;
 
 vec4 white_color = vec4(1, 1, 1, 1);
 vec4 black_color = vec4(0, 0, 0, 0);
 
 vec2 get_map() {
-  return vec2(map.x + u_map_offset_x, map.y + u_map_offset_y);
+  return vec2((map.x + u_map_offset_x) * u_map_tiling_x, (map.y + u_map_offset_y) * u_map_tiling_y);
 }
 
 vec4 get_vertex_color() {

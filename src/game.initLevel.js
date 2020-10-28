@@ -31,20 +31,25 @@ const initLevel = () => {
   const directLight = resources.gameObjects.directLight;
   const ambientLight = resources.gameObjects.ambientLight;
 
+
+  
   // skybox material
   let mat = skybox.material;
   mat.shaderProgram = shaderProgram;
+  mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.useEmission.value = [1];
   mat.textures.color0 = resources.textures.skybox_color_01;
 
   // gui elements material
   mat = resources.materials.guiElement;
   mat.shaderProgram = shaderProgram;
+  mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.useEmission.value = [1];
 
   // aircraft material
   mat = aircraft.material;
   mat.shaderProgram = shaderProgram;
+  mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.directLightDirection.value = directLight.direction.toArray();
   mat.uniforms.directLightColor.value = directLight.color.toArray();
   mat.uniforms.directLightValue.value = [directLight.value];
@@ -58,6 +63,7 @@ const initLevel = () => {
   // gate material
   mat = resources.materials.gate;
   mat.shaderProgram = shaderProgram;
+  mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.directLightDirection.value = directLight.direction.toArray();
   mat.uniforms.directLightColor.value = directLight.color.toArray();
   mat.uniforms.directLightValue.value = [directLight.value];
@@ -70,6 +76,7 @@ const initLevel = () => {
    */
   mat = resources.materials.gate_lamps_off;
   mat.shaderProgram = shaderProgram;
+  mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.directLightDirection.value = directLight.direction.toArray();
   mat.uniforms.directLightColor.value = directLight.color.toArray();
   mat.uniforms.directLightValue.value = [directLight.value];
@@ -83,8 +90,18 @@ const initLevel = () => {
    */
   mat = resources.materials.gate_lamps_on;
   mat.shaderProgram = shaderProgram;
+  mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.useEmission.value = [1];
   mat.textures.color0 = resources.textures.lamp_sign_color;
+
+  /**
+   * @type {Material}
+   */
+  mat = resources.materials.water;
+  mat.shaderProgram = shaderProgram;
+  mat.uniforms.setLocations(shaderProgram);
+  mat.uniforms.useEmission.value = [1];
+  mat.textures.color0 = resources.textures.water_color;
 };
 
 exports.initLevel = initLevel;
