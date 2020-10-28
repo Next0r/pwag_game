@@ -12,6 +12,7 @@ const { EngineToolbox } = require("./engine.toolbox");
 const { aircraftController } = require("./game.aircraftController");
 const { cameraBehaviour } = require("./game.cameraBehaviour");
 const { gateController } = require("./game.gateController");
+const { guiController } = require("./game.guiController");
 const { guiSightBehaviour } = require("./game.guiSightBehaviour");
 const { initLevel } = require("./game.initLevel");
 const { level0Controller } = require("./game.level0Controller");
@@ -37,14 +38,19 @@ const handleLevel = () => {
   level0Controller.initialize();
 
   let score = 0;
+  let scoreAnimated = score;
 
   gateController.onGateScore = (gate) => {
+    guiController.resetDrawPointsTimer();
+
     console.log(gate.type);
     score += 100;
     console.log(score);
   };
 
   gateController.onLastGateScore = (gate) => {
+    guiController.resetDrawPointsTimer();
+
     score += 100;
     console.log(score);
     console.log("finished!");
@@ -64,7 +70,14 @@ const handleLevel = () => {
     Input.lockPointer();
   });
 
+  let aircraftSpeed = (aircraftController.aircraftVelocity * 3.6).toFixed(1);
+
   Game.update = () => {
+
+    if(scoreAnimated < score){
+      scoreAnimated += 1;
+    }
+
     cameraBehaviour.followAircraft();
     aircraftController.fly();
     skyboxBehaviour.followCamera();
@@ -76,7 +89,7 @@ const handleLevel = () => {
     CollisionSystem.checkCollisions();
 
     waterController.animate();
-    
+
     Renderer.clear();
 
     Renderer.disableDepthTest();
@@ -84,6 +97,7 @@ const handleLevel = () => {
     Renderer.enableDepthTest();
 
     waterController.draw();
+
     Renderer.drawGameObject(aircraft);
 
     for (let gate of gateController.gates) {
@@ -91,6 +105,13 @@ const handleLevel = () => {
     }
 
     Renderer.enableAlphaBlend();
+    guiController.drawPoints("100");
+    guiController.drawAltitude(
+      aircraftController.aircraftPosition.y.toFixed(1).toString(2)
+    );
+    guiController.drawSpeed(aircraftSpeed.toString());
+    guiController.drawScore(scoreAnimated.toString());
+
     Renderer.drawGUIElement(resources.textures.gui_sight, {
       posX: guiSightBehaviour.posX,
       posY: guiSightBehaviour.posY,

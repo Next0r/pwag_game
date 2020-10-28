@@ -4,8 +4,6 @@ const { Time } = require("./engine.time");
 const { Vector3 } = require("./engine.math.vector3");
 const { GameObject } = require("./engine.gameObject");
 const { Renderer } = require("./engine.renderer");
-const { CreateVector2 } = require("./engine.math.vector2");
-const { aircraftController } = require("./game.aircraftController");
 
 const waterController = {
   _animationTimer: 0,
