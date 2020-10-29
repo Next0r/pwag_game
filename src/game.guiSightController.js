@@ -8,6 +8,11 @@ const guiSightController = {
   sensitivity: 0.002,
   size: 0.1,
 
+  reset() {
+    this.posX = 0;
+    this.posY = 0;
+  },
+
   draw() {
     Renderer.drawGUIElement(engineResources.textures.gui_sight, {
       posX: this.posX,

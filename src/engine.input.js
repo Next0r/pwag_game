@@ -32,7 +32,7 @@ const Input = {
 
   lockPointer() {
     const canvas = EngineToolbox.getCanvas();
-    if (!canvas) {
+    if (!canvas || document.pointerLockElement === canvas) {
       return;
     }
     document.addEventListener("pointerlockchange", lockChangeAlert, false);

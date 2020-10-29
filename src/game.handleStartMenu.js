@@ -14,7 +14,7 @@ const handleStartMenu = () => {
   initStartMenu();
 
   Input.keyboard.onRelease["Space"] = function () {
-    Input.keyboard.onRelease["Space"] = undefined;
+    Input.keyboard.onRelease = [];
     Game.stop();
     require("./game.handleLevel").handleLevel();
   };

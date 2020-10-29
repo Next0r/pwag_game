@@ -73,10 +73,12 @@ const CreateSimpleText = ({
   posY = 0,
   size = 0.05,
   charWidth = 0.7,
+  center = false,
 } = {}) => ({
   position: CreateVector2(posX, posY),
   size: size,
   charWidth: charWidth,
+  center: center,
 
   draw(content) {
     Renderer.drawString(content, {
@@ -84,6 +86,7 @@ const CreateSimpleText = ({
       posY: this.position.y,
       size: this.size,
       charWidth: this.charWidth,
+      center: this.center,
     });
     return this;
   },

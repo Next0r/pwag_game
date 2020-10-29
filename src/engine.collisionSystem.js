@@ -7,7 +7,11 @@ const CollisionSystem = {
    * @type {import("./engine.boxCollider").BoxCollider[]}
    */
   colliders: [],
-  
+
+  reset() {
+    this.colliders = [];
+  },
+
   checkCollisions() {
     for (let i = 0; i < this.colliders.length; i += 1) {
       const collider = this.colliders[i];

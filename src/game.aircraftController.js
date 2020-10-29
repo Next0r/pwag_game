@@ -21,13 +21,13 @@ const aircraftController = {
   /**
    * @param {String} colliderID
    */
-  onCollision: (colliderID) => {
-    const [tag] = colliderID.split("_");
-    if (tag == "GATE") {
-      gateController.handleScoreCollision(colliderID);
-    } else {
-      console.log(`${colliderID} hit!`);
-    }
+  onCollision: () => {},
+
+  reset() {
+    this.rotation = new Vector3();
+    this.speed = (this.speedMax + this.speedMin) * 0.5;
+    this.position = new Vector3(0, 15, 0);
+    return this;
   },
 
   addCollider() {

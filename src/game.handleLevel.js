@@ -17,15 +17,16 @@ const { guiSightController } = require("./game.guiSightController");
 const { initLevel } = require("./game.initLevel");
 const { level0Controller } = require("./game.level0Controller");
 const { skyboxBehaviour } = require("./game.skyboxBehaviour");
-const { waterController, CreateWater } = require("./game.waterController");
+const { waterController } = require("./game.waterController");
 
 const handleLevel = () => {
   const resources = engineResources;
   initLevel();
 
   Input.lockPointer();
+
   Input.keyboard.onRelease["Escape"] = () => {
-    Input.keyboard.onRelease["Escape"] = undefined;
+    Input.keyboard.onRelease = [];
     Game.stop();
     require("./game.handleStartMenu").handleStartMenu();
   };
@@ -38,9 +39,29 @@ const handleLevel = () => {
   const spdText = CreateSimpleText({ posX: -0.95, posY: -0.8 });
   const scoreText = CreateSimpleText({ posX: -0.95, posY: 0.9 });
 
+  CollisionSystem.reset();
+
   waterController.init().addCollider();
   level0Controller.init();
-  aircraftController.addCollider();
+  guiSightController.reset();
+  guiSightController.sensitivity = 0.002;
+
+  aircraftController.onCollision = (colliderID) => {
+    const [tag] = colliderID.split("_");
+    if (tag == "GATE") {
+      gateController.handleScoreCollision(colliderID);
+    } else {
+      Input.keyboard.onRelease = [];
+      Game.stop();
+      require("./game.handleEndScreen").handleEndScreen({
+        score: score,
+        success: false,
+      });
+    }
+  };
+
+  aircraftController.reset().addCollider();
+  cameraController.cameraOffset = new Vector3(0, 3, 20);
 
   const pointsPerGate = 50;
   let lastScore = 0;
@@ -48,7 +69,6 @@ const handleLevel = () => {
   gateController.onGateScore = (gate) => {
     jumpText.resetTimer();
     const rotZ = aircraftController.rotation.z;
-    console.log(aircraftController.rotation.z);
     let bonus = 0;
     switch (gate.type) {
       case "T":
@@ -59,7 +79,6 @@ const handleLevel = () => {
       case "B":
         if (Math.abs(rotZ) >= 90) {
           bonus = ((Math.abs(rotZ) - 90) / 90) * pointsPerGate;
-          console.log(bonus);
         }
         break;
       case "R":
@@ -79,10 +98,15 @@ const handleLevel = () => {
 
   gateController.onLastGateScore = (gate) => {
     gateController.onGateScore(gate);
-    console.log("finished!");
+    Input.keyboard.onRelease = [];
+    Game.stop();
+    setTimeout(() => {
+      require("./game.handleEndScreen").handleEndScreen({
+        score: score,
+        success: true,
+      });
+    }, 2000);
   };
-
-  cameraController.cameraOffset = new Vector3(0, 3, 20);
 
   let score = 0;
   let scoreAnimated = score;
