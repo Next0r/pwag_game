@@ -4,12 +4,20 @@ const { Time } = require("./engine.time");
 const { Vector3 } = require("./engine.math.vector3");
 const { GameObject } = require("./engine.gameObject");
 const { Renderer } = require("./engine.renderer");
+const { CreateBoxCollider } = require("./engine.boxCollider");
+const { aircraftController } = require("./game.aircraftController");
+const { CollisionSystem } = require("./engine.collisionSystem");
+const { Matrix4 } = require("./engine.math.matrix4");
 
 const waterController = {
   _animationTimer: 0,
   framesPerSecond: 32,
   waterPlaneSize: 400,
   gridSize: 6,
+  /**
+   * @type {import("./engine.boxCollider").BoxCollider}
+   */
+  collider: undefined,
   /**
    * @type {GameObject}
    */
@@ -19,6 +27,27 @@ const waterController = {
     this.waterPlane = new GameObject();
     this.waterPlane.mesh = engineResources.meshes.water_plane;
     this.waterPlane.material = engineResources.materials.water;
+    return this;
+  },
+
+  addCollider() {
+    const collider = CreateBoxCollider("WATER");
+    collider.recalculate(engineResources.meshes.water_collider);
+    collider.transformationMatrix = new Matrix4();
+    CollisionSystem.colliders.push(collider);
+    this.collider = collider;
+    return this;
+  },
+
+  updateCollider() {
+    const aircraftPosition = aircraftController.position;
+    const colliderPosition = new Vector3(
+      aircraftPosition.x,
+      0,
+      aircraftPosition.z
+    );
+    this.collider.transformationMatrix.identity();
+    this.collider.transformationMatrix.translate(colliderPosition);
     return this;
   },
 
@@ -69,7 +98,7 @@ const waterController = {
     this._animationTimer += Time.delta;
 
     if (this._animationTimer < 1 / this.framesPerSecond) {
-      return;
+      return this;
     }
 
     this._animationTimer = 0;

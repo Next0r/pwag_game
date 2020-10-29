@@ -1,10 +1,23 @@
 const { Input } = require("./engine.input");
+const { Renderer } = require("./engine.renderer");
 const { engineResources } = require("./engine.resources");
 
-const guiSightBehaviour = {
+const guiSightController = {
   posX: 0,
   posY: 0,
   sensitivity: 0.002,
+  size: 0.1,
+
+  draw() {
+    Renderer.drawGUIElement(engineResources.textures.gui_sight, {
+      posX: this.posX,
+      posY: this.posY,
+      scaleX: this.size,
+      scaleY: this.size,
+    });
+    return this;
+  },
+
   followMouse() {
     const movementX = Input.mouse.movementX * this.sensitivity;
     const movementY =
@@ -54,4 +67,4 @@ const guiSightBehaviour = {
   },
 };
 
-exports.guiSightBehaviour = guiSightBehaviour;
+exports.guiSightController = guiSightController;

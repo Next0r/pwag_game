@@ -3,7 +3,7 @@ const { Vector4 } = require("./engine.math.vector4");
 const { gateController } = require("./game.gateController");
 
 const level0Controller = {
-  initialize() {
+  init() {
     const g0 = gateController.spawnGate("T");
     g0.signOn();
     const g1 = gateController.spawnGate("R");

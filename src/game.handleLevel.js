@@ -10,10 +10,10 @@ const { engineResources } = require("./engine.resources");
 const { Time } = require("./engine.time");
 const { EngineToolbox } = require("./engine.toolbox");
 const { aircraftController } = require("./game.aircraftController");
-const { cameraBehaviour } = require("./game.cameraBehaviour");
+const { cameraController } = require("./game.cameraController");
 const { gateController } = require("./game.gateController");
 const { CreateJumpText, CreateSimpleText } = require("./game.guiText");
-const { guiSightBehaviour } = require("./game.guiSightBehaviour");
+const { guiSightController } = require("./game.guiSightController");
 const { initLevel } = require("./game.initLevel");
 const { level0Controller } = require("./game.level0Controller");
 const { skyboxBehaviour } = require("./game.skyboxBehaviour");
@@ -38,60 +38,70 @@ const handleLevel = () => {
   const spdText = CreateSimpleText({ posX: -0.95, posY: -0.8 });
   const scoreText = CreateSimpleText({ posX: -0.95, posY: 0.9 });
 
-  waterController.init();
-  level0Controller.initialize();
+  waterController.init().addCollider();
+  level0Controller.init();
+  aircraftController.addCollider();
+
+  const pointsPerGate = 50;
+  let lastScore = 0;
+
+  gateController.onGateScore = (gate) => {
+    jumpText.resetTimer();
+    const rotZ = aircraftController.rotation.z;
+    console.log(aircraftController.rotation.z);
+    let bonus = 0;
+    switch (gate.type) {
+      case "T":
+        if (rotZ <= 90 && rotZ >= -90) {
+          bonus = (1 - Math.abs(rotZ) / 90) * pointsPerGate;
+        }
+        break;
+      case "B":
+        if (Math.abs(rotZ) >= 90) {
+          bonus = ((Math.abs(rotZ) - 90) / 90) * pointsPerGate;
+          console.log(bonus);
+        }
+        break;
+      case "R":
+        if (rotZ >= 0 && rotZ <= 180) {
+          bonus = (1 - Math.abs(rotZ - 90) / 90) * pointsPerGate;
+        }
+        break;
+      case "L":
+        if (rotZ <= 0 && rotZ >= -180) {
+          bonus = (1 - Math.abs(rotZ + 90) / 90) * pointsPerGate;
+        }
+        break;
+    }
+    lastScore = Math.ceil(bonus) + pointsPerGate;
+    score += lastScore;
+  };
+
+  gateController.onLastGateScore = (gate) => {
+    gateController.onGateScore(gate);
+    console.log("finished!");
+  };
+
+  cameraController.cameraOffset = new Vector3(0, 3, 20);
 
   let score = 0;
   let scoreAnimated = score;
 
-  gateController.onGateScore = (gate) => {
-    jumpText.resetTimer();
-    score += 100;
-    console.log(gate.type);
-  };
-
-  gateController.onLastGateScore = (gate) => {
-    jumpText.resetTimer();
-    score += 100;
-    console.log("finished!");
-  };
-
-  const sightScale = 0.1;
-
-  /**
-   *
-   * @param {String} colliderID
-   */
-  aircraftController.onCollision = (colliderID) => {
-    const [tag] = colliderID.split("_");
-    if (tag == "GATE") {
-      gateController.handleScoreCollision(colliderID);
-    } else {
-      console.log(`${colliderID} hit!`);
-    }
-  };
-  aircraftController.addCollider();
-  // aircraftController.aircraftVelocity = 0;
-
-  cameraBehaviour.cameraOffset = new Vector3(0, 3, 20);
-
   EngineToolbox.getCanvas().addEventListener("click", () => {
     Input.lockPointer();
   });
-
-  let aircraftSpeed = (aircraftController.aircraftVelocity * 3.6).toFixed(1);
 
   Game.update = () => {
     if (scoreAnimated < score) {
       scoreAnimated += 1;
     }
 
-    cameraBehaviour.followAircraft();
+    cameraController.followAircraft();
     aircraftController.fly();
     skyboxBehaviour.followCamera();
-    guiSightBehaviour.followMouse();
+    guiSightController.followMouse();
     gateController.bounceNextGate().blinkNextGate();
-    waterController.animate();
+    waterController.animate().updateCollider();
 
     CollisionSystem.checkCollisions();
 
@@ -105,19 +115,16 @@ const handleLevel = () => {
     gateController.draw();
 
     Renderer.enableAlphaBlend();
-    jumpText.draw("100");
+    jumpText.draw(lastScore.toString());
     altText.draw(
-      `Alt: ${aircraftController.aircraftPosition.y.toFixed(1).toString(2)}`
+      `Alt: ${aircraftController.position.y.toFixed(1).toString(2)}`
     );
-    spdText.draw(`Spd: ${aircraftSpeed.toString()}`);
+    spdText.draw(
+      `Spd: ${(aircraftController.speed * 3.6).toFixed(1).toString()}`
+    );
     scoreText.draw(`Score: ${scoreAnimated.toString()}`);
+    guiSightController.draw();
 
-    Renderer.drawGUIElement(resources.textures.gui_sight, {
-      posX: guiSightBehaviour.posX,
-      posY: guiSightBehaviour.posY,
-      scaleX: sightScale,
-      scaleY: sightScale,
-    });
     Renderer.disableAlphaBlend();
   };
 

@@ -6,7 +6,7 @@ const { initStartMenu } = require("./game.initStartMenu");
 const { GameObject } = require("./engine.gameObject");
 const { Time } = require("./engine.time");
 const { Input } = require("./engine.input");
-const { cameraBehaviour } = require("./game.cameraBehaviour");
+const { cameraController: cameraBehaviour } = require("./game.cameraController");
 const { CreateResizingText } = require("./game.guiText");
 
 const handleStartMenu = () => {
