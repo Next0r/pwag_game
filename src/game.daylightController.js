@@ -5,11 +5,11 @@ const { Time } = require("./engine.time");
 const { Material } = require("./engine.material");
 
 const daylightController = {
-  _sunRotation: -45,
+  _sunRotation: 135,
   sunRotationSpeed: 360,
 
   reset() {
-    this._sunRotation = 0;
+    this._sunRotation = 135;
     return this;
   },
 
@@ -18,14 +18,17 @@ const daylightController = {
 
     if (Input.keyboard.isDown("ArrowRight")) {
       this._sunRotation += Time.delta * this.sunRotationSpeed;
-      console.log(directLight.direction);
+      console.log(this._sunRotation);
     }
     if (Input.keyboard.isDown("ArrowLeft")) {
       this._sunRotation -= Time.delta * this.sunRotationSpeed;
+      console.log(this._sunRotation);
     }
 
-    const x = Math.sin(this._sunRotation / 180);
-    const z = Math.cos(this._sunRotation / 180);
+    const f = Math.PI / 180;
+
+    const x = Math.sin(this._sunRotation * f);
+    const z = Math.cos(this._sunRotation * f);
 
     directLight.direction.x = x;
     directLight.direction.z = z;
