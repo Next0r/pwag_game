@@ -9,7 +9,16 @@
     "box",
     "box2",
     "concrete",
-    "startMenuAircraft"
+    "startMenuAircraft",
+    "aircraftBody",
+    "flapL",
+    "flapR",
+    "elevatorL",
+    "elevatorR",
+    "rudder",
+    "propeller",
+    "propellerPlane",
+    "spinner"
   ],
   "materials": [
     "skybox",
@@ -20,7 +29,8 @@
     "gate",
     "gate_lamps_off",
     "gate_lamps_on",
-    "water"
+    "water",
+    "propeller"
   ],
   "canvasID": "game_window",
   "width": 1024,

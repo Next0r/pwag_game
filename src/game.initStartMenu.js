@@ -12,12 +12,6 @@ const initStartMenu = () => {
   const shaderProgram = createShaderProgram(vsSource, fsSource);
 
   // bind meshes, materials and shader program
-  /**
-   *@type {GameObject}
-   */
-  const aircraft = resources.gameObjects.startMenuAircraft;
-  aircraft.mesh = resources.meshes.startMenuAircraft;
-  aircraft.material = resources.materials.aircraft;
 
   /**
    *@type {GameObject}
@@ -25,6 +19,62 @@ const initStartMenu = () => {
   const concrete = resources.gameObjects.concrete;
   concrete.mesh = resources.meshes.concrete_plane;
   concrete.material = resources.materials.concrete;
+
+  /**
+   *@type {GameObject}
+   */
+  const flapL = resources.gameObjects.flapL;
+  flapL.mesh = resources.meshes.flap_L;
+  flapL.material = resources.materials.aircraft;
+  /**
+   *@type {GameObject}
+   */
+  const flapR = resources.gameObjects.flapR;
+  flapR.mesh = resources.meshes.flap_R;
+  flapR.material = resources.materials.aircraft;
+  /**
+   *@type {GameObject}
+   */
+  const elevatorR = resources.gameObjects.elevatorR;
+  elevatorR.mesh = resources.meshes.elevator_R;
+  elevatorR.material = resources.materials.aircraft;
+  /**
+   *@type {GameObject}
+   */
+  const elevatorL = resources.gameObjects.elevatorL;
+  elevatorL.mesh = resources.meshes.elevator_L;
+  elevatorL.material = resources.materials.aircraft;
+  /**
+   *@type {GameObject}
+   */
+  const rudder = resources.gameObjects.rudder;
+  rudder.mesh = resources.meshes.rudder;
+  rudder.material = resources.materials.aircraft;
+  /**
+   *@type {GameObject}
+   */
+  const propeller = resources.gameObjects.propeller;
+  propeller.mesh = resources.meshes.propeller;
+  propeller.material = resources.materials.aircraft;
+
+  /**
+   * @type {GameObject}
+   */
+  const aircraft = resources.gameObjects.aircraft;
+  aircraft.mesh = resources.meshes.aircraft_body;
+  aircraft.material = resources.materials.aircraft;
+  /**
+   * @type {GameObject}
+   */
+  const spinner = resources.gameObjects.spinner;
+  spinner.mesh = resources.meshes.spinner;
+  spinner.material = resources.materials.aircraft;
+  /**
+   * @type {GameObject}
+   */
+  const propellerPlane = resources.gameObjects.propellerPlane;
+  propellerPlane.mesh = resources.meshes.propeller_plane;
+  propellerPlane.material = resources.materials.propeller;
 
   // update materials settings and textures
   const ambientLight = resources.gameObjects.ambientLight;
@@ -40,8 +90,8 @@ const initStartMenu = () => {
   mat.uniforms.ambientLightValue.value = [ambientLight.value];
   mat.uniforms.useColor1.value = [1];
   mat.uniforms.useNormal0.value = [0];
-  mat.textures.color0 = resources.textures.test_color;
-  mat.textures.color1 = resources.textures.unity;
+  mat.textures.color0 = resources.textures.aircraft_color;
+  mat.textures.color1 = resources.textures.aircraft_decals;
 
   /**
    * @type {Material}

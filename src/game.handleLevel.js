@@ -18,6 +18,7 @@ const { initLevel } = require("./game.initLevel");
 const { level0Controller } = require("./game.level0Controller");
 const { skyboxBehaviour } = require("./game.skyboxBehaviour");
 const { waterController } = require("./game.waterController");
+const { daylightController } = require("./game.daylightController");
 
 const handleLevel = () => {
   const resources = engineResources;
@@ -44,7 +45,7 @@ const handleLevel = () => {
   waterController.init().addCollider();
   level0Controller.init();
   guiSightController.reset();
-  guiSightController.sensitivity = 0.002;
+  daylightController.reset();
 
   aircraftController.onCollision = (colliderID) => {
     const [tag] = colliderID.split("_");
@@ -61,7 +62,7 @@ const handleLevel = () => {
   };
 
   aircraftController.reset().addCollider();
-  cameraController.cameraOffset = new Vector3(0, 3, 20);
+  cameraController.cameraOffset = new Vector3(0, 3, 15);
 
   const pointsPerGate = 50;
   let lastScore = 0;
@@ -126,6 +127,7 @@ const handleLevel = () => {
     guiSightController.followMouse();
     gateController.bounceNextGate().blinkNextGate();
     waterController.animate().updateCollider();
+    daylightController.handleDaylight();
 
     CollisionSystem.checkCollisions();
 
@@ -135,16 +137,16 @@ const handleLevel = () => {
     Renderer.enableDepthTest();
 
     waterController.draw();
-    Renderer.drawGameObject(aircraft);
     gateController.draw();
+    aircraftController.draw();
 
     Renderer.enableAlphaBlend();
     jumpText.draw(lastScore.toString());
     altText.draw(
-      `Alt: ${aircraftController.position.y.toFixed(1).toString(2)}`
+      `Alt: ${aircraftController.position.y.toFixed(1).toString(2)} m`
     );
     spdText.draw(
-      `Spd: ${(aircraftController.speed * 3.6).toFixed(1).toString()}`
+      `Spd: ${(aircraftController.speed * 3.6).toFixed(1).toString()} kmh`
     );
     scoreText.draw(`Score: ${scoreAnimated.toString()}`);
     guiSightController.draw();

@@ -8,6 +8,7 @@ const { Time } = require("./engine.time");
 const { Input } = require("./engine.input");
 const { cameraController: cameraBehaviour } = require("./game.cameraController");
 const { CreateResizingText } = require("./game.guiText");
+const { aircraftController } = require("./game.aircraftController");
 
 const handleStartMenu = () => {
   const resources = engineResources;
@@ -19,7 +20,21 @@ const handleStartMenu = () => {
     require("./game.handleLevel").handleLevel();
   };
 
-  const aircraft = resources.gameObjects.startMenuAircraft;
+  /**
+   * @type {GameObject}
+   */
+  const aircraft = engineResources.gameObjects.aircraft;
+  aircraft.transform.reset();
+  aircraft.transform.translate(new Vector3(0,0.8,0));
+  aircraft.transform.applyLocation();
+  aircraft.transform.rotateY(180);
+  aircraft.transform.applyRotation();
+  aircraft.transform.rotateX(10);
+  aircraft.transform.applyRotation();
+
+  aircraftController.reset();
+  aircraftController.propellerRotationSpeed = 500;
+
   const concrete = resources.gameObjects.concrete;
 
   cameraBehaviour.cameraRotation = new Vector3(-45, 0, 0);
@@ -32,9 +47,12 @@ const handleStartMenu = () => {
     cameraBehaviour.cameraRotation.y += Time.delta * cameraRotationSpeed;
     cameraBehaviour.rotateAround();
 
-    Renderer.clear();
     
-    Renderer.drawGameObject(aircraft);
+    aircraftController.transformParts();
+
+    Renderer.clear();
+    aircraftController.draw(true);
+
     Renderer.drawGameObject(concrete);
 
     Renderer.enableAlphaBlend();
