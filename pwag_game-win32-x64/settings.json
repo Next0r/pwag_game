@@ -1,0 +1,41 @@
+{
+  "texturesDir": "./textures",
+  "meshesDir": "./models",
+  "shadersDir": "./shaders",
+  "gameObjects": [
+    "skybox",
+    "plane",
+    "aircraft",
+    "box",
+    "box2",
+    "concrete",
+    "startMenuAircraft",
+    "aircraftBody",
+    "flapL",
+    "flapR",
+    "elevatorL",
+    "elevatorR",
+    "rudder",
+    "propeller",
+    "propellerPlane",
+    "spinner"
+  ],
+  "materials": [
+    "skybox",
+    "guiElement",
+    "aircraft",
+    "concrete",
+    "guiText",
+    "gate",
+    "gate_lamps_off",
+    "gate_lamps_on",
+    "water",
+    "propeller"
+  ],
+  "canvasID": "game_window",
+  "width": 1920,
+  "height": 1080,
+  "textGridSize": 0.08333,
+  "startUpFile": "./game.handleStartMenu",
+  "startUpFunction": "handleStartMenu"
+}

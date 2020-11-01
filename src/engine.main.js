@@ -20,9 +20,9 @@ const main = () => {
   EngineToolbox.createCanvas();
   const gl = EngineToolbox.getGLContext();
 
-  // window.addEventListener("click", ()=>{
-  //   EngineToolbox.getCanvas().webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-  // });
+  window.addEventListener("click", ()=>{
+    EngineToolbox.getCanvas().webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+  });
 
   if (!gl) {
     console.warn("Cannot acquire WebGL2 rendering context.");

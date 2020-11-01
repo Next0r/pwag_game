@@ -33,8 +33,8 @@
     "propeller"
   ],
   "canvasID": "game_window",
-  "width": 1024,
-  "height": 576,
+  "width": 1920,
+  "height": 1080,
   "textGridSize": 0.08333,
   "startUpFile": "./game.handleStartMenu",
   "startUpFunction": "handleStartMenu"
