@@ -4,7 +4,7 @@ const { Time } = require("./engine.time");
 const { Vector3 } = require("./engine.math.vector3");
 const { GameObject } = require("./engine.gameObject");
 const { Renderer } = require("./engine.renderer");
-const { CreateBoxCollider } = require("./engine.boxCollider");
+const {  BoxCollider } = require("./engine.boxCollider");
 const { aircraftController } = require("./game.aircraftController");
 const { CollisionSystem } = require("./engine.collisionSystem");
 const { Matrix4 } = require("./engine.math.matrix4");
@@ -31,7 +31,7 @@ const waterController = {
   },
 
   addCollider() {
-    const collider = CreateBoxCollider("WATER");
+    const collider = new BoxCollider("WATER");
     collider.recalculate(engineResources.meshes.water_collider);
     collider.transformationMatrix = new Matrix4();
     CollisionSystem.colliders.push(collider);

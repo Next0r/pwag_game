@@ -1,4 +1,4 @@
-const { CreateBoxCollider } = require("./engine.boxCollider");
+const { BoxCollider } = require("./engine.boxCollider");
 const { CollisionSystem } = require("./engine.collisionSystem");
 const { GameObject } = require("./engine.gameObject");
 const { Vector3 } = require("./engine.math.vector3");
@@ -20,17 +20,17 @@ const CreateGate = () => ({
   type: undefined,
 
   addGateCollider(colliderID) {
-    let collider = CreateBoxCollider(`${colliderID}_0`);
+    let collider = new BoxCollider(`${colliderID}_0`);
     collider.recalculate(engineResources.meshes.gate_collider_01);
     collider.transformationMatrix = this.gate.transform.matrix;
     CollisionSystem.colliders.push(collider);
 
-    collider = CreateBoxCollider(`${colliderID}_1`);
+    collider = new BoxCollider(`${colliderID}_1`);
     collider.recalculate(engineResources.meshes.gate_collider_02);
     collider.transformationMatrix = this.gate.transform.matrix;
     CollisionSystem.colliders.push(collider);
 
-    collider = CreateBoxCollider(`${colliderID}_2`);
+    collider = new BoxCollider(`${colliderID}_2`);
     collider.recalculate(engineResources.meshes.gate_collider_03);
     collider.transformationMatrix = this.gate.transform.matrix;
     CollisionSystem.colliders.push(collider);
@@ -38,7 +38,7 @@ const CreateGate = () => ({
   },
 
   addScoreCollider(colliderID) {
-    const collider = CreateBoxCollider(colliderID);
+    const collider = new BoxCollider(colliderID);
     collider.recalculate(engineResources.meshes.gate_score_collider);
     collider.transformationMatrix = this.gate.transform.matrix;
     CollisionSystem.colliders.push(collider);

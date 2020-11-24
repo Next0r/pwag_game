@@ -1,4 +1,4 @@
-const { CreateBoxCollider } = require("./engine.boxCollider");
+const { BoxCollider } = require("./engine.boxCollider");
 const { CollisionSystem } = require("./engine.collisionSystem");
 const { Input } = require("./engine.input");
 const { Vector3 } = require("./engine.math.vector3");
@@ -186,7 +186,7 @@ const aircraftController = {
 
   addCollider() {
     const aircraft = engineResources.gameObjects.aircraft;
-    const collider = CreateBoxCollider("aircraftCollider");
+    const collider = new BoxCollider("aircraftCollider");
     collider.recalculate(engineResources.meshes.aircraft_mock_collider);
     collider.transformationMatrix = aircraft.transform.matrix;
     CollisionSystem.colliders.push(collider);

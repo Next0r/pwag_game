@@ -1,4 +1,3 @@
-const { CreateBoxCollider } = require("./engine.boxCollider");
 const { CollisionSystem } = require("./engine.collisionSystem");
 const { Game } = require("./engine.game");
 const { GameObject } = require("./engine.gameObject");

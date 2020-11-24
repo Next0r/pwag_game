@@ -4,33 +4,26 @@ const { Mesh } = require("./engine.utilities.mesh");
 const { Vector4 } = require("./engine.math.vector4");
 
 /**
- * @typedef {Object} BoxCollider
- * @property {String} id
- * @property {Vector3} size
- * @property {Vector3} center
- * @property {Matrix4} transformationMatrix
- * @property {function} onCollide
- * @property {function} recalculate
- * @property {function} getVertices
- * @property {function} getNormals
- * @property {function} doesCollide
+ * Allows to create mesh based colliders. Takes part in OBB collision detection.
  */
-
-/**
- *
- * @param {*} colliderID
- */
-const CreateBoxCollider = (colliderID) => ({
-  id: colliderID,
-  size: new Vector3(),
-  center: new Vector3(),
-  radius: 0,
-  transformationMatrix: new Matrix4(),
-  onCollision: () => {},
+class BoxCollider {
+  /**
+   * Creates new box collider with specified identifier
+   * @param {String} colliderID unique string that represents box collider instance
+   */
+  constructor(colliderID) {
+    this.id = colliderID;
+    this.size = new Vector3();
+    this.center = new Vector3();
+    this.radius = 0;
+    this.transformationMatrix = new Matrix4();
+    this.onCollision = () => {};
+  }
 
   /**
-   *
-   * @param {Mesh} mesh
+   * Changes box collider size, center and radius to match given mesh
+   * @param {Mesh} mesh instance of mesh that represents base for box collider size calculation
+   * @returns {BoxCollider} reference to self for easier method chaining
    */
   recalculate(mesh) {
     let posMin = new Vector3();
@@ -69,8 +62,12 @@ const CreateBoxCollider = (colliderID) => ({
 
     this.radius = posMax.subtract(this.center).length();
     return this;
-  },
+  }
 
+  /**
+   * Allows to acquire vertices of box collider boundary
+   * @returns {Vector4[]} array of box collider vertices modified with transformation matrix
+   */
   getVertices() {
     const xs = this.size.x * 0.5;
     const ys = this.size.y * 0.5;
@@ -142,8 +139,12 @@ const CreateBoxCollider = (colliderID) => ({
       ),
     ];
     return vertices;
-  },
+  }
 
+  /**
+   * Allows to acquire box collider "normals" that represent forward, right and up vectors of oriented box
+   * @returns {Vector4[]} array of forward, right and up vectors of oriented box
+   */
   getNormals() {
     const xs = this.size.x * 0.5;
     const ys = this.size.y * 0.5;
@@ -195,11 +196,12 @@ const CreateBoxCollider = (colliderID) => ({
 
     normals.push(e0.cross(e1).normalize());
     return normals;
-  },
+  }
 
   /**
-   *
-   * @param {BoxCollider} boxCollider
+   * Performs separate axis test (and simple sphere collision test for efficiency)
+   * @param {BoxCollide} boxCollider other box collider that might collide with this one
+   * @returns {undefined|String} id of colliding box if collision occurred or undefined if not
    */
   doesCollide(boxCollider) {
     const myGlobalPos = this.transformationMatrix
@@ -223,63 +225,57 @@ const CreateBoxCollider = (colliderID) => ({
     const normals = boxCollider.getNormals();
 
     for (let normal of myNormals) {
-      const myMinMax = getMinMax(myVertices, normal);
-      const minMax = getMinMax(vertices, normal);
-      if (
-        boundariesSeparate(
-          myMinMax.posMin,
-          myMinMax.posMax,
-          minMax.posMin,
-          minMax.posMax
-        )
-      ) {
+      const myMinMax = this._getMinMax(myVertices, normal);
+      const minMax = this._getMinMax(vertices, normal);
+      if (myMinMax.posMax < minMax.posMin || minMax.posMax < myMinMax.posMin) {
         return undefined;
       }
     }
 
     for (let normal of normals) {
-      const myMinMax = getMinMax(myVertices, normal);
-      const minMax = getMinMax(vertices, normal);
-      if (
-        boundariesSeparate(
-          myMinMax.posMin,
-          myMinMax.posMax,
-          minMax.posMin,
-          minMax.posMax
-        )
-      ) {
+      const myMinMax = this._getMinMax(myVertices, normal);
+      const minMax = this._getMinMax(vertices, normal);
+      if (myMinMax.posMax < minMax.posMin || minMax.posMax < myMinMax.posMin) {
         return undefined;
       }
     }
 
     return boxCollider.id;
-  },
-});
-
-const boundariesSeparate = (min0, max0, min1, max1) => {
-  return max0 < min1 || max1 < min0;
-};
-
-const getMinMax = (vertices, normal) => {
-  const positions = [];
-
-  for (let vertex of vertices) {
-    positions.push(vertex.dot(normal));
   }
 
-  let posMin = positions[0];
-  let posMax = positions[0];
+  /**
+   * @typedef {Object} MinMax
+   * @property {number} min value of minimum
+   * @property {number} max value of maximum
+   */
 
-  for (let position of positions) {
-    if (position < posMin) {
-      posMin = position;
+  /**
+   * This method is used to perform separate axis test, usage is not recommended
+   * @param {Vector4[]} vertices vertices of collider bounding box
+   * @param {Vector4[]} normal forward, right and up vectors of bounding box
+   * @returns {MinMax} compartment with minimum and maximum value
+   */
+  _getMinMax(vertices, normal) {
+    const positions = [];
+
+    for (let vertex of vertices) {
+      positions.push(vertex.dot(normal));
     }
-    if (position > posMax) {
-      posMax = position;
+
+    let posMin = positions[0];
+    let posMax = positions[0];
+
+    for (let position of positions) {
+      if (position < posMin) {
+        posMin = position;
+      }
+      if (position > posMax) {
+        posMax = position;
+      }
     }
+
+    return { posMin, posMax };
   }
+}
 
-  return { posMin, posMax };
-};
-
-exports.CreateBoxCollider = CreateBoxCollider;
+module.exports.BoxCollider = BoxCollider;
