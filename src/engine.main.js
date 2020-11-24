@@ -35,7 +35,7 @@ const main = () => {
   const camera = resources.gameObjects.camera;
   camera.projection.aspect = settings.width / settings.height;
 
-  Input.addKeyboardEventListeners();
+  Input._addKeyboardEventListeners();
   Renderer.setClearColor(new Vector4(0, 0, 0, 1));
   Renderer.enableDepthTest();
   Renderer.enableAlphaBlend();
