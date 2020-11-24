@@ -1,103 +1,110 @@
 const { EngineToolbox } = require("./engine.toolbox");
 
-const mouse = {
-  _lastMovementsX: [0, 0, 0],
-  _lastMovementsY: [0, 0, 0],
-  movementX: 0,
-  movementY: 0,
-};
+class Mouse {
+  constructor() {
+    this._lastMovementsX = [0, 0, 0];
+    this._lastMovementsY = [0, 0, 0];
+    this.movementX = 0;
+    this.movementY = 0;
+  }
+}
 
-const keyboard = {
-  _keyInfo: {},
-  onRelease: {},
+class Keyboard {
+  constructor() {
+    this._keyInfo = {};
+    this.onRelease = {};
+  }
 
   isDown(code) {
     return this._keyInfo[code] === true;
-  },
-};
+  }
+}
 
-const Input = {
-  mouse: mouse,
-  keyboard: keyboard,
+class Input {
+  static mouse = new Mouse();
+  static keyboard = new Keyboard();
+  static _mouseFreezeTimeout = undefined;
 
-  addKeyboardEventListeners() {
+  static addKeyboardEventListeners() {
     window.addEventListener("keydown", (keyboard) => {
-      setKeyDown(keyboard.code);
+      Input._setKeyDown(keyboard.code);
     });
     window.addEventListener("keyup", (keyboard) => {
-      setKeyUp(keyboard.code);
-      executeOnReleaseFunction(keyboard.code);
+      Input._setKeyUp(keyboard.code);
+      Input._executeOnReleaseFunction(keyboard.code);
     });
-  },
+  }
 
-  lockPointer() {
+  static lockPointer() {
     const canvas = EngineToolbox.getCanvas();
     if (!canvas || document.pointerLockElement === canvas) {
       return;
     }
-    document.addEventListener("pointerlockchange", lockChangeAlert, false);
+    document.addEventListener(
+      "pointerlockchange",
+      Input._lockChangeAlert,
+      false
+    );
     canvas.requestPointerLock();
-  },
-};
-
-const executeOnReleaseFunction = (code) => {
-  if (typeof Input.keyboard.onRelease[code] === "function") {
-    Input.keyboard.onRelease[code]();
-  }
-};
-
-const setKeyDown = (code) => {
-  Input.keyboard._keyInfo[code] = true;
-};
-
-const setKeyUp = (code) => {
-  Input.keyboard._keyInfo[code] = false;
-};
-
-const lockChangeAlert = () => {
-  const canvas = EngineToolbox.getCanvas();
-  if (document.pointerLockElement === canvas) {
-    document.addEventListener("mousemove", updatePosition, false);
-  } else {
-    document.removeEventListener("mousemove", updatePosition, false);
-  }
-};
-
-let mouseFreezeTimeout = undefined;
-
-const updatePosition = (mouse) => {
-  if (mouseFreezeTimeout) {
-    clearTimeout(mouseFreezeTimeout);
   }
 
-  const avgMovementX =
-    (mouse.movementX +
-      Input.mouse._lastMovementsX.reduce((prev, curr) => {
-        return prev + curr;
-      })) /
-    (Input.mouse._lastMovementsX.length + 1);
+  static _executeOnReleaseFunction(code) {
+    if (typeof Input.keyboard.onRelease[code] === "function") {
+      Input.keyboard.onRelease[code]();
+    }
+  }
 
-  const avgMovementY =
-    (mouse.movementY +
-      Input.mouse._lastMovementsY.reduce((prev, curr) => {
-        return prev + curr;
-      })) /
-    (Input.mouse._lastMovementsY.length + 1);
+  static _setKeyDown(code) {
+    Input.keyboard._keyInfo[code] = true;
+  }
 
-  Input.mouse.movementX = avgMovementX;
-  Input.mouse.movementY = -avgMovementY;
+  static _setKeyUp(code) {
+    Input.keyboard._keyInfo[code] = false;
+  }
 
-  Input.mouse._lastMovementsX.push(mouse.movementX);
-  Input.mouse._lastMovementsY.push(mouse.movementY);
-  Input.mouse._lastMovementsX.shift();
-  Input.mouse._lastMovementsY.shift();
+  static _lockChangeAlert() {
+    const canvas = EngineToolbox.getCanvas();
+    if (document.pointerLockElement === canvas) {
+      document.addEventListener("mousemove", Input._updatePosition, false);
+    } else {
+      document.removeEventListener("mousemove", Input._updatePosition, false);
+    }
+  }
 
-  mouseFreezeTimeout = setTimeout(() => {
-    Input.mouse.movementX = 0;
-    Input.mouse.movementY = 0;
-    Input.mouse._lastMovementsX = [0, 0, 0];
-    Input.mouse._lastMovementsY = [0, 0, 0];
-  }, 20);
-};
+  static _updatePosition(mouse) {
+    if (Input._mouseFreezeTimeout) {
+      clearTimeout(Input._mouseFreezeTimeout);
+    }
+
+    const avgMovementX =
+      (mouse.movementX +
+        Input.mouse._lastMovementsX.reduce((prev, curr) => {
+          return prev + curr;
+        })) /
+      (Input.mouse._lastMovementsX.length + 1);
+
+    const avgMovementY =
+      (mouse.movementY +
+        Input.mouse._lastMovementsY.reduce((prev, curr) => {
+          return prev + curr;
+        })) /
+      (Input.mouse._lastMovementsY.length + 1);
+
+    Input.mouse.movementX = avgMovementX;
+    Input.mouse.movementY = -avgMovementY;
+
+    Input.mouse._lastMovementsX.push(mouse.movementX);
+    Input.mouse._lastMovementsY.push(mouse.movementY);
+    Input.mouse._lastMovementsX.shift();
+    Input.mouse._lastMovementsY.shift();
+
+    Input._mouseFreezeTimeout = setTimeout(() => {
+      Input.mouse.movementX = 0;
+      Input.mouse.movementY = 0;
+      Input.mouse._lastMovementsX = [0, 0, 0];
+      Input.mouse._lastMovementsY = [0, 0, 0];
+    }, 20);
+  }
+}
 
 exports.Input = Input;
