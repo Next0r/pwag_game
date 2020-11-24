@@ -1,12 +1,13 @@
 const fs = require("fs");
 const { PNG } = require("pngjs");
+const path = require("path");
+const gameConfig = require(path.join(__dirname, "..", "gameConfig.json"));
 
 const EngineToolbox = {
   _glContext: undefined,
-  _settings: undefined,
 
   getCanvas() {
-    const canvasID = EngineToolbox.getSettings().canvasID;
+    const canvasID = gameConfig.canvasID;
     return document.getElementById(canvasID);
   },
 
@@ -26,16 +27,12 @@ const EngineToolbox = {
   },
 
   createCanvas() {
-    const settings = this.getSettings();
-    const width = settings.width;
-    const height = settings.height;
-    const id = settings.canvasID;
     const canvas = document.createElement("canvas");
-    canvas.id = id;
-    canvas.width = width;
-    canvas.height = height;
-    canvas.setAttribute("width", width.toString());
-    canvas.setAttribute("height", height.toString());
+    canvas.id = gameConfig.canvasID;
+    canvas.width = gameConfig.canvasWidth;
+    canvas.height = gameConfig.canvasHeight;
+    canvas.setAttribute("width", gameConfig.canvasWidth);
+    canvas.setAttribute("height", gameConfig.canvasHeight);
     document.body.appendChild(canvas);
     return this;
   },
@@ -79,20 +76,6 @@ const EngineToolbox = {
     }
 
     return true;
-  },
-
-  getSettings() {
-    if (this._settings) {
-      return this._settings;
-    }
-    const settingsText = this.readTextFile("./settings.json");
-    if (!settingsText) {
-      console.warn("Cannot read settings.json file.");
-      return;
-    }
-    const settings = JSON.parse(settingsText);
-    this._settings = settings;
-    return settings;
   },
 };
 

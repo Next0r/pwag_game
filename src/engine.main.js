@@ -4,42 +4,54 @@ const { Renderer } = require("./engine.renderer");
 const { Vector4 } = require("./engine.math.vector4");
 const { engineResources } = require("./engine.resources");
 const path = require("path");
-const settings = require(path.join(__dirname, "..", "settings.json"));
-const start = require(path.join(__dirname, "..", settings.startUpFilePath));
+const gameConfig = require(path.join(__dirname, "..", "gameConfig.json"));
+const start = require(path.join(__dirname, "..", gameConfig.startUpFilePath));
 
-const main = () => {
-  EngineToolbox.createCanvas();
-  const gl = EngineToolbox.getGLContext();
-
-  window.addEventListener("click", () => {
-    EngineToolbox.getCanvas().webkitRequestFullScreen(
-      Element.ALLOW_KEYBOARD_INPUT
-    );
-  });
-
-  if (!gl) {
-    console.warn("Cannot acquire WebGL2 rendering context.");
-    return;
+class EngineProgram {
+  static _addRequestFullScreenListener() {
+    window.addEventListener("click", () => {
+      EngineToolbox.getCanvas().webkitRequestFullScreen(
+        Element.ALLOW_KEYBOARD_INPUT
+      );
+    });
   }
 
-  if (!settings) {
-    console.warn("Settings file is missing");
-    return;
+  static main() {
+    // check is game configuration file defined
+    if (!gameConfig) {
+      console.warn("Game configuration file is missing");
+      return;
+    }
+
+    // create canvas
+    EngineToolbox.createCanvas();
+
+    // check if can acquire WebGL2 context
+    if (!EngineToolbox.getGLContext()) {
+      console.warn("Cannot acquire WebGL2 rendering context.");
+      return;
+    }
+
+    // handle request full screen listener
+    if (gameConfig.fullScreenOnClick) {
+      EngineProgram._addRequestFullScreenListener();
+    }
+
+    
+    const resources = engineResources;
+    resources.build();
+    const camera = resources.gameObjects.camera;
+    camera.projection.aspect = gameConfig.canvasWidth / gameConfig.canvasHeight;
+
+    Input._addKeyboardEventListeners();
+    Renderer.setClearColor(new Vector4(0, 0, 0, 1));
+    Renderer.enableDepthTest();
+    Renderer.enableAlphaBlend();
+
+    if (typeof start === "function") {
+      start();
+    }
   }
+}
 
-  const resources = engineResources;
-  resources.build();
-  const camera = resources.gameObjects.camera;
-  camera.projection.aspect = settings.width / settings.height;
-
-  Input._addKeyboardEventListeners();
-  Renderer.setClearColor(new Vector4(0, 0, 0, 1));
-  Renderer.enableDepthTest();
-  Renderer.enableAlphaBlend();
-
-  if (typeof start === "function") {
-    start();
-  }
-};
-
-window.onload = main;
+window.onload = EngineProgram.main();

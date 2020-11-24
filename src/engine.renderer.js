@@ -6,6 +6,8 @@ const { Matrix4 } = require("./engine.math.matrix4");
 const { Vector3 } = require("./engine.math.vector3");
 const { engineResources } = require("./engine.resources");
 const { charTable } = require("./engine.charTable");
+const path = require("path");
+const gameConfig = require(path.join(__dirname, "..", "gameConfig.json"));
 
 const Renderer = {
   /**
@@ -40,7 +42,7 @@ const Renderer = {
     mat.uniforms.normalMatrix.value = new Matrix4().toArray();
 
     mat.linkVertexArrays(engineResources.meshes.guiPlane);
-    mat.uploadMatrix
+    mat.uploadMatrix;
     mat.uploadUniforms();
     mat.uploadTextures();
     mat.useProgram();
@@ -136,10 +138,10 @@ const Renderer = {
     mat.uniforms.normalMatrix.value = new Matrix4().toArray();
 
     mat.uniforms.mapOffsetX.value = [
-      EngineToolbox.getSettings().textGridSize * charDescriptor.posX,
+      gameConfig.textGridSize * charDescriptor.posX,
     ];
     mat.uniforms.mapOffsetY.value = [
-      EngineToolbox.getSettings().textGridSize * charDescriptor.posY,
+      gameConfig.textGridSize * charDescriptor.posY,
     ];
 
     mat.linkVertexArrays(engineResources.meshes.textGUIPlane);

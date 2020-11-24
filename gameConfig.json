@@ -33,8 +33,9 @@
     "propeller"
   ],
   "canvasID": "game_window",
-  "width": 1280,
-  "height": 720,
+  "canvasWidth": 1280,
+  "canvasHeight": 720,
   "textGridSize": 0.08333,
-  "startUpFilePath": "src/game.handleStartMenu"
+  "startUpFilePath": "src/game.handleStartMenu",
+  "fullScreenOnClick": true
 }

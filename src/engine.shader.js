@@ -1,4 +1,5 @@
 const { EngineToolbox } = require("./engine.toolbox");
+
 const createShader = (type, source) => {
   const gl = EngineToolbox.getGLContext();
 
