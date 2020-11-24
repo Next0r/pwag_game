@@ -28,7 +28,7 @@ const handleLevel = () => {
   Input.keyboard.onRelease["Escape"] = () => {
     Input.keyboard.onRelease = [];
     Game.stop();
-    require("./game.handleStartMenu").handleStartMenu();
+    require("./game.handleStartMenu")();
   };
 
   const skybox = resources.gameObjects.skybox;

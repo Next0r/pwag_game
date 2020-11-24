@@ -10,7 +10,7 @@ const handleEndScreen = ({ score = 0, success = 0 } = {}) => {
   Input.keyboard.onRelease["Space"] = () => {
     Input.keyboard.onRelease = [];
     Game.stop();
-    require("./game.handleStartMenu").handleStartMenu();
+    require("./game.handleStartMenu")();
   };
 
   let t1 = "You've crashed!";

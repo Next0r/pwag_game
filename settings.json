@@ -36,6 +36,5 @@
   "width": 1280,
   "height": 720,
   "textGridSize": 0.08333,
-  "startUpFile": "./game.handleStartMenu",
-  "startUpFunction": "handleStartMenu"
+  "startUpFilePath": "src/game.handleStartMenu"
 }

@@ -63,4 +63,5 @@ const handleStartMenu = () => {
   Game.start();
 };
 
-exports.handleStartMenu = handleStartMenu;
+module.exports = handleStartMenu();
+
