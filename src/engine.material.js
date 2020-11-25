@@ -1,21 +1,40 @@
-const {
-  MaterialAttributes,
-  Attribute,
-} = require("./engine.material.attributes");
+const { MaterialAttributes } = require("./engine.material.attributes");
 const { MaterialTextures } = require("./engine.material.textures");
 const { MaterialUniforms, Uniform } = require("./engine.material.uniforms");
 const { EngineToolbox } = require("./engine.toolbox");
 const { Mesh } = require("./engine.utilities.mesh");
 
+/**
+ * Represents large structure that contains handlers that allow
+ * rendering to work properly, here you can set uniforms and textures
+ * which define how game object with this material will look like
+ */
 class Material {
   /**
-   * @param {WebGLProgram} shaderProgram
-   * @param {Mesh} mesh
+   * Creates new material instance (avoid creating materials directly, these
+   * should be defined in game config file before engine starts)
+   * @param {WebGLProgram} shaderProgram WebGL2 shader program (fragment and vertex shader)
    */
   constructor(shaderProgram) {
+    /**
+     * WebGL2 shader program (fragment and vertex shader)
+     * @type {WebGLProgram}
+     */
     this.shaderProgram = shaderProgram;
+    /**
+     * Dataset defining vertex position, normal, mapping and color
+     * @type {MaterialAttributes}
+     */
     this.attributes = new MaterialAttributes();
+    /**
+     * Dataset defining material parameters like using alpha, emission etc.
+     * @type {MaterialUniforms}
+     */
     this.uniforms = new MaterialUniforms();
+    /**
+     * Dataset defining textures used by this material 
+     * @type {MaterialTextures}
+     */
     this.textures = new MaterialTextures();
   }
 
@@ -43,7 +62,7 @@ class Material {
    * Creates element array buffer, vertex array object and related
    * shader program attribute buffers. Data for all buffers is
    * acquired directly from corresponding mesh field.
-   * @param {Mesh} mesh
+   * @param {Mesh} mesh mesh instance created from file stored in mesh directory
    */
   linkVertexArrays(mesh) {
     const gl = EngineToolbox.getGLContext();
@@ -155,7 +174,8 @@ class Material {
 exports.Material = Material;
 
 /**
- * @param {Uniform} uniform
+ * Simplifies uploading matrices to shader program
+ * @param {Uniform} uniform uniform instance with location and value
  */
 const uniformMatrix4fv = (uniform) => {
   const gl = EngineToolbox.getGLContext();
@@ -163,7 +183,8 @@ const uniformMatrix4fv = (uniform) => {
 };
 
 /**
- * @param {Uniform} uniform
+ * Simplifies uploading vectors to shader program
+ * @param {Uniform} uniform uniform instance with location and value
  */
 const uniform3fv = (uniform) => {
   const gl = EngineToolbox.getGLContext();
@@ -171,7 +192,8 @@ const uniform3fv = (uniform) => {
 };
 
 /**
- * @param {Uniform} uniform
+ * Simplifies uploading floats to shader program
+ * @param {Uniform} uniform uniform instance with location and value
  */
 const uniform1fv = (uniform) => {
   const gl = EngineToolbox.getGLContext();
@@ -179,7 +201,8 @@ const uniform1fv = (uniform) => {
 };
 
 /**
- * @param {Uniform} uniform
+ * Simplifies uploading integers to shader program
+ * @param {Uniform} uniform uniform instance with location and value
  */
 const uniform1iv = (uniform) => {
   const gl = EngineToolbox.getGLContext();
