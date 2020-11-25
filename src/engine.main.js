@@ -7,7 +7,13 @@ const path = require("path");
 const gameConfig = require(path.join(__dirname, "..", "gameConfig.json"));
 const start = require(path.join(__dirname, "..", gameConfig.startUpFilePath));
 
+/**
+ * Starting point of game engine
+ */
 class EngineProgram {
+  /**
+   * Adds listener that will make app go full screen on window click
+   */
   static _addRequestFullScreenListener() {
     window.addEventListener("click", () => {
       EngineToolbox.getCanvas().webkitRequestFullScreen(
@@ -16,6 +22,11 @@ class EngineProgram {
     });
   }
 
+  /**
+   * Performs game engine initialization, checks if game config, 
+   * canvas and context are present, starts game from starting point 
+   * defined in game config file (module should be callable)
+   */
   static main() {
     // check is game configuration file defined
     if (!gameConfig) {
@@ -36,24 +47,6 @@ class EngineProgram {
     if (gameConfig.fullScreenOnClick) {
       EngineProgram._addRequestFullScreenListener();
     }
-
-    // const test = newEngineResources;
-    // const res = test.Resources();
-    // try {
-    //   res
-    //     ._readTextures()
-    //     ._readMeshes()
-    //     ._readShaders()
-    //     ._readMaterials()
-    //     ._readGameObjects();
-    //   console.log(res);
-    // } catch (e) {
-    //   console.log(e);
-    // }
-
-    // const res2 = test.Resources();
-
-    // console.log(res === res2);
 
     try {
       engineResources
