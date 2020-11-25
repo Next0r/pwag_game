@@ -28,7 +28,7 @@ class Vector3 {
 
   /**
    * Allows to acquire length of this vector
-   * @returns {number}
+   * @returns {number} number which represents vector length
    */
   length() {
     return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
@@ -36,7 +36,7 @@ class Vector3 {
 
   /**
    * Creates new three element vector from this one
-   * @returns {Vector3}
+   * @returns {Vector3} vector that is copy of this one
    */
   clone() {
     return new Vector3(this.x, this.y, this.z);
@@ -57,7 +57,7 @@ class Vector3 {
 
   /**
    * Returns array containing x, y and z components of this vector
-   * @returns {number[]}
+   * @returns {number[]} array of vector components
    */
   toArray() {
     return [this.x, this.y, this.z];
@@ -115,7 +115,7 @@ class Vector3 {
   /**
    * Allows to compare two vectors
    * @param {Vector3} vector3 vector that this one should be compared to
-   * @returns {boolean} which is true if vectors are equal
+   * @returns {boolean} true if vectors are equal
    */
   isEqual(vector3) {
     return this.x === vector3.x && this.y === vector3.y && this.z === vector3.z;
