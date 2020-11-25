@@ -31,8 +31,8 @@ const Renderer = {
     mat.textures.color0 = texture;
 
     const modelViewMatrix = new Matrix4();
-    modelViewMatrix.m30 = posX;
-    (modelViewMatrix.m31 = posY), (modelViewMatrix.m32 = -1);
+    modelViewMatrix.m03 = posX;
+    (modelViewMatrix.m13 = posY), (modelViewMatrix.m23 = -1);
     modelViewMatrix.m00 = scaleX / camera.projection.aspect;
     modelViewMatrix.m11 = scaleY;
     modelViewMatrix.m22 = 1;
@@ -126,9 +126,9 @@ const Renderer = {
     const mat = engineResources.getMaterial('guiText');
 
     const modelViewMatrix = new Matrix4();
-    modelViewMatrix.m30 = posX;
-    modelViewMatrix.m31 = posY;
-    modelViewMatrix.m32 = -1;
+    modelViewMatrix.m03 = posX;
+    modelViewMatrix.m13 = posY;
+    modelViewMatrix.m23 = -1;
     modelViewMatrix.m00 = size / camera.projection.aspect;
     modelViewMatrix.m11 = size;
     modelViewMatrix.m22 = size;
