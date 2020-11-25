@@ -1,44 +1,42 @@
-const { engineResources } = require("./engine.resources");
+const engineResources = require("./engine.resources").Resources();
 const { createShaderProgram } = require("./engine.shader");
 const { GameObject } = require("./engine.gameObject");
 const { Material } = require("./engine.material");
 
 const initLevel = () => {
-  const resources = engineResources;
-
-  const vsSource = resources.shaders.testVS;
-  const fsSource = resources.shaders.testFS;
+  const vsSource = engineResources.getShader("testVS");
+  const fsSource = engineResources.getShader("testFS");
 
   const shaderProgram = createShaderProgram(vsSource, fsSource);
 
-  const camera = resources.gameObjects.camera;
+  const camera = engineResources.getCamera();
   camera.projection.far = 1000;
 
   /**
    * @type {GameObject}
    */
-  const skybox = resources.gameObjects.skybox;
-  skybox.mesh = resources.meshes.skybox;
-  skybox.material = resources.materials.skybox;
+  const skybox = engineResources.getGameObject("skybox");
+  skybox.mesh = engineResources.getMesh("skybox");
+  skybox.material = engineResources.getMaterial("skybox");
 
-  const directLight = resources.gameObjects.directLight;
-  const ambientLight = resources.gameObjects.ambientLight;
+  const directLight = engineResources.getDirectLight();
+  const ambientLight = engineResources.getAmbientLight();
 
   // skybox material
   let mat = skybox.material;
   mat.shaderProgram = shaderProgram;
   mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.useEmission.value = [1];
-  mat.textures.color0 = resources.textures.skybox_color_01;
+  mat.textures.color0 = engineResources.getTexture("skybox_color_01");
 
   // gui elements material
-  mat = resources.materials.guiElement;
+  mat = engineResources.getMaterial("guiElement");
   mat.shaderProgram = shaderProgram;
   mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.useEmission.value = [1];
 
   // aircraft material
-  mat = resources.materials.aircraft;
+  mat = engineResources.getMaterial("aircraft");
   mat.shaderProgram = shaderProgram;
   mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.directLightDirection.value = directLight.direction.toArray();
@@ -48,11 +46,11 @@ const initLevel = () => {
   mat.uniforms.ambientLightValue.value = [ambientLight.value];
   mat.uniforms.useColor1.value = [1];
   mat.uniforms.useNormal0.value = [0];
-  mat.textures.color0 = resources.textures.aircraft_color;
-  mat.textures.color1 = resources.textures.aircraft_decals;
+  mat.textures.color0 = engineResources.getTexture("aircraft_color");
+  mat.textures.color1 = engineResources.getTexture("aircraft_decals");
 
   // gate material
-  mat = resources.materials.gate;
+  mat = engineResources.getMaterial("gate");
   mat.shaderProgram = shaderProgram;
   mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.directLightDirection.value = directLight.direction.toArray();
@@ -60,12 +58,12 @@ const initLevel = () => {
   mat.uniforms.directLightValue.value = [directLight.value];
   mat.uniforms.ambientLightColor.value = ambientLight.color.toArray();
   mat.uniforms.ambientLightValue.value = [ambientLight.value];
-  mat.textures.color0 = resources.textures.gate_color;
+  mat.textures.color0 = engineResources.getTexture("gate_color");
 
   /**
    * @type {Material}
    */
-  mat = resources.materials.gate_lamps_off;
+  mat = engineResources.getMaterial("gate_lamps_off");
   mat.shaderProgram = shaderProgram;
   mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.directLightDirection.value = directLight.direction.toArray();
@@ -74,34 +72,34 @@ const initLevel = () => {
   mat.uniforms.ambientLightColor.value = ambientLight.color.toArray();
   mat.uniforms.ambientLightValue.value = [ambientLight.value];
   mat.uniforms.mapOffsetY.value = [-0.5];
-  mat.textures.color0 = resources.textures.lamp_sign_color;
+  mat.textures.color0 = engineResources.getTexture("lamp_sign_color");
 
   /**
    * @type {Material}
    */
-  mat = resources.materials.gate_lamps_on;
+  mat = engineResources.getMaterial("gate_lamps_on");
   mat.shaderProgram = shaderProgram;
   mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.useEmission.value = [1];
-  mat.textures.color0 = resources.textures.lamp_sign_color;
+  mat.textures.color0 = engineResources.getTexture("lamp_sign_color");
 
   /**
    * @type {Material}
    */
-  mat = resources.materials.water;
+  mat = engineResources.getMaterial("water");
   mat.shaderProgram = shaderProgram;
   mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.useEmission.value = [1];
-  mat.textures.color0 = resources.textures.water_color;
+  mat.textures.color0 = engineResources.getTexture("water_color");
 
   /**
    * @type {Material}
    */
-  mat = resources.materials.propeller;
+  mat = engineResources.getMaterial("propeller");
   mat.shaderProgram = shaderProgram;
   mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.useEmission.value = [1];
-  mat.textures.color0 = resources.textures.propeller;
+  mat.textures.color0 = engineResources.getTexture("propeller");
 };
 
 exports.initLevel = initLevel;

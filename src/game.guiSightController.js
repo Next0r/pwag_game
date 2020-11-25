@@ -1,6 +1,6 @@
 const { Input } = require("./engine.input");
 const { Renderer } = require("./engine.renderer");
-const { engineResources } = require("./engine.resources");
+const engineResources = require("./engine.resources").Resources();
 
 const guiSightController = {
   posX: 0,
@@ -14,7 +14,7 @@ const guiSightController = {
   },
 
   draw() {
-    Renderer.drawGUIElement(engineResources.textures.gui_sight, {
+    Renderer.drawGUIElement(engineResources.getTexture("gui_sight"), {
       posX: this.posX,
       posY: this.posY,
       scaleX: this.size,
@@ -28,7 +28,7 @@ const guiSightController = {
     const movementY =
       Input.mouse.movementY *
       this.sensitivity *
-      engineResources.gameObjects.camera.projection.aspect;
+      engineResources.getCamera().projection.aspect;
 
     if (!movementX && !movementY) {
       return;

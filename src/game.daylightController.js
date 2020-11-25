@@ -1,6 +1,6 @@
 const { Input } = require("./engine.input");
 const { Vector3 } = require("./engine.math.vector3");
-const { engineResources } = require("./engine.resources");
+const  engineResources  = require("./engine.resources").Resources();
 const { Time } = require("./engine.time");
 const { Material } = require("./engine.material");
 
@@ -14,7 +14,7 @@ const daylightController = {
   },
 
   handleDaylight() {
-    const directLight = engineResources.gameObjects.directLight;
+    const directLight = engineResources.getDirectLight();
 
     if (Input.keyboard.isDown("ArrowRight")) {
       this._sunRotation += Time.delta * this.sunRotationSpeed;
@@ -38,13 +38,13 @@ const daylightController = {
     /**
      *@type {Material}
      */
-    let mat = engineResources.materials.aircraft;
+    let mat = engineResources.getMaterial('aircraft');
     mat.uniforms.directLightDirection.value = directLight.direction.toArray();
 
-    mat = engineResources.materials.gate;
+    mat = engineResources.getMaterial('gate');
     mat.uniforms.directLightDirection.value = directLight.direction.toArray();
 
-    mat = engineResources.materials.gate_lamps_off;
+    mat = engineResources.getMaterial('gate_lamps_off');
     mat.uniforms.directLightDirection.value = directLight.direction.toArray();
 
     return this;

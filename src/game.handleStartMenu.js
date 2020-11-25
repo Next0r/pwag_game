@@ -1,17 +1,18 @@
 const { Game } = require("./engine.game");
 const { Vector3 } = require("./engine.math.vector3");
 const { Renderer } = require("./engine.renderer");
-const { engineResources } = require("./engine.resources");
+const engineResources = require("./engine.resources").Resources();
 const { initStartMenu } = require("./game.initStartMenu");
 const { GameObject } = require("./engine.gameObject");
 const { Time } = require("./engine.time");
 const { Input } = require("./engine.input");
-const { cameraController: cameraBehaviour } = require("./game.cameraController");
+const {
+  cameraController: cameraBehaviour,
+} = require("./game.cameraController");
 const { CreateResizingText } = require("./game.guiText");
 const { aircraftController } = require("./game.aircraftController");
 
 const handleStartMenu = () => {
-  const resources = engineResources;
   initStartMenu();
 
   Input.keyboard.onRelease["Space"] = function () {
@@ -23,9 +24,9 @@ const handleStartMenu = () => {
   /**
    * @type {GameObject}
    */
-  const aircraft = engineResources.gameObjects.aircraft;
+  const aircraft = engineResources.getGameObject("aircraft");
   aircraft.transform.reset();
-  aircraft.transform.translate(new Vector3(0,0.8,0));
+  aircraft.transform.translate(new Vector3(0, 0.8, 0));
   aircraft.transform.applyLocation();
   aircraft.transform.rotateY(180);
   aircraft.transform.applyRotation();
@@ -35,7 +36,7 @@ const handleStartMenu = () => {
   aircraftController.reset();
   aircraftController.propellerRotationSpeed = 500;
 
-  const concrete = resources.gameObjects.concrete;
+  const concrete = engineResources.getGameObject("concrete");
 
   cameraBehaviour.cameraRotation = new Vector3(-45, 0, 0);
   cameraBehaviour.cameraOffset = new Vector3(0, 0, 12);
@@ -47,7 +48,6 @@ const handleStartMenu = () => {
     cameraBehaviour.cameraRotation.y += Time.delta * cameraRotationSpeed;
     cameraBehaviour.rotateAround();
 
-    
     aircraftController.transformParts();
 
     Renderer.clear();
@@ -64,4 +64,3 @@ const handleStartMenu = () => {
 };
 
 module.exports = handleStartMenu;
-

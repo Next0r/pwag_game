@@ -4,7 +4,7 @@ const { EngineToolbox } = require("./engine.toolbox");
 const { Vector4 } = require("./engine.math.vector4");
 const { Matrix4 } = require("./engine.math.matrix4");
 const { Vector3 } = require("./engine.math.vector3");
-const { engineResources } = require("./engine.resources");
+const  engineResources  = require("./engine.resources").Resources();
 const { charTable } = require("./engine.charTable");
 const path = require("path");
 const gameConfig = require(path.join(__dirname, "..", "gameConfig.json"));
@@ -21,13 +21,13 @@ const Renderer = {
     options = { posX: 0, posY: 0, scaleX: 0.1, scaleY: 0.1 }
   ) {
     const gl = EngineToolbox.getGLContext();
-    const camera = engineResources.gameObjects.camera;
+    const camera = engineResources.getCamera();
     const { posX, posY, scaleX, scaleY } = options;
 
     /**
      * @type {Material}
      */
-    const mat = engineResources.materials.guiElement;
+    const mat = engineResources.getMaterial('guiElement');
     mat.textures.color0 = texture;
 
     const modelViewMatrix = new Matrix4();
@@ -41,7 +41,7 @@ const Renderer = {
     mat.uniforms.projectionMatrix.value = new Matrix4().toArray();
     mat.uniforms.normalMatrix.value = new Matrix4().toArray();
 
-    mat.linkVertexArrays(engineResources.meshes.guiPlane);
+    mat.linkVertexArrays(engineResources.getMesh('guiPlane'));
     mat.uploadMatrix;
     mat.uploadUniforms();
     mat.uploadTextures();
@@ -49,7 +49,7 @@ const Renderer = {
 
     gl.drawElements(
       gl.TRIANGLES,
-      engineResources.meshes.guiPlane.elementArray.length,
+      engineResources.getMesh('guiPlane').elementArray.length,
       gl.UNSIGNED_INT,
       0
     );
@@ -60,7 +60,7 @@ const Renderer = {
    */
   drawGameObject(gameObject) {
     const gl = EngineToolbox.getGLContext();
-    const camera = engineResources.gameObjects.camera;
+    const camera = engineResources.getCamera();
     camera.projection.rebuildMatrixPerspective();
 
     const mat = gameObject.material;
@@ -120,10 +120,10 @@ const Renderer = {
 
   drawChar(char = "A", posX = 0, posY = 0, size = 0.1) {
     const gl = EngineToolbox.getGLContext();
-    const camera = engineResources.gameObjects.camera;
+    const camera = engineResources.getCamera();
     const charDescriptor = charTable[char.charCodeAt(0)];
 
-    const mat = engineResources.materials.guiText;
+    const mat = engineResources.getMaterial('guiText');
 
     const modelViewMatrix = new Matrix4();
     modelViewMatrix.m30 = posX;
@@ -144,14 +144,14 @@ const Renderer = {
       gameConfig.textGridSize * charDescriptor.posY,
     ];
 
-    mat.linkVertexArrays(engineResources.meshes.textGUIPlane);
+    mat.linkVertexArrays(engineResources.getMesh('textGUIPlane'));
     mat.uploadUniforms();
     mat.uploadTextures();
     mat.useProgram();
 
     gl.drawElements(
       gl.TRIANGLES,
-      engineResources.meshes.textGUIPlane.elementArray.length,
+      engineResources.getMesh('textGUIPlane').elementArray.length,
       gl.UNSIGNED_INT,
       0
     );

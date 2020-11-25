@@ -4,7 +4,7 @@ const { GameObject } = require("./engine.gameObject");
 const { Vector3 } = require("./engine.math.vector3");
 const { Vector4 } = require("./engine.math.vector4");
 const { Renderer } = require("./engine.renderer");
-const { engineResources } = require("./engine.resources");
+const engineResources = require("./engine.resources").Resources();
 const { Time } = require("./engine.time");
 
 const CreateGate = () => ({
@@ -21,17 +21,17 @@ const CreateGate = () => ({
 
   addGateCollider(colliderID) {
     let collider = new BoxCollider(`${colliderID}_0`);
-    collider.recalculate(engineResources.meshes.gate_collider_01);
+    collider.recalculate(engineResources.getMesh("gate_collider_01"));
     collider.transformationMatrix = this.gate.transform.matrix;
     CollisionSystem.colliders.push(collider);
 
     collider = new BoxCollider(`${colliderID}_1`);
-    collider.recalculate(engineResources.meshes.gate_collider_02);
+    collider.recalculate(engineResources.getMesh("gate_collider_02"));
     collider.transformationMatrix = this.gate.transform.matrix;
     CollisionSystem.colliders.push(collider);
 
     collider = new BoxCollider(`${colliderID}_2`);
-    collider.recalculate(engineResources.meshes.gate_collider_03);
+    collider.recalculate(engineResources.getMesh("gate_collider_03"));
     collider.transformationMatrix = this.gate.transform.matrix;
     CollisionSystem.colliders.push(collider);
     return this;
@@ -39,7 +39,7 @@ const CreateGate = () => ({
 
   addScoreCollider(colliderID) {
     const collider = new BoxCollider(colliderID);
-    collider.recalculate(engineResources.meshes.gate_score_collider);
+    collider.recalculate(engineResources.getMesh("gate_score_collider"));
     collider.transformationMatrix = this.gate.transform.matrix;
     CollisionSystem.colliders.push(collider);
     return this;
@@ -90,9 +90,10 @@ const CreateGate = () => ({
     if (this._blinkTimer >= this.blinkToggleTime) {
       this.resetBlinkTimer();
       this.gateLamps.material =
-        this.gateLamps.material === engineResources.materials.gate_lamps_off
-          ? engineResources.materials.gate_lamps_on
-          : engineResources.materials.gate_lamps_off;
+        this.gateLamps.material ===
+        engineResources.getMaterial("gate_lamps_off")
+          ? engineResources.getMaterial("gate_lamps_on")
+          : engineResources.getMaterial("gate_lamps_off");
     }
     return this;
   },
@@ -109,15 +110,15 @@ const CreateGate = () => ({
     return this;
   },
   signOff() {
-    this.gateSign.material = engineResources.materials.gate_lamps_off;
+    this.gateSign.material = engineResources.getMaterial("gate_lamps_off");
     return this;
   },
   signOn() {
-    this.gateSign.material = engineResources.materials.gate_lamps_on;
+    this.gateSign.material = engineResources.getMaterial("gate_lamps_on");
     return this;
   },
   lampsOff() {
-    this.gateLamps.material = engineResources.materials.gate_lamps_off;
+    this.gateLamps.material = engineResources.getMaterial("gate_lamps_off");
     return this;
   },
 
@@ -216,30 +217,30 @@ const gateController = {
 
   spawnGate(sign = "B") {
     const gate = CreateGate();
-    gate.gate.mesh = engineResources.meshes.gate;
-    gate.gate.material = engineResources.materials.gate;
+    gate.gate.mesh = engineResources.getMesh("gate");
+    gate.gate.material = engineResources.getMaterial("gate");
 
-    gate.gateLamps.mesh = engineResources.meshes.gate_lamps;
-    gate.gateLamps.material = engineResources.materials.gate_lamps_off;
+    gate.gateLamps.mesh = engineResources.getMesh("gate_lamps");
+    gate.gateLamps.material = engineResources.getMaterial("gate_lamps_off");
 
     switch (sign) {
       case "B":
-        gate.gateSign.mesh = engineResources.meshes.bottom_sign;
+        gate.gateSign.mesh = engineResources.getMesh("bottom_sign");
         break;
       case "T":
-        gate.gateSign.mesh = engineResources.meshes.top_sign;
+        gate.gateSign.mesh = engineResources.getMesh("top_sign");
         break;
       case "R":
-        gate.gateSign.mesh = engineResources.meshes.right_sign;
+        gate.gateSign.mesh = engineResources.getMesh("right_sign");
         break;
       case "L":
-        gate.gateSign.mesh = engineResources.meshes.left_sign;
+        gate.gateSign.mesh = engineResources.getMesh("left_sign");
         break;
       default:
-        gate.gateSign.mesh = engineResources.meshes.bottom_sign;
+        gate.gateSign.mesh = engineResources.getMesh("bottom_sign");
         break;
     }
-    gate.gateSign.material = engineResources.materials.gate_lamps_on;
+    gate.gateSign.material = engineResources.getMaterial("gate_lamps_on");
     gate.signOff();
     gate.type = sign;
     return gate;

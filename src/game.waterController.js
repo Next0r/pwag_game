@@ -1,10 +1,10 @@
-const { engineResources } = require("./engine.resources");
+const engineResources = require("./engine.resources").Resources();
 const { Material } = require("./engine.material");
 const { Time } = require("./engine.time");
 const { Vector3 } = require("./engine.math.vector3");
 const { GameObject } = require("./engine.gameObject");
 const { Renderer } = require("./engine.renderer");
-const {  BoxCollider } = require("./engine.boxCollider");
+const { BoxCollider } = require("./engine.boxCollider");
 const { aircraftController } = require("./game.aircraftController");
 const { CollisionSystem } = require("./engine.collisionSystem");
 const { Matrix4 } = require("./engine.math.matrix4");
@@ -25,14 +25,14 @@ const waterController = {
 
   init() {
     this.waterPlane = new GameObject();
-    this.waterPlane.mesh = engineResources.meshes.water_plane;
-    this.waterPlane.material = engineResources.materials.water;
+    this.waterPlane.mesh = engineResources.getMesh("water_plane");
+    this.waterPlane.material = engineResources.getMaterial("water");
     return this;
   },
 
   addCollider() {
     const collider = new BoxCollider("WATER");
-    collider.recalculate(engineResources.meshes.water_collider);
+    collider.recalculate(engineResources.getMesh("water_collider"));
     collider.transformationMatrix = new Matrix4();
     CollisionSystem.colliders.push(collider);
     this.collider = collider;
@@ -59,7 +59,9 @@ const waterController = {
     /**
      * @type {Vector3}
      */
-    const aircraftPosition = engineResources.gameObjects.aircraft.transform.matrix.getPosition();
+    const aircraftPosition = engineResources
+      .getGameObject("aircraft")
+      .transform.matrix.getPosition();
     const x =
       Math.floor(aircraftPosition.x / this.waterPlaneSize) *
       this.waterPlaneSize;
@@ -94,7 +96,7 @@ const waterController = {
     /**
      * @type {Material}
      */
-    const waterMaterial = engineResources.materials.water;
+    const waterMaterial = engineResources.getMaterial("water");
     this._animationTimer += Time.delta;
 
     if (this._animationTimer < 1 / this.framesPerSecond) {

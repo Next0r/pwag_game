@@ -1,14 +1,12 @@
-const { engineResources } = require("./engine.resources");
+const engineResources = require("./engine.resources").Resources();
 const { GameObject } = require("./engine.gameObject");
 const { createShaderProgram } = require("./engine.shader");
 const { Material } = require("./engine.material");
 
 const initStartMenu = () => {
-  const resources = engineResources;
-
   // prepare shader for materials
-  const vsSource = resources.shaders.testVS;
-  const fsSource = resources.shaders.testFS;
+  const vsSource = engineResources.getShader("testVS");
+  const fsSource = engineResources.getShader("testFS");
   const shaderProgram = createShaderProgram(vsSource, fsSource);
 
   // bind meshes, materials and shader program
@@ -16,69 +14,69 @@ const initStartMenu = () => {
   /**
    *@type {GameObject}
    */
-  const concrete = resources.gameObjects.concrete;
-  concrete.mesh = resources.meshes.concrete_plane;
-  concrete.material = resources.materials.concrete;
+  const concrete = engineResources.getGameObject("concrete");
+  concrete.mesh = engineResources.getMesh("concrete_plane");
+  concrete.material = engineResources.getMaterial("concrete");
 
   /**
    *@type {GameObject}
    */
-  const flapL = resources.gameObjects.flapL;
-  flapL.mesh = resources.meshes.flap_L;
-  flapL.material = resources.materials.aircraft;
+  const flapL = engineResources.getGameObject("flapL");
+  flapL.mesh = engineResources.getMesh("flap_L");
+  flapL.material = engineResources.getMaterial("aircraft");
   /**
    *@type {GameObject}
    */
-  const flapR = resources.gameObjects.flapR;
-  flapR.mesh = resources.meshes.flap_R;
-  flapR.material = resources.materials.aircraft;
+  const flapR = engineResources.getGameObject("flapR");
+  flapR.mesh = engineResources.getMesh("flap_R");
+  flapR.material = engineResources.getMaterial("aircraft");
   /**
    *@type {GameObject}
    */
-  const elevatorR = resources.gameObjects.elevatorR;
-  elevatorR.mesh = resources.meshes.elevator_R;
-  elevatorR.material = resources.materials.aircraft;
+  const elevatorR = engineResources.getGameObject("elevatorR");
+  elevatorR.mesh = engineResources.getMesh("elevator_R");
+  elevatorR.material = engineResources.getMaterial("aircraft");
   /**
    *@type {GameObject}
    */
-  const elevatorL = resources.gameObjects.elevatorL;
-  elevatorL.mesh = resources.meshes.elevator_L;
-  elevatorL.material = resources.materials.aircraft;
+  const elevatorL = engineResources.getGameObject("elevatorL");
+  elevatorL.mesh = engineResources.getMesh("elevator_L");
+  elevatorL.material = engineResources.getMaterial("aircraft");
   /**
    *@type {GameObject}
    */
-  const rudder = resources.gameObjects.rudder;
-  rudder.mesh = resources.meshes.rudder;
-  rudder.material = resources.materials.aircraft;
+  const rudder = engineResources.getGameObject("rudder");
+  rudder.mesh = engineResources.getMesh("rudder");
+  rudder.material = engineResources.getMaterial("aircraft");
   /**
    *@type {GameObject}
    */
-  const propeller = resources.gameObjects.propeller;
-  propeller.mesh = resources.meshes.propeller;
-  propeller.material = resources.materials.aircraft;
+  const propeller = engineResources.getGameObject("propeller");
+  propeller.mesh = engineResources.getMesh("propeller");
+  propeller.material = engineResources.getMaterial("aircraft");
 
   /**
    * @type {GameObject}
    */
-  const aircraft = resources.gameObjects.aircraft;
-  aircraft.mesh = resources.meshes.aircraft_body;
-  aircraft.material = resources.materials.aircraft;
+  const aircraft = engineResources.getGameObject("aircraft");
+  aircraft.mesh = engineResources.getMesh("aircraft_body");
+  aircraft.material = engineResources.getMaterial("aircraft");
   /**
    * @type {GameObject}
    */
-  const spinner = resources.gameObjects.spinner;
-  spinner.mesh = resources.meshes.spinner;
-  spinner.material = resources.materials.aircraft;
+  const spinner = engineResources.getGameObject("spinner");
+  spinner.mesh = engineResources.getMesh("spinner");
+  spinner.material = engineResources.getMaterial("aircraft");
   /**
    * @type {GameObject}
    */
-  const propellerPlane = resources.gameObjects.propellerPlane;
-  propellerPlane.mesh = resources.meshes.propeller_plane;
-  propellerPlane.material = resources.materials.propeller;
+  const propellerPlane = engineResources.getGameObject("propellerPlane");
+  propellerPlane.mesh = engineResources.getMesh("propeller_plane");
+  propellerPlane.material = engineResources.getMaterial("propeller");
 
   // update materials settings and textures
-  const ambientLight = resources.gameObjects.ambientLight;
-  const directLight = resources.gameObjects.directLight;
+  const ambientLight = engineResources.getAmbientLight();
+  const directLight = engineResources.getDirectLight();
 
   let mat = aircraft.material;
   mat.shaderProgram = shaderProgram;
@@ -90,8 +88,8 @@ const initStartMenu = () => {
   mat.uniforms.ambientLightValue.value = [ambientLight.value];
   mat.uniforms.useColor1.value = [1];
   mat.uniforms.useNormal0.value = [0];
-  mat.textures.color0 = resources.textures.aircraft_color;
-  mat.textures.color1 = resources.textures.aircraft_decals;
+  mat.textures.color0 = engineResources.getTexture("aircraft_color");
+  mat.textures.color1 = engineResources.getTexture("aircraft_decals");
 
   /**
    * @type {Material}
@@ -106,12 +104,12 @@ const initStartMenu = () => {
   mat.uniforms.ambientLightValue.value = [ambientLight.value];
   mat.uniforms.mapTilingX.value = [5];
   mat.uniforms.mapTilingY.value = [5];
-  mat.textures.color0 = resources.textures.concrete01;
+  mat.textures.color0 = engineResources.getTexture("concrete01");
 
   /**
    * @type {Material}
    */
-  mat = resources.materials.guiElement;
+  mat = engineResources.getMaterial("guiElement");
   mat.shaderProgram = shaderProgram;
   mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.useEmission.value = [1];
@@ -119,11 +117,11 @@ const initStartMenu = () => {
   /**
    * @type {Material}
    */
-  mat = resources.materials.guiText;
+  mat = engineResources.getMaterial("guiText");
   mat.shaderProgram = shaderProgram;
   mat.uniforms.setLocations(shaderProgram);
   mat.uniforms.useEmission.value = [1];
-  mat.textures.color0 = resources.textures.mario;
+  mat.textures.color0 = engineResources.getTexture("mario");
 };
 
 exports.initStartMenu = initStartMenu;

@@ -5,7 +5,7 @@ const { Input } = require("./engine.input");
 const { CreateVector2 } = require("./engine.math.vector2");
 const { Vector3 } = require("./engine.math.vector3");
 const { Renderer } = require("./engine.renderer");
-const { engineResources } = require("./engine.resources");
+const  engineResources  = require("./engine.resources").Resources();
 const { Time } = require("./engine.time");
 const { EngineToolbox } = require("./engine.toolbox");
 const { aircraftController } = require("./game.aircraftController");
@@ -20,7 +20,6 @@ const { waterController } = require("./game.waterController");
 const { daylightController } = require("./game.daylightController");
 
 const handleLevel = () => {
-  const resources = engineResources;
   initLevel();
 
   Input.lockPointer();
@@ -31,8 +30,8 @@ const handleLevel = () => {
     require("./game.handleStartMenu")();
   };
 
-  const skybox = resources.gameObjects.skybox;
-  const aircraft = resources.gameObjects.aircraft;
+  const skybox = engineResources.getGameObject('skybox');
+  const aircraft = engineResources.getGameObject('aircraft');
 
   const jumpText = CreateJumpText();
   const altText = CreateSimpleText({ posX: -0.95, posY: -0.9 });

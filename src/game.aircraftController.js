@@ -2,7 +2,7 @@ const { BoxCollider } = require("./engine.boxCollider");
 const { CollisionSystem } = require("./engine.collisionSystem");
 const { Input } = require("./engine.input");
 const { Vector3 } = require("./engine.math.vector3");
-const { engineResources } = require("./engine.resources");
+const engineResources = require("./engine.resources").Resources();
 const { Time } = require("./engine.time");
 const { gateController } = require("./game.gateController");
 const { guiSightController } = require("./game.guiSightController");
@@ -34,19 +34,19 @@ const aircraftController = {
   onCollision: () => {},
 
   draw(realPropeller = false) {
-    Renderer.drawGameObject(engineResources.gameObjects.aircraft);
-    Renderer.drawGameObject(engineResources.gameObjects.flapL);
-    Renderer.drawGameObject(engineResources.gameObjects.flapR);
-    Renderer.drawGameObject(engineResources.gameObjects.elevatorR);
-    Renderer.drawGameObject(engineResources.gameObjects.elevatorL);
-    Renderer.drawGameObject(engineResources.gameObjects.rudder);
+    Renderer.drawGameObject(engineResources.getGameObject("aircraft"));
+    Renderer.drawGameObject(engineResources.getGameObject("flapL"));
+    Renderer.drawGameObject(engineResources.getGameObject("flapR"));
+    Renderer.drawGameObject(engineResources.getGameObject("elevatorR"));
+    Renderer.drawGameObject(engineResources.getGameObject("elevatorL"));
+    Renderer.drawGameObject(engineResources.getGameObject("rudder"));
     if (!realPropeller) {
-      Renderer.drawGameObject(engineResources.gameObjects.spinner);
+      Renderer.drawGameObject(engineResources.getGameObject("spinner"));
       Renderer.enableAlphaBlend();
-      Renderer.drawGameObject(engineResources.gameObjects.propellerPlane);
+      Renderer.drawGameObject(engineResources.getGameObject("propellerPlane"));
       Renderer.disableAlphaBlend();
     } else {
-      Renderer.drawGameObject(engineResources.gameObjects.propeller);
+      Renderer.drawGameObject(engineResources.getGameObject("propeller"));
     }
     return this;
   },
@@ -55,9 +55,9 @@ const aircraftController = {
     /**
      * @type {GameObject}
      */
-    const aircraft = engineResources.gameObjects.aircraft;
+    const aircraft = engineResources.getGameObject("aircraft");
 
-    const flapL = engineResources.gameObjects.flapL;
+    const flapL = engineResources.getGameObject("flapL");
     flapL.transform.reset();
     flapL.transform.translate(new Vector3(-2.495, 0.332, 0.263));
     flapL.transform.rotateY(-9.82);
@@ -67,7 +67,7 @@ const aircraftController = {
       .clone()
       .multiply(flapL.transform.matrix);
 
-    const flapR = engineResources.gameObjects.flapR;
+    const flapR = engineResources.getGameObject("flapR");
     flapR.transform.reset();
     flapR.transform.translate(new Vector3(2.495, 0.332, 0.263));
     flapR.transform.rotateY(9.82);
@@ -108,7 +108,7 @@ const aircraftController = {
     flapR.transform.rotateX(this._flapRRotation);
     flapR.transform.applyRotation();
 
-    const elevatorR = engineResources.gameObjects.elevatorR;
+    const elevatorR = engineResources.getGameObject("elevatorR");
     elevatorR.transform.reset();
     elevatorR.transform.translate(new Vector3(-0.647, 0.556, 3.281));
     elevatorR.transform.applyLocation();
@@ -120,7 +120,7 @@ const aircraftController = {
       .clone()
       .multiply(elevatorR.transform.matrix);
 
-    const elevatorL = engineResources.gameObjects.elevatorL;
+    const elevatorL = engineResources.getGameObject("elevatorL");
     elevatorL.transform.reset();
     elevatorL.transform.translate(new Vector3(0.647, 0.556, 3.281));
     elevatorL.transform.applyLocation();
@@ -132,7 +132,7 @@ const aircraftController = {
       .clone()
       .multiply(elevatorL.transform.matrix);
 
-    const rudder = engineResources.gameObjects.rudder;
+    const rudder = engineResources.getGameObject("rudder");
     rudder.transform.reset();
     rudder.transform.translate(new Vector3(0, 0.506, 3.453));
     rudder.transform.applyLocation();
@@ -142,7 +142,7 @@ const aircraftController = {
       .clone()
       .multiply(rudder.transform.matrix);
 
-    const propeller = engineResources.gameObjects.propeller;
+    const propeller = engineResources.getGameObject("propeller");
     propeller.transform.reset();
     propeller.transform.translate(new Vector3(0, 0.335, -1.882));
     propeller.transform.applyLocation();
@@ -153,7 +153,7 @@ const aircraftController = {
       .clone()
       .multiply(propeller.transform.matrix);
 
-    const propellerPlane = engineResources.gameObjects.propellerPlane;
+    const propellerPlane = engineResources.getGameObject("propellerPlane");
     propellerPlane.transform.reset();
     propellerPlane.transform.translate(new Vector3(0, 0.335, -1.882));
     propellerPlane.transform.applyLocation();
@@ -163,7 +163,7 @@ const aircraftController = {
       .clone()
       .multiply(propellerPlane.transform.matrix);
 
-    const spinner = engineResources.gameObjects.spinner;
+    const spinner = engineResources.getGameObject("spinner");
     spinner.transform.reset();
     spinner.transform.translate(new Vector3(0, 0.335, -1.882));
     spinner.transform.applyLocation();
@@ -185,9 +185,9 @@ const aircraftController = {
   },
 
   addCollider() {
-    const aircraft = engineResources.gameObjects.aircraft;
+    const aircraft = engineResources.getGameObject("aircraft");
     const collider = new BoxCollider("aircraftCollider");
-    collider.recalculate(engineResources.meshes.aircraft_mock_collider);
+    collider.recalculate(engineResources.getMesh("aircraft_mock_collider"));
     collider.transformationMatrix = aircraft.transform.matrix;
     CollisionSystem.colliders.push(collider);
     aircraft.colliders.push(collider);
@@ -196,7 +196,7 @@ const aircraftController = {
   },
 
   fly() {
-    const aircraft = engineResources.gameObjects.aircraft;
+    const aircraft = engineResources.getGameObject("aircraft");
     const posX = guiSightController.posX;
     const posY = guiSightController.posY;
     const rot = this.rotation;
