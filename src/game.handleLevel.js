@@ -2,7 +2,6 @@ const { CollisionSystem } = require("./engine.collisionSystem");
 const { Game } = require("./engine.game");
 const { GameObject } = require("./engine.gameObject");
 const { Input } = require("./engine.input");
-const { CreateVector2 } = require("./engine.math.vector2");
 const { Vector3 } = require("./engine.math.vector3");
 const { Renderer } = require("./engine.renderer");
 const  engineResources  = require("./engine.resources").Resources();

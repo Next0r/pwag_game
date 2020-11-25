@@ -1,9 +1,9 @@
-const { CreateVector2 } = require("./engine.math.vector2");
+const { Vector2 } = require("./engine.math.vector2");
 const { Renderer } = require("./engine.renderer");
 const { Time } = require("./engine.time");
 
 const CreateResizingText = () => ({
-  position: CreateVector2(0, -0.5),
+  position: new Vector2(0, -0.5),
   size: 0.075,
   resizeFactor: 0.25,
   resizeSpeed: 3,
@@ -28,7 +28,7 @@ const CreateResizingText = () => ({
 exports.CreateResizingText = CreateResizingText;
 
 const CreateJumpText = () => ({
-  position: CreateVector2(0.025, 0.5),
+  position: new Vector2(0.025, 0.5),
   size: 0.1,
   charWidth: 0.7,
   _timer: 2,
@@ -75,7 +75,7 @@ const CreateSimpleText = ({
   charWidth = 0.7,
   center = false,
 } = {}) => ({
-  position: CreateVector2(posX, posY),
+  position: new Vector2(posX, posY),
   size: size,
   charWidth: charWidth,
   center: center,
