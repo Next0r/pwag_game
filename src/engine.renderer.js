@@ -5,8 +5,26 @@ const engineResources = require("./engine.resources").Resources();
 const { charTable } = require("./engine.charTable");
 const path = require("path");
 const gameConfig = require(path.join(__dirname, "..", "gameConfig.json"));
+const { GameObject } = require("./engine.gameObject");
 
+/**
+ * Container for methods that can be used to draw game
+ * object and GUI elements e.g. text
+ */
 class Renderer {
+  /**
+   * @typedef {Object} DrawGUIElementOptions
+   * @property {number} posX x position on the screen, use float from -1 to 1
+   * @property {number} posY y position on the screen, use float from -1 to 1
+   * @property {number} scaleX x scale of gui element, 1 is equal to screen scale
+   * @property {number} scaleY y scale of gui element, 1 is equal to screen scale
+   */
+
+  /**
+   * Draws gui element represented bu texture given
+   * @param {Texture} texture texture that should be mapped onto this gui element
+   * @param {DrawGUIElementOptions} options object containing element scale and position on screen
+   */
   static drawGUIElement(
     texture,
     options = { posX: 0, posY: 0, scaleX: 0.1, scaleY: 0.1 }
@@ -15,9 +33,6 @@ class Renderer {
     const camera = engineResources.getCamera();
     const { posX, posY, scaleX, scaleY } = options;
 
-    /**
-     * @type {Material}
-     */
     const mat = engineResources.getMaterial("guiElement");
     mat.textures.color0 = texture;
 
@@ -46,6 +61,10 @@ class Renderer {
     );
   }
 
+  /**
+   * Draws single game object on screen
+   * @param {GameObject} gameObject game object that should be drawn on screen
+   */
   static drawGameObject(gameObject) {
     const gl = EngineToolbox.getGLContext();
     const camera = engineResources.getCamera();
@@ -82,6 +101,21 @@ class Renderer {
     );
   }
 
+  /**
+   * @typedef {Object} DrawStringOptions
+   * @param {number} posX x position on the screen, use float from -1 to 1
+   * @param {number} posY y position on the screen, use float from -1 to 1
+   * @param {number} size scale of single character, 1 is equal to screen scale
+   * @param {number} charWidth defines character spacing
+   * @param {boolean} center if true text origin will be in it's center
+   * @param {number} toRight if true text origin will be on it's right side
+   */
+
+  /**
+   * Allows to draw entire string on the screen
+   * @param {string} string text that should be drawn on the screen
+   * @param {DrawStringOptions} options object that contains text position, size, char spacing and origin options
+   */
   static drawString(
     string = "Text",
     options = {
@@ -106,6 +140,13 @@ class Renderer {
     }
   }
 
+  /**
+   * Draws given character on the screen
+   * @param {string} char character that should be drawn
+   * @param {number} posX x position on the screen, use float from -1 to 1
+   * @param {number} posY y position on the screen, use float from -1 to 1
+   * @param {number} size scale of single character, 1 is equal to screen scale
+   */
   static drawChar(char = "A", posX = 0, posY = 0, size = 0.1) {
     const gl = EngineToolbox.getGLContext();
     const camera = engineResources.getCamera();
@@ -146,7 +187,9 @@ class Renderer {
   }
 
   /**
-   * @param {Vector4} clearColor
+   * Sets clear color, which will be visible on the canvas if nothing is drawn on it
+   * @param {Vector4} clearColor vector with four components representing r, g, b and a color channels
+   * @returns {Renderer} self reference for easier method chaining
    */
   static setClearColor(clearColor) {
     const gl = EngineToolbox.getGLContext();
@@ -154,6 +197,10 @@ class Renderer {
     return this;
   }
 
+  /**
+   * Enables depth testing so elements that are behind other scene objects will not be drawn
+   * @returns {Renderer} self reference for easier method chaining
+   */
   static enableDepthTest() {
     const gl = EngineToolbox.getGLContext();
     gl.enable(gl.DEPTH_TEST);
@@ -161,18 +208,34 @@ class Renderer {
     return this;
   }
 
+  /**
+   * Disables depth testing so objects drawn will not obscured by elements that are closer to camera,
+   * this method is useful when you want to draw elements like skybox
+   * @returns {Renderer} self reference for easier method chaining
+   */
   static disableDepthTest() {
     const gl = EngineToolbox.getGLContext();
     gl.disable(gl.DEPTH_TEST);
     return this;
   }
 
+  /**
+   * Clears the canvas so it's filled with clear color 
+   * @returns {Renderer} self reference for easier method chaining
+   */
   static clear() {
     const gl = EngineToolbox.getGLContext();
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     return this;
   }
 
+  /**
+   * Enables alpha blending so transparent objects do not obscure objects behind them,
+   * remember that in order to avoid rendering artifacts, objects with material that
+   * uses alpha should be rendered in order depending on the distance from camera 
+   * (closest elements last) 
+   * @returns {Renderer} self reference for easier method chaining
+   */
   static enableAlphaBlend() {
     const gl = EngineToolbox.getGLContext();
     gl.enable(gl.BLEND);
@@ -180,6 +243,10 @@ class Renderer {
     return this;
   }
 
+  /**
+   * Disables alpha blending so transparent objects obscure objects behind them
+   * @returns {Renderer} self reference for easier method chaining
+   */
   static disableAlphaBlend() {
     const gl = EngineToolbox.getGLContext();
     gl.disable(gl.BLEND);
