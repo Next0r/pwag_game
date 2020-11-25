@@ -12,53 +12,70 @@ const path = require("path");
 const { Game } = require("./engine.game");
 const gameConfig = require(path.join(__dirname, "..", "gameConfig.json"));
 
+/**
+ * Represents single entry in engine resources, each entry has
+ * name and element like texture, material, game object, etc.
+ */
 class ResourceEntry {
   /**
-   *
-   * @param {string} name
-   * @param {Texture|Mesh|String|Material|GameObject} element
+   * Creates resource entry instance
+   * @param {string} name name of resource (similar to one defined in game config file)
+   * @param {Texture|Mesh|String|Material|GameObject} element resource element, might be texture, material, shader source, game object or mesh
    */
   constructor(name, element) {
     /**
+     * name of resource (similar to one defined in game config file)
      * @type {string}
      */
     this.name = name;
     /**
+     * resource element, might be texture, material, shader source, game object or mesh
      * @type {Texture|Mesh|String|Material|GameObject}
      */
     this.element = element;
   }
 }
 
+/**
+ * Storage of all elements used in game like textures, materials, game objects
+ * camera, lights etc. use get methods to acquire resources by name
+ */
 class EngineResources {
+  /**
+   * Creates new engine resources or returns existing one, also creates
+   * camera, ambient and direct lights, gui meshes and stores them as
+   * resources
+   */
   constructor() {
     if (EngineResources._instance) {
       return EngineResources._instance;
     }
 
     /**
+     * Textures represented by name of file stored in texture directory
      * @type {ResourceEntry[]}
      */
     this._textures = [];
     /**
+     * Meshes represented by name of file stored in mesh directory
      * @type {ResourceEntry[]}
      */
     this._meshes = [];
     /**
+     * Shader sources represented by name of file stored in shader directory
      * @type {ResourceEntry[]}
      */
     this._shaders = [];
     /**
+     * Materials represented by names defined in game config file
      * @type {ResourceEntry[]}
      */
     this._materials = [];
     /**
+     * Game objects represented by names defined in game config file
      * @type {ResourceEntry[]}
      */
     this._gameObjects = [];
-    /**
-     * @type {ResourceEntry[]}
-     */
 
     this._meshes.push(new ResourceEntry("guiPlane", Mesh.createGUIPlane()));
     this._meshes.push(
@@ -78,11 +95,13 @@ class EngineResources {
   }
 
   /**
+   * Instance of already defined resources
    * @type {EngineResources}
    */
   static _instance;
 
   /**
+   * Allows to acquire camera game object
    * @returns {Camera}
    */
   getCamera() {
@@ -90,6 +109,7 @@ class EngineResources {
   }
 
   /**
+   * Allows to acquire direct light game object
    * @returns {DirectLight}
    */
   getDirectLight() {
@@ -97,6 +117,7 @@ class EngineResources {
   }
 
   /**
+   * Allows to acquire ambient light game object
    * @returns {AmbientLight}
    */
   getAmbientLight() {
@@ -104,9 +125,11 @@ class EngineResources {
   }
 
   /**
-   *
-   * @param {ResourceEntry[]} array
-   * @param {string} name
+   * Finds resource in specified category (textures, materials etc.)
+   * @param {ResourceEntry[]} array array that should be searched
+   * @param {string} name name of element that should be found
+   * @throws {Error} that indicates that resource has not been found
+   * @returns {Texture|Mesh|String|Material|GameObject}
    */
   _findResource(array, name) {
     let resource = undefined;
@@ -124,9 +147,10 @@ class EngineResources {
   }
 
   /**
-   *
-   * @param {string} name
+   * Finds texture resource by given name corresponding to texture file name in texture directory
+   * @param {string} name name of the file without ".png"
    * @returns {Texture}
+   * @throws {Error} if texture is not found by give name
    */
   getTexture(name) {
     try {
@@ -137,9 +161,10 @@ class EngineResources {
   }
 
   /**
-   *
-   * @param {string} name
+   * Finds mesh resource by given name corresponding to mesh file name in mesh directory
+   * @param {string} name name of the file without ".dae"
    * @returns {Mesh}
+   * @throws {Error} if mesh is not found by give name
    */
   getMesh(name) {
     try {
@@ -150,9 +175,10 @@ class EngineResources {
   }
 
   /**
-   *
-   * @param {string} name
+   * Finds shader resource by given name corresponding to shader file name in shader directory
+   * @param {string} name name of the file without ".txt"
    * @returns {string}
+   * @throws {Error} if shader is not found by give name
    */
   getShader(name) {
     try {
@@ -163,9 +189,10 @@ class EngineResources {
   }
 
   /**
-   *
-   * @param {string} name
+   * Finds material resource by given name corresponding to name defined in game config file
+   * @param {string} name material name defined in game config file
    * @returns {Material}
+   * @throws {Error} if material is not found by give name
    */
   getMaterial(name) {
     try {
@@ -176,9 +203,10 @@ class EngineResources {
   }
 
   /**
-   *
-   * @param {string} name
-   * @returns {GameObject}
+   * Finds game object resource by given name corresponding to name defined in game config file
+   * @param {string} name game object  name defined in game config file
+   * @returns {Material}
+   * @throws {Error} if game object  is not found by give name
    */
   getGameObject(name) {
     try {
@@ -188,6 +216,11 @@ class EngineResources {
     }
   }
 
+  /**
+   * Reads textures from directory defined in game config file, this method
+   * is called on engine init and should be not used directly
+   * @throws {Error} if reading fails
+   */
   _readTextures() {
     try {
       const textureNames = fs.readdirSync(
@@ -210,6 +243,11 @@ class EngineResources {
     }
   }
 
+  /**
+   * Reads meshes from directory defined in game config file, this method
+   * is called on engine init and should be not used directly
+   * @throws {Error} if reading fails
+   */
   _readMeshes() {
     try {
       const meshNames = fs.readdirSync(
@@ -233,6 +271,11 @@ class EngineResources {
     }
   }
 
+  /**
+   * Reads shaders from directory defined in game config file, this method
+   * is called on engine init and should be not used directly
+   * @throws {Error} if reading fails
+   */
   _readShaders() {
     try {
       const shaderNames = fs.readdirSync(
@@ -254,6 +297,10 @@ class EngineResources {
     }
   }
 
+  /**
+   * Creates set of materials defined in game config file
+   * @throws {Error} if creating materials fails
+   */
   _readMaterials() {
     try {
       for (let name of gameConfig.materials) {
@@ -266,6 +313,10 @@ class EngineResources {
     }
   }
 
+  /**
+   * Creates set of game objects defined in game config file
+   * @throws {Error} if creating game objects fails
+   */
   _readGameObjects() {
     try {
       for (let name of gameConfig.gameObjects) {
