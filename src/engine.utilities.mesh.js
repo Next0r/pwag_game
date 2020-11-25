@@ -2,52 +2,116 @@ const { Vector4 } = require("./engine.math.vector4");
 const { Vector3 } = require("./engine.math.vector3");
 const { EngineToolbox } = require("./engine.toolbox");
 
+/**
+ * Container for data describing single mesh object, also
+ * contains methods that might be used to create simple meshes, meshes
+ * that can be acquired from engine resources should already have reduced arrays generated
+ * for vertex indexing and UVs flipped to match OpenGL standard
+ */
 class Mesh {
+  /**
+   * Creates new mesh instance
+   * @param {string} name name of new mesh component
+   */
   constructor(name = "") {
+    /**
+     * @type {string} name of this mesh component
+     */
     this.name = name;
-
+    /**
+     * Object that bounds all buffers that supply shader attributes with data
+     * @type {WebGLVertexArrayObject}
+     */
     this.vertexArrayObject = undefined;
+    /**
+     * Buffer that contains order in which data from other vertex buffers should be read
+     * @type {WebGLBuffer}
+     */
     this.elementArrayVBO = undefined;
+    /**
+     * Buffer that contains vertex positions
+     * @type {WebGLBuffer}
+     */
     this.positionsVBO = undefined;
+    /**
+     * Buffer that contains vertex normals
+     * @type {WebGLBuffer}
+     */
     this.normalsVBO = undefined;
+    /**
+     * Buffer that contains vertex UV mapping
+     * @type {WebGLBuffer}
+     */
     this.mapVBO = undefined;
+    /**
+     * Buffer that contains vertex colors
+     * @type {WebGLBuffer}
+     */
     this.colorVBO = undefined;
 
     /**
+     * Raw positions read from file (last component of vector4 equal to 1)
      * @type {Vector4[]}
      */
     this.positions = [];
     /**
+     * Raw normals read from file (last component of vector4 equal to 0)
      * @type {Vector4[]}
      */
     this.normals = [];
     /**
-     * @type {Vector3[]}
+     * Raw UV mapping read from file (last component of vector3 equal to 1)
+     * @type {Vector4[]}
      */
     this.map = [];
     /**
+     * Raw vertex colors read from file
      * @type {Vector4[]}
      */
     this.colors = [];
 
+    /**
+     * Offset of position info in vertex info array
+     * @type {number}
+     */
     this.positionOffset = 0;
+    /**
+     * Offset of normals info in vertex info array
+     * @type {number}
+     */
     this.normalOffset = 1;
+    /**
+     * Offset of mapping info in vertex info array
+     * @type {number}
+     */
     this.mapOffset = 2;
+    /**
+     * Offset of color info in vertex info array
+     * @type {number}
+     */
     this.colorOffset = 3;
 
     /**
      * Contains raw vertex data suitable for simple array drawing
+     * @type {number[]}
      */
     this.vertices = [];
     /**
      * Contains reduced vertex data prepared to draw with element array buffer.
+     * @type {number[]}
      */
     this.reducedVertices = [];
+    /**
+     * Contains order in which data from other vertex buffers should be read
+     * @type {number[]}
+     */
     this.elementArray = [];
-    this.reducedTangents = [];
-    this.reducedBitangents = [];
   }
 
+  /**
+   * Creates buffers for this mesh, element array has to be set to call this
+   * method
+   */
   createBuffers() {
     if (
       !(this.elementArray instanceof Array) ||
@@ -102,6 +166,10 @@ class Mesh {
     );
   }
 
+  /**
+   * Creates plane that can be used to render GUI elements on it
+   * @returns {Mesh} simple plane that allows to render GUI elements on it
+   */
   static createGUIPlane() {
     const plane = new Mesh();
     plane.name = "GUIPlane";
@@ -137,7 +205,9 @@ class Mesh {
   }
 
   /**
-   * @param {Number} scaleFactor
+   * Allows to change scale of mapping in this mesh
+   * @param {Number} scaleFactor factor on the right side of multiplication
+   * @returns {Mesh} self reference for easier method chaining
    */
   scaleMap(scaleFactor) {
     for (let i = 0; i < this.map.length; i += 1) {
@@ -148,45 +218,12 @@ class Mesh {
     return this;
   }
 
-  // createTangents() {
-  //   if (this.mapOffset === undefined && this.vertices.length !== 0) {
-  //     return;
-  //   }
-
-  //   for (let i = 0; i < this.vertices.length; i += 3) {
-  //     const v0 = this.positions[this.vertices[i][this.positionOffset]];
-  //     const v1 = this.positions[this.vertices[i + 1][this.positionOffset]];
-  //     const v2 = this.positions[this.vertices[i + 2][this.positionOffset]];
-
-  //     const uv0 = this.map[this.vertices[i][this.mapOffset]];
-  //     const uv1 = this.map[this.vertices[i + 1][this.mapOffset]];
-  //     const uv2 = this.map[this.vertices[i + 2][this.mapOffset]];
-
-  //     const dPos1 = [v1[0] - v0[0], v1[1] - v0[1], v1[2] - v0[2]];
-  //     const dPos2 = [v2[0] - v0[0], v2[1] - v0[1], v2[2] - v0[2]];
-
-  //     const dUV1 = [uv1[0] - uv0[0], uv1[1] - uv0[1]];
-  //     const dUV2 = [uv2[0] - uv0[0], uv2[1] - uv0[1]];
-
-  //     const r = 1 / (dUV1[0] * dUV2[1] - dUV1[1] * dUV2[0]);
-
-  //     const tangent = [];
-  //     tangent.push((dPos1[0] * dUV2[1] - dPos2[0] * dUV1[1]) * r);
-  //     tangent.push((dPos1[1] * dUV2[1] - dPos2[1] * dUV1[1]) * r);
-  //     tangent.push((dPos1[2] * dUV2[1] - dPos2[2] * dUV1[1]) * r);
-
-  //     const bitangent = [];
-  //     bitangent.push((dPos2[0] * dUV1[0] - dPos1[0] * dUV2[0]) * r);
-  //     bitangent.push((dPos2[1] * dUV1[0] - dPos1[1] * dUV2[0]) * r);
-  //     bitangent.push((dPos2[2] * dUV1[0] - dPos1[2] * dUV2[0]) * r);
-
-  //     this.tangents.push(tangent, tangent, tangent);
-  //     this.bitangents.push(bitangent, bitangent, bitangent);
-  //   }
-
-  //   return this;
-  // }
-
+  /**
+   * Allows to acquire array of vertex positions, returns empty array if
+   * positions offset is not defined, can be used only if reduced vertices array
+   * has been created
+   * @returns {number[]} array of positions, that can be supplied directly into WebGL buffer
+   */
   getPositionsArray() {
     const out = [];
     if (this.positionOffset === undefined) {
@@ -200,6 +237,12 @@ class Mesh {
     return out;
   }
 
+  /**
+   * Allows to acquire array of vertex normals, returns empty array if
+   * normals offset is not defined, can be used only if reduced vertices array
+   * has been created
+   * @returns {number[]} array of normals, that can be supplied directly into WebGL buffer
+   */
   getNormalsArray() {
     const out = [];
     if (this.normalOffset === undefined) {
@@ -213,6 +256,12 @@ class Mesh {
     return out;
   }
 
+  /**
+   * Allows to acquire array of vertex colors, returns empty array if
+   * colors offset is not defined, can be used only if reduced vertices array
+   * has been created
+   * @returns {number[]} array of colors, that can be supplied directly into WebGL buffer
+   */
   getColorsArray() {
     const out = [];
     if (this.colorOffset === undefined) {
@@ -226,6 +275,12 @@ class Mesh {
     return out;
   }
 
+  /**
+   * Allows to acquire array of vertex UV mapping, returns empty array if
+   * UV mapping offset is not defined, can be used only if reduced vertices array
+   * has been created
+   * @returns {number[]} array of UV mapping, that can be supplied directly into WebGL buffer
+   */
   getMapArray() {
     const out = [];
     if (this.mapOffset === undefined) {
@@ -239,38 +294,22 @@ class Mesh {
     return out;
   }
 
-  // getTangentArray() {
-  //   const out = [];
-  //   if (this.mapOffset === undefined) {
-  //     return out;
-  //   }
-
-  //   for (let vertex of this.reducedVertices) {
-  //     const tangentIndex = vertex.pop();
-  //     out.push(...this.tangents[tangentIndex], 0);
-  //   }
-  //   return out;
-  // }
-
-  // getBitangentArray() {
-  //   const out = [];
-  //   if (this.mapOffset === undefined) {
-  //     return out;
-  //   }
-
-  //   for (let vertex of this.reducedVertices) {
-  //     const bitangentIndex = vertex.pop();
-  //     out.push(...this.bitangents[bitangentIndex], 0);
-  //   }
-  //   return out;
-  // }
-
+  /**
+   * Flips UV mapping so it matches OpenGL mapping standard rather than Direct3D one
+   * @returns {Mesh} self reference for easier method chaining
+   */
   flipUV() {
     for (let i = 0; i < this.map.length; i++) {
       this.map[i].y = 1 - this.map[i].y;
     }
+    return this;
   }
 
+  /**
+   * Creates set of reduced vertices, so element array and it's buffer can be used
+   * to reduce GPU memory usage
+   * @returns {Mesh} self reference for easier method chaining
+   */
   createElementArray() {
     const elementArray = [];
     const elementArrayClone = [];
@@ -345,17 +384,5 @@ class Mesh {
     return this;
   }
 }
-
-/**
- * @param {[]} vertex
- * @param {[][]} vertices
- */
-const findVertex = (vertex, vertices) => {
-  for (let i = 0; i < vertices.length; i += 1) {
-    if (EngineToolbox.compareArrays(vertex, vertices[i])) {
-      return i;
-    }
-  }
-};
 
 exports.Mesh = Mesh;
