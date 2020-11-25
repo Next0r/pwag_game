@@ -71,7 +71,7 @@ class EngineToolbox {
   /**
    * Allows to acquire content of PNG image file given by path string
    * @param {string} path path of PNG image file
-   * @returns {import("pngjs").PNGWithMetadata} png with metadata read by PNG.js
+   * @returns {PNGWithMetadata} png with metadata read by PNG.js
    */
   static readImage(path) {
     try {

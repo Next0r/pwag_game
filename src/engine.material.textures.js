@@ -37,7 +37,7 @@ class Texture {
 
   /**
    * Fills texture instance with data acquired form png image
-   * @param {import("pngjs").PNGWithMetadata} pngImage png with metadata read by PNG.js
+   * @param {PNGWithMetadata} pngImage png with metadata read by PNG.js
    * @returns {Texture} self reference for easier method chaining
    */
   fromPNGImage(pngImage) {

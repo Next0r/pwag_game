@@ -15,7 +15,8 @@ class Mesh {
    */
   constructor(name = "") {
     /**
-     * @type {string} name of this mesh component
+     * Name of this mesh component
+     * @type {string} 
      */
     this.name = name;
     /**
