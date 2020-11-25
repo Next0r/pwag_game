@@ -1,0 +1,41 @@
+#version 300 es
+
+uniform mat4 u_model_view_matrix;
+uniform mat4 u_projection_matrix;
+uniform mat4 u_normal_matrix;
+
+uniform vec3 u_direct_light_direction;
+uniform vec3 u_direct_light_color;
+uniform float u_direct_light_value;
+
+uniform vec3 u_ambient_light_color;
+uniform float u_ambient_light_value;
+
+in vec4 a_position;
+in vec4 a_color;
+in vec4 a_normal;
+in vec3 a_map;
+
+out vec4 vertex_color;
+out vec4 normal;
+out vec3 direct_light_direction;
+out vec3 direct_light_color;
+out float direct_light_value;
+out vec3 ambient_light_color;
+out float ambient_light_value;
+out vec3 map;
+
+
+void main() {
+
+  vertex_color = a_color;
+  normal = u_normal_matrix * a_normal;
+  direct_light_direction = u_direct_light_direction;
+  direct_light_color = u_direct_light_color;
+  direct_light_value = u_direct_light_value;
+  ambient_light_color = u_ambient_light_color;
+  ambient_light_value = u_ambient_light_value;
+  map = a_map;
+
+  gl_Position = u_projection_matrix * u_model_view_matrix *  a_position;
+}
