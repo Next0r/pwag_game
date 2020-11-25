@@ -2,7 +2,7 @@ const { EngineToolbox } = require("./engine.toolbox");
 const { Input } = require("./engine.input");
 const { Renderer } = require("./engine.renderer");
 const { Vector4 } = require("./engine.math.vector4");
-const { engineResources } = require("./engine.resources");
+const { engineResources, newEngineResources } = require("./engine.resources");
 const path = require("path");
 const gameConfig = require(path.join(__dirname, "..", "gameConfig.json"));
 const start = require(path.join(__dirname, "..", gameConfig.startUpFilePath));
@@ -37,7 +37,24 @@ class EngineProgram {
       EngineProgram._addRequestFullScreenListener();
     }
 
-    
+    // const test = newEngineResources;
+    // const res = test.Resources();
+    // try {
+    //   res
+    //     ._readTextures()
+    //     ._readMeshes()
+    //     ._readShaders()
+    //     ._readMaterials()
+    //     ._readGameObjects();
+    //   console.log(res);
+    // } catch (e) {
+    //   console.log(e);
+    // }
+
+    // const res2 = test.Resources();
+
+    // console.log(res === res2);
+
     const resources = engineResources;
     resources.build();
     const camera = resources.gameObjects.camera;
