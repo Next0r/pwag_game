@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: engine.charTable.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: engine.charTable.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Describes position of character on text texture
+ */
+class CharacterDescriptor{
+  /**
+   * Creates new character descriptor
+   * @param {number} posX x position on texture as integer
+   * @param {number} posY y position on texture as integer
+   * @param {number} space character offset (this property is not used)
+   */
+  constructor(posX, posY, space){
+    /**
+     * x position on texture as integer
+     * @type {number}
+     */
+    this.posX = posX;
+    /**
+     * y position on texture as integer
+     * @type {number}
+     */
+    this.posY = posY;
+    /**
+     * character offset (this property is not used)
+     * @type {number}
+     */
+    this.space = space;
+  }
+}
+
+/**
+ * Table of character descriptors, allows to acquire x and y position of character on 
+ * text texture. Characters are ordered in classic ASCII fashion e.g charTable[65] describes "A" 
+ */
+const charTable = [
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(9, 2),
+  new CharacterDescriptor(10, 2),
+  new CharacterDescriptor(11, 2),
+
+  new CharacterDescriptor(0, 3),
+  new CharacterDescriptor(1, 3),
+  new CharacterDescriptor(2, 3),
+  new CharacterDescriptor(3, 3),
+  new CharacterDescriptor(4, 3),
+  new CharacterDescriptor(5, 3),
+  new CharacterDescriptor(6, 3),
+  new CharacterDescriptor(7, 3),
+  new CharacterDescriptor(8, 3),
+  new CharacterDescriptor(9, 3),
+  new CharacterDescriptor(10, 3),
+  new CharacterDescriptor(11, 3),
+
+  new CharacterDescriptor(0, 4),
+  new CharacterDescriptor(1, 4),
+  new CharacterDescriptor(2, 4),
+  new CharacterDescriptor(3, 4),
+  new CharacterDescriptor(4, 4),
+  new CharacterDescriptor(5, 4),
+  new CharacterDescriptor(6, 4),
+  new CharacterDescriptor(7, 4),
+  new CharacterDescriptor(8, 4),
+  new CharacterDescriptor(9, 4),
+  new CharacterDescriptor(10, 4),
+  new CharacterDescriptor(11, 4),
+
+  new CharacterDescriptor(0, 5),
+  new CharacterDescriptor(1, 5),
+  new CharacterDescriptor(2, 5),
+  new CharacterDescriptor(3, 5),
+  new CharacterDescriptor(4, 5),
+  new CharacterDescriptor(5, 5),
+  new CharacterDescriptor(6, 5),
+  new CharacterDescriptor(7, 5),
+  new CharacterDescriptor(8, 5),
+  new CharacterDescriptor(9, 5),
+  new CharacterDescriptor(10, 5),
+  new CharacterDescriptor(11, 5),
+
+  new CharacterDescriptor(0, 6),
+  new CharacterDescriptor(1, 6),
+  new CharacterDescriptor(2, 6),
+  new CharacterDescriptor(3, 6),
+  new CharacterDescriptor(4, 6),
+  new CharacterDescriptor(5, 6),
+  new CharacterDescriptor(6, 6),
+  new CharacterDescriptor(7, 6),
+  new CharacterDescriptor(8, 6),
+  new CharacterDescriptor(9, 6),
+  new CharacterDescriptor(10, 6),
+  new CharacterDescriptor(11, 6),
+
+  new CharacterDescriptor(0, 7),
+  new CharacterDescriptor(1, 7),
+  new CharacterDescriptor(2, 7),
+  new CharacterDescriptor(3, 7),
+  new CharacterDescriptor(4, 7),
+  new CharacterDescriptor(5, 7),
+  new CharacterDescriptor(6, 7),
+  new CharacterDescriptor(7, 7),
+  new CharacterDescriptor(8, 7),
+  new CharacterDescriptor(9, 7),
+  new CharacterDescriptor(10, 7),
+  new CharacterDescriptor(11, 7),
+
+  new CharacterDescriptor(0, 8),
+  new CharacterDescriptor(1, 8),
+  new CharacterDescriptor(2, 8),
+  new CharacterDescriptor(3, 8),
+  new CharacterDescriptor(4, 8),
+  new CharacterDescriptor(5, 8),
+  new CharacterDescriptor(6, 8),
+  new CharacterDescriptor(7, 8),
+  new CharacterDescriptor(8, 8),
+  new CharacterDescriptor(9, 8),
+  new CharacterDescriptor(10, 8),
+  new CharacterDescriptor(11, 8),
+
+  new CharacterDescriptor(0, 9),
+  new CharacterDescriptor(1, 9),
+  new CharacterDescriptor(2, 9),
+  new CharacterDescriptor(3, 9),
+  new CharacterDescriptor(4, 9),
+  new CharacterDescriptor(5, 9),
+  new CharacterDescriptor(6, 9),
+  new CharacterDescriptor(7, 9),
+  new CharacterDescriptor(8, 9),
+  new CharacterDescriptor(9, 9),
+  new CharacterDescriptor(10, 9),
+  new CharacterDescriptor(11, 9),
+
+  new CharacterDescriptor(0, 10),
+  new CharacterDescriptor(1, 10),
+  new CharacterDescriptor(2, 10),
+  new CharacterDescriptor(3, 10),
+  new CharacterDescriptor(4, 10),
+  new CharacterDescriptor(5, 10),
+  new CharacterDescriptor(6, 10),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+  new CharacterDescriptor(),
+];
+
+exports.charTable = charTable;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientLight.html">AmbientLight</a></li><li><a href="Attribute.html">Attribute</a></li><li><a href="BoxCollider.html">BoxCollider</a></li><li><a href="Camera.html">Camera</a></li><li><a href="CharacterDescriptor.html">CharacterDescriptor</a></li><li><a href="CollisionSystem.html">CollisionSystem</a></li><li><a href="DirectLight.html">DirectLight</a></li><li><a href="EngineProgram.html">EngineProgram</a></li><li><a href="EngineResources.html">EngineResources</a></li><li><a href="EngineToolbox.html">EngineToolbox</a></li><li><a href="Game.html">Game</a></li><li><a href="GameObject.html">GameObject</a></li><li><a href="Input.html">Input</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Material.html">Material</a></li><li><a href="MaterialAttributes.html">MaterialAttributes</a></li><li><a href="MaterialTextures.html">MaterialTextures</a></li><li><a href="MaterialUniforms.html">MaterialUniforms</a></li><li><a href="Matrix4.html">Matrix4</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Projection.html">Projection</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="ResourceEntry.html">ResourceEntry</a></li><li><a href="Texture.html">Texture</a></li><li><a href="Time.html">Time</a></li><li><a href="Transform.html">Transform</a></li><li><a href="Uniform.html">Uniform</a></li><li><a href="Vector2.html">Vector2</a></li><li><a href="Vector3.html">Vector3</a></li><li><a href="Vector4.html">Vector4</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_createShader">_createShader</a></li><li><a href="global.html#_mat3Det">_mat3Det</a></li><li><a href="global.html#charTable">charTable</a></li><li><a href="global.html#createShaderProgram">createShaderProgram</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#findInputOffset">findInputOffset</a></li><li><a href="global.html#findSourceElement">findSourceElement</a></li><li><a href="global.html#parseSourceElement">parseSourceElement</a></li><li><a href="global.html#parseTrianglesElement">parseTrianglesElement</a></li><li><a href="global.html#readColladaFile">readColladaFile</a></li><li><a href="global.html#readGeometry">readGeometry</a></li><li><a href="global.html#uniform1fv">uniform1fv</a></li><li><a href="global.html#uniform1iv">uniform1iv</a></li><li><a href="global.html#uniform3fv">uniform3fv</a></li><li><a href="global.html#uniformMatrix4fv">uniformMatrix4fv</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Wed Nov 25 2020 15:46:39 GMT+0100 (GMT+01:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

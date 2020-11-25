@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: engine.math.vector3.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: engine.math.vector3.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Represents vector with three components x, y and z
+ */
+class Vector3 {
+  /**
+   * Creates new vector3 instance
+   * @param {number} x value of first vector element
+   * @param {number} y value of second vector element
+   * @param {number} z value of third vector element
+   */
+  constructor(x = 0, y = 0, z = 0) {
+    /**
+     * Value of first vector element
+     * @type {number}
+     */
+    this.x = x;
+    /**
+     * Value of second vector element
+     * @type {number}
+     */
+    this.y = y;
+    /**
+     * Value of third vector element
+     * @type {number}
+     */
+    this.z = z;
+  }
+
+  /**
+   * Allows to acquire length of this vector
+   * @returns {number} number which represents vector length
+   */
+  length() {
+    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+  }
+
+  /**
+   * Creates new three element vector from this one
+   * @returns {Vector3} vector that is copy of this one
+   */
+  clone() {
+    return new Vector3(this.x, this.y, this.z);
+  }
+
+  /**
+   * Changes values of this vector so it's length is equal to 1, this method does
+   * NOT work on copy, consider using clone before
+   * @returns {Vector3} self reference for easier method chaining
+   */
+  normalize() {
+    const l = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    this.x = this.x / l;
+    this.y = this.y / l;
+    this.z = this.z / l;
+    return this;
+  }
+
+  /**
+   * Returns array containing x, y and z components of this vector
+   * @returns {number[]} array of vector components
+   */
+  toArray() {
+    return [this.x, this.y, this.z];
+  }
+
+  /**
+   * Adds given vector to this one, this method does NOT work on copy, consider
+   * calling clone before
+   * @param {Vector3} vector vector on the right side of addition
+   * @returns {Vector3} self reference for easier method chaining
+   */
+  add(vector) {
+    this.x += vector.x;
+    this.y += vector.y;
+    this.z += vector.z;
+    return this;
+  }
+
+  /**
+   * Subtracts given vector from this one, this method does NOT work on copy, consider
+   * calling clone before
+   * @param {Vector3} vector vector on the right side of subtraction
+   * @returns {Vector3} self reference for easier method chaining
+   */
+  subtract(vector) {
+    this.x -= vector.x;
+    this.y -= vector.y;
+    this.z -= vector.z;
+    return this;
+  }
+
+  /**
+   * Scales this vector by scalar value, what can be described as multiplication of
+   * each component by given scalar, this method does NOT work on copy, consider
+   * calling clone before
+   * @param {number} value scalar value on the right side of multiplication
+   * @returns {Vector3} self reference for easier method chaining
+   */
+  scale(value) {
+    this.x *= value;
+    this.y *= value;
+    this.z *= value;
+    return this;
+  }
+
+  /**
+   * Returns dot product of this vector and vector given
+   * @param {Vector3} vector3 vector on the right side of dot operation
+   * @returns {number} dot product value
+   */
+  dot(vector3) {
+    return this.x * vector3.x + this.y * vector3.y + this.z * vector3.z;
+  }
+
+  /**
+   * Allows to compare two vectors
+   * @param {Vector3} vector3 vector that this one should be compared to
+   * @returns {boolean} true if vectors are equal
+   */
+  isEqual(vector3) {
+    return this.x === vector3.x &amp;&amp; this.y === vector3.y &amp;&amp; this.z === vector3.z;
+  }
+
+  /**
+   * Represents OpenGL up vector [0, 1, 0]
+   * @type {Vector3}
+   */
+  static up = new Vector3(0, 1, 0);
+  /**
+   * Represents OpenGL right vector [1, 0, 0]
+   * @type {Vector3}
+   */
+  static right = new Vector3(1, 0, 0);
+  /**
+   * Represents OpenGL forward vector [0, 0, -1], remember that z axis is heading
+   * inside camera in OpenGL coordinates system
+   * @type {Vector3}
+   */
+  static forward = new Vector3(0, 0, -1);
+}
+
+exports.Vector3 = Vector3;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientLight.html">AmbientLight</a></li><li><a href="Attribute.html">Attribute</a></li><li><a href="BoxCollider.html">BoxCollider</a></li><li><a href="Camera.html">Camera</a></li><li><a href="CharacterDescriptor.html">CharacterDescriptor</a></li><li><a href="CollisionSystem.html">CollisionSystem</a></li><li><a href="DirectLight.html">DirectLight</a></li><li><a href="EngineProgram.html">EngineProgram</a></li><li><a href="EngineResources.html">EngineResources</a></li><li><a href="EngineToolbox.html">EngineToolbox</a></li><li><a href="Game.html">Game</a></li><li><a href="GameObject.html">GameObject</a></li><li><a href="Input.html">Input</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Material.html">Material</a></li><li><a href="MaterialAttributes.html">MaterialAttributes</a></li><li><a href="MaterialTextures.html">MaterialTextures</a></li><li><a href="MaterialUniforms.html">MaterialUniforms</a></li><li><a href="Matrix4.html">Matrix4</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Projection.html">Projection</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="ResourceEntry.html">ResourceEntry</a></li><li><a href="Texture.html">Texture</a></li><li><a href="Time.html">Time</a></li><li><a href="Transform.html">Transform</a></li><li><a href="Uniform.html">Uniform</a></li><li><a href="Vector2.html">Vector2</a></li><li><a href="Vector3.html">Vector3</a></li><li><a href="Vector4.html">Vector4</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_createShader">_createShader</a></li><li><a href="global.html#_mat3Det">_mat3Det</a></li><li><a href="global.html#charTable">charTable</a></li><li><a href="global.html#createShaderProgram">createShaderProgram</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#findInputOffset">findInputOffset</a></li><li><a href="global.html#findSourceElement">findSourceElement</a></li><li><a href="global.html#parseSourceElement">parseSourceElement</a></li><li><a href="global.html#parseTrianglesElement">parseTrianglesElement</a></li><li><a href="global.html#readColladaFile">readColladaFile</a></li><li><a href="global.html#readGeometry">readGeometry</a></li><li><a href="global.html#uniform1fv">uniform1fv</a></li><li><a href="global.html#uniform1iv">uniform1iv</a></li><li><a href="global.html#uniform3fv">uniform3fv</a></li><li><a href="global.html#uniformMatrix4fv">uniformMatrix4fv</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Wed Nov 25 2020 15:46:39 GMT+0100 (GMT+01:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

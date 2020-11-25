@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: engine.input.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: engine.input.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const { EngineToolbox } = require("./engine.toolbox");
+
+/**
+ * Mouse properties (also movement) container
+ */
+class Mouse {
+  /**
+   * Crates new mouse instance
+   */
+  constructor() {
+    /**
+     * Array of previous mouse movement in x axis - used for smoothing
+     * @type {number[]}
+     */
+    this._lastMovementsX = [0, 0, 0];
+    /**
+     * Array of previous mouse movement in y axis - used for smoothing
+     * @type {number[]}
+     */
+    this._lastMovementsY = [0, 0, 0];
+    /**
+     * Last mouse movement in x axis
+     * @type {number}
+     */
+    this.movementX = 0;
+    /**
+     * Last mouse movement in y axis
+     * @type {number}
+     */
+    this.movementY = 0;
+  }
+}
+
+/**
+ * Keyboard properties container, allows to check
+ * if key was pressed or set event that should occur on
+ * key release
+ */
+class Keyboard {
+  /**
+   * Creates new keyboard properties container
+   */
+  constructor() {
+    /**
+     * Contains set of boolean properties representing
+     * currently held down keys
+     * @type {Object}
+     */
+    this._keyInfo = {};
+    /**
+     * Contains set of functions that are called when 
+     * key is released, to add such event add property to
+     * this object e.g. Input.keyboard.onRelease["keyA"] = foo();
+     */
+    this.onRelease = {};
+  }
+
+  /**
+   * Use this method to check if key represented by string code is currently held down
+   * @param {string} code string code of keyboard, you can check key codes in MDN docs
+   * @returns {boolean} true if key is currently held down
+   */
+  isDown(code) {
+    return this._keyInfo[code] === true;
+  }
+}
+
+/**
+ * Engine input manager, allows access to mouse and keyboards
+ */
+class Input {
+  /**
+   * Use this property to access mouse movement
+   */
+  static mouse = new Mouse();
+  /**
+   * Use this property to set on key release events and check if
+   * key is held down
+   */
+  static keyboard = new Keyboard();
+  /**
+   * Handler to mouse freeze timeout, part of system that allows
+   * to avoid ghost mouse movement
+   */
+  static _mouseFreezeTimeout = undefined;
+
+  /**
+   * This method is called on engine init (you rather do not have to call it
+   * on your own), adds keyboard event listeners to window, so keyboard
+   * property may contain useful data
+   */
+  static _addKeyboardEventListeners() {
+    window.addEventListener("keydown", (keyboard) => {
+      Input._setKeyDown(keyboard.code);
+    });
+    window.addEventListener("keyup", (keyboard) => {
+      Input._setKeyUp(keyboard.code);
+      Input._executeOnReleaseFunction(keyboard.code);
+    });
+  }
+
+  /**
+   * Locks mouse pointer to canvas element, use ALT or
+   * default escape key to unlock pointer, call this method
+   * if you want to access mouse movement data and hide mouse cursor
+   */
+  static lockPointer() {
+    const canvas = EngineToolbox.getCanvas();
+    if (!canvas || document.pointerLockElement === canvas) {
+      return;
+    }
+    document.addEventListener(
+      "pointerlockchange",
+      Input._lockChangeAlert,
+      false
+    );
+    canvas.requestPointerLock();
+  }
+
+  /**
+   * Method passed to listener that allows to fire custom event on
+   * keyboard key release
+   * @param {string} code keyboard key code, check key codes in MDN docs
+   */
+  static _executeOnReleaseFunction(code) {
+    if (typeof Input.keyboard.onRelease[code] === "function") {
+      Input.keyboard.onRelease[code]();
+    }
+  }
+
+  /**
+   * Method passed to listener that allows to set useful data in keyboard property
+   * @param {string} code keyboard key code, check key codes in MDN docs
+   */
+  static _setKeyDown(code) {
+    Input.keyboard._keyInfo[code] = true;
+  }
+
+  /**
+   * Method passed to listener that allows to set useful data in keyboard property
+   * @param {string} code keyboard key code, check key codes in MDN docs
+   */
+  static _setKeyUp(code) {
+    Input.keyboard._keyInfo[code] = false;
+  }
+
+  /**
+   * Method passed to listener of pointer lock API, it adds mouse event
+   * listener so movement might be recorded
+   */
+  static _lockChangeAlert() {
+    const canvas = EngineToolbox.getCanvas();
+    if (document.pointerLockElement === canvas) {
+      document.addEventListener("mousemove", Input._updatePosition, false);
+    } else {
+      document.removeEventListener("mousemove", Input._updatePosition, false);
+    }
+  }
+
+  /**
+   * Updates mouse position so mouse property contains useful data,
+   * handles mouse movement smoothing and freeze to avoid ghost movement
+   * @param {Object} mouse mouse object passed by mousemove event listener
+   */
+  static _updatePosition(mouse) {
+    if (Input._mouseFreezeTimeout) {
+      clearTimeout(Input._mouseFreezeTimeout);
+    }
+
+    const avgMovementX =
+      (mouse.movementX +
+        Input.mouse._lastMovementsX.reduce((prev, curr) => {
+          return prev + curr;
+        })) /
+      (Input.mouse._lastMovementsX.length + 1);
+
+    const avgMovementY =
+      (mouse.movementY +
+        Input.mouse._lastMovementsY.reduce((prev, curr) => {
+          return prev + curr;
+        })) /
+      (Input.mouse._lastMovementsY.length + 1);
+
+    Input.mouse.movementX = avgMovementX;
+    Input.mouse.movementY = -avgMovementY;
+
+    Input.mouse._lastMovementsX.push(mouse.movementX);
+    Input.mouse._lastMovementsY.push(mouse.movementY);
+    Input.mouse._lastMovementsX.shift();
+    Input.mouse._lastMovementsY.shift();
+
+    Input._mouseFreezeTimeout = setTimeout(() => {
+      Input.mouse.movementX = 0;
+      Input.mouse.movementY = 0;
+      Input.mouse._lastMovementsX = [0, 0, 0];
+      Input.mouse._lastMovementsY = [0, 0, 0];
+    }, 20);
+  }
+}
+
+exports.Input = Input;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientLight.html">AmbientLight</a></li><li><a href="Attribute.html">Attribute</a></li><li><a href="BoxCollider.html">BoxCollider</a></li><li><a href="Camera.html">Camera</a></li><li><a href="CharacterDescriptor.html">CharacterDescriptor</a></li><li><a href="CollisionSystem.html">CollisionSystem</a></li><li><a href="DirectLight.html">DirectLight</a></li><li><a href="EngineProgram.html">EngineProgram</a></li><li><a href="EngineResources.html">EngineResources</a></li><li><a href="EngineToolbox.html">EngineToolbox</a></li><li><a href="Game.html">Game</a></li><li><a href="GameObject.html">GameObject</a></li><li><a href="Input.html">Input</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Material.html">Material</a></li><li><a href="MaterialAttributes.html">MaterialAttributes</a></li><li><a href="MaterialTextures.html">MaterialTextures</a></li><li><a href="MaterialUniforms.html">MaterialUniforms</a></li><li><a href="Matrix4.html">Matrix4</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Projection.html">Projection</a></li><li><a href="Renderer.html">Renderer</a></li><li><a href="ResourceEntry.html">ResourceEntry</a></li><li><a href="Texture.html">Texture</a></li><li><a href="Time.html">Time</a></li><li><a href="Transform.html">Transform</a></li><li><a href="Uniform.html">Uniform</a></li><li><a href="Vector2.html">Vector2</a></li><li><a href="Vector3.html">Vector3</a></li><li><a href="Vector4.html">Vector4</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_createShader">_createShader</a></li><li><a href="global.html#_mat3Det">_mat3Det</a></li><li><a href="global.html#charTable">charTable</a></li><li><a href="global.html#createShaderProgram">createShaderProgram</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#findInputOffset">findInputOffset</a></li><li><a href="global.html#findSourceElement">findSourceElement</a></li><li><a href="global.html#parseSourceElement">parseSourceElement</a></li><li><a href="global.html#parseTrianglesElement">parseTrianglesElement</a></li><li><a href="global.html#readColladaFile">readColladaFile</a></li><li><a href="global.html#readGeometry">readGeometry</a></li><li><a href="global.html#uniform1fv">uniform1fv</a></li><li><a href="global.html#uniform1iv">uniform1iv</a></li><li><a href="global.html#uniform3fv">uniform3fv</a></li><li><a href="global.html#uniformMatrix4fv">uniformMatrix4fv</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Wed Nov 25 2020 15:46:39 GMT+0100 (GMT+01:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
