@@ -1,22 +1,13 @@
-const { Camera } = require("./engine.camera");
-const { GameObject } = require("./engine.gameObject");
 const { EngineToolbox } = require("./engine.toolbox");
 const { Vector4 } = require("./engine.math.vector4");
 const { Matrix4 } = require("./engine.math.matrix4");
-const { Vector3 } = require("./engine.math.vector3");
-const  engineResources  = require("./engine.resources").Resources();
+const engineResources = require("./engine.resources").Resources();
 const { charTable } = require("./engine.charTable");
 const path = require("path");
 const gameConfig = require(path.join(__dirname, "..", "gameConfig.json"));
 
-const Renderer = {
-  /**
-   * Applies scale correction to GUI element (to take screen aspect into account),
-   * enforces element's location to be in front of camera and draws it with
-   * orthogonal projection.
-   * @param {GameObject} GUIElement
-   */
-  drawGUIElement(
+class Renderer {
+  static drawGUIElement(
     texture,
     options = { posX: 0, posY: 0, scaleX: 0.1, scaleY: 0.1 }
   ) {
@@ -27,7 +18,7 @@ const Renderer = {
     /**
      * @type {Material}
      */
-    const mat = engineResources.getMaterial('guiElement');
+    const mat = engineResources.getMaterial("guiElement");
     mat.textures.color0 = texture;
 
     const modelViewMatrix = new Matrix4();
@@ -41,7 +32,7 @@ const Renderer = {
     mat.uniforms.projectionMatrix.value = new Matrix4().toArray();
     mat.uniforms.normalMatrix.value = new Matrix4().toArray();
 
-    mat.linkVertexArrays(engineResources.getMesh('guiPlane'));
+    mat.linkVertexArrays(engineResources.getMesh("guiPlane"));
     mat.uploadMatrix;
     mat.uploadUniforms();
     mat.uploadTextures();
@@ -49,16 +40,13 @@ const Renderer = {
 
     gl.drawElements(
       gl.TRIANGLES,
-      engineResources.getMesh('guiPlane').elementArray.length,
+      engineResources.getMesh("guiPlane").elementArray.length,
       gl.UNSIGNED_INT,
       0
     );
-  },
+  }
 
-  /**
-   * @param {GameObject} gameObject
-   */
-  drawGameObject(gameObject) {
+  static drawGameObject(gameObject) {
     const gl = EngineToolbox.getGLContext();
     const camera = engineResources.getCamera();
     camera.projection.rebuildMatrixPerspective();
@@ -92,9 +80,9 @@ const Renderer = {
       gl.UNSIGNED_INT,
       0
     );
-  },
+  }
 
-  drawString(
+  static drawString(
     string = "Text",
     options = {
       posX: 0,
@@ -113,17 +101,17 @@ const Renderer = {
     toRight && (posXOffset = -strLen * size * charWidth);
 
     for (let char of string) {
-      this.drawChar(char, posX + posXOffset, posY, size);
+      Renderer.drawChar(char, posX + posXOffset, posY, size);
       posXOffset += size * charWidth;
     }
-  },
+  }
 
-  drawChar(char = "A", posX = 0, posY = 0, size = 0.1) {
+  static drawChar(char = "A", posX = 0, posY = 0, size = 0.1) {
     const gl = EngineToolbox.getGLContext();
     const camera = engineResources.getCamera();
     const charDescriptor = charTable[char.charCodeAt(0)];
 
-    const mat = engineResources.getMaterial('guiText');
+    const mat = engineResources.getMaterial("guiText");
 
     const modelViewMatrix = new Matrix4();
     modelViewMatrix.m03 = posX;
@@ -144,59 +132,59 @@ const Renderer = {
       gameConfig.textGridSize * charDescriptor.posY,
     ];
 
-    mat.linkVertexArrays(engineResources.getMesh('textGUIPlane'));
+    mat.linkVertexArrays(engineResources.getMesh("textGUIPlane"));
     mat.uploadUniforms();
     mat.uploadTextures();
     mat.useProgram();
 
     gl.drawElements(
       gl.TRIANGLES,
-      engineResources.getMesh('textGUIPlane').elementArray.length,
+      engineResources.getMesh("textGUIPlane").elementArray.length,
       gl.UNSIGNED_INT,
       0
     );
-  },
+  }
 
   /**
    * @param {Vector4} clearColor
    */
-  setClearColor(clearColor) {
+  static setClearColor(clearColor) {
     const gl = EngineToolbox.getGLContext();
     gl.clearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
     return this;
-  },
+  }
 
-  enableDepthTest() {
+  static enableDepthTest() {
     const gl = EngineToolbox.getGLContext();
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
     return this;
-  },
+  }
 
-  disableDepthTest() {
+  static disableDepthTest() {
     const gl = EngineToolbox.getGLContext();
     gl.disable(gl.DEPTH_TEST);
     return this;
-  },
+  }
 
-  clear() {
+  static clear() {
     const gl = EngineToolbox.getGLContext();
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     return this;
-  },
+  }
 
-  enableAlphaBlend() {
+  static enableAlphaBlend() {
     const gl = EngineToolbox.getGLContext();
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     return this;
-  },
+  }
 
-  disableAlphaBlend() {
+  static disableAlphaBlend() {
     const gl = EngineToolbox.getGLContext();
     gl.disable(gl.BLEND);
     return this;
-  },
-};
+  }
+}
 
 exports.Renderer = Renderer;
